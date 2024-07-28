@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { registerLicense } from '@syncfusion/ej2-base';
 
-registerLicense('ORg4AjUWIQA/Gnt2U1hhQlJBfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hTX5UdE1jX39YdHddQmJd');
+registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF1cWmhIfEx1RHxQdld5ZFRHallYTnNWUj0eQnxTdEFjXn1WcHJUR2FcUkZzVg==');
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
