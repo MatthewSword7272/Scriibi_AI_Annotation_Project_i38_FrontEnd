@@ -24,7 +24,7 @@ const StyledEditInnerContainer = styled.div`
     }
 `
 
-const StyledEditButtonContainer = styled.div<{ color: string; }>`
+const StyledEditButtonContainer = styled.div`
 
     color: ${props => props.color};
 

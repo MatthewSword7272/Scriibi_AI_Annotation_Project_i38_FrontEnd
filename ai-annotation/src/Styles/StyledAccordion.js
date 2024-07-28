@@ -2,7 +2,7 @@ import { AccordionComponent } from "@syncfusion/ej2-react-navigations";
 import styled from "styled-components";
 import {WHITE, BLACK} from '../constants';
 
-const StyledAccordionComponent = styled(AccordionComponent)<{color: string}>`
+const StyledAccordionComponent = styled(AccordionComponent)`
   background-color: transparent;
   border: transparent;
   font-family: "Raleway", sans-serif;
