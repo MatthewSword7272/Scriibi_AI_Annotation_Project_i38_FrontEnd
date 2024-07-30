@@ -8,7 +8,7 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   font-family: "Raleway", sans-serif;
   text-align: center;
   font-weight: 500;
-  width: 30vw !important;
+  width: 35em !important;
   display: flex;
   flex-direction: column;
   row-gap: 25px;
