@@ -9,6 +9,7 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   text-align: center;
   font-weight: 500;
   width: 35em !important;
+  max-width: 25em;
   display: flex;
   flex-direction: column;
   row-gap: 25px;
