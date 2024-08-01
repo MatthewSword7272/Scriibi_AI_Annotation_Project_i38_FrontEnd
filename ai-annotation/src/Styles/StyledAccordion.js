@@ -1,6 +1,9 @@
 import { AccordionComponent } from "@syncfusion/ej2-react-navigations";
 import styled from "styled-components";
 import {WHITE, BLACK} from '../constants';
+import { registerLicense } from '@syncfusion/ej2-base';
+
+registerLicense(process.env.SYNCFUSION_KEY);
 
 const StyledAccordionComponent = styled(AccordionComponent)`
   background-color: transparent;

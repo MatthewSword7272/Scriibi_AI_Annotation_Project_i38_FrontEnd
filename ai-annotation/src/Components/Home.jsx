@@ -6,6 +6,9 @@ import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2
 import {StyledAccordionComponent} from "../Styles/StyledAccordion";
 import { StyledEditButton, StyledEditButtonContainer, StyledEditContainer, StyledEditInnerContainer } from "../Styles/StyledEditContainter";
 import { StyledAccordionContainer, StyledAccordionMissingContainer } from "../Styles/StyledAccordionContainter";
+import { registerLicense } from '@syncfusion/ej2-base';
+
+registerLicense(process.env.SYNCFUSION_KEY);
 
 function Home() {
 

@@ -1,7 +1,7 @@
 import React from "react";
-import { StyledHeader, StyledHeaderSection, StyledHeaderLogo, StyledHeaderLinks, StyledHeaderProfile } from './Styles/StyledHeader';
+import { StyledHeader, StyledHeaderSection, StyledHeaderLogo, StyledHeaderLinks, StyledHeaderProfile } from '../Styles/StyledHeader';
 
-function App() {
+function Header() {
     <StyledHeader>
       <StyledHeaderSection>
           <StyledHeaderLogo src={'scriibi-logo.png'}/>
@@ -19,4 +19,4 @@ function App() {
       </StyledHeader>
 }
 
-export default App;
+export default Header;

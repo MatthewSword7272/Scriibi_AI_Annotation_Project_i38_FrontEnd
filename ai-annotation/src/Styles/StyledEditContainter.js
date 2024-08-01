@@ -1,5 +1,8 @@
 import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
 import styled from "styled-components";
+import { registerLicense } from '@syncfusion/ej2-base';
+
+registerLicense(process.env.SYNCFUSION_KEY);
 
 const StyledEditContainer = styled.div`
     border-radius: 10px;

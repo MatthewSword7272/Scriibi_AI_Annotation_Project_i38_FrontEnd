@@ -1,4 +1,4 @@
-import { Header } from '@syncfusion/ej2-react-navigations';
+import Header from './Components/Header';
 import './App.css';
 import Home from './Components/Home';
 
