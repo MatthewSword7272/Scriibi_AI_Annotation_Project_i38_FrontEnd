@@ -1,25 +1,11 @@
+import { Header } from '@syncfusion/ej2-react-navigations';
 import './App.css';
 import Home from './Components/Home';
-import { StyledHeader, StyledHeaderSection, StyledHeaderLogo, StyledHeaderLinks, StyledHeaderProfile } from './Styles/StyledHeader';
 
 function App() {
   return (
     <div className="App">
-      <StyledHeader>
-      <StyledHeaderSection>
-          <StyledHeaderLogo src={'scriibi-logo.png'}/>
-          <StyledHeaderLinks>
-            <h4>HOME</h4>
-            <h4>LESSONS</h4>
-            <h4>DATA</h4>
-            <h4>ASSESSMENTS</h4>
-          </StyledHeaderLinks>
-        </StyledHeaderSection>
-        <StyledHeaderProfile>
-          <span>David Nicolaides</span>
-          <span className="e-icons e-settings"></span>
-        </StyledHeaderProfile>
-      </StyledHeader>
+      <Header/>
       <Home></Home>
     </div>
   );
