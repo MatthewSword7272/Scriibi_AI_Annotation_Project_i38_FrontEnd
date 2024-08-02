@@ -1,14 +1,15 @@
-import { TextAreaComponent } from "@syncfusion/ej2-react-inputs";
 import styled from "styled-components";
-import { registerLicense } from '@syncfusion/ej2-base';
+import { GREEN } from "../constants";
 
-registerLicense(process.env.SYNCFUSION_KEY);
-
-const StyledTextArea = styled(TextAreaComponent)`
-    textarea {
-        border: black 5px solid;
+const StyledTextAreaWrapper = styled.div`
+    
+    .e-input-group:not(.e-float-icon-left):not(.e-float-input)::before,
+    .e-input-group:not(.e-float-icon-left):not(.e-float-input)::after,
+    .e-input-group textarea.e-input::selection
+    {
+        background: ${GREEN};
     }
     
 `
 
-export {StyledTextArea}
+export {StyledTextAreaWrapper}

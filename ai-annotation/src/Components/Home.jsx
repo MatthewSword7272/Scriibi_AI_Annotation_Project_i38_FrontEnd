@@ -37,7 +37,14 @@ function Home() {
           </StyledSkillButtonContainer>
         </StyledSkillContainer>
 
-        <StyledTextArea cssClass="e-filled" width="650" rows="14" />
+        <StyledTextAreaWrapper>
+          <TextAreaComponent
+            cssClass="e-bigger e-filled"
+            placeholder="Student Writing Text"
+            width="650"
+            rows="14"
+          />
+        </StyledTextAreaWrapper>
       </div>
 
       <StyledSubBodyContainer2>
