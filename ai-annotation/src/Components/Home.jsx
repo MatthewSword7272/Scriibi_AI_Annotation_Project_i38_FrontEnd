@@ -6,12 +6,30 @@ import { StyledEditButton, StyledEditButtonContainer,StyledEditContainer, Styled
 import { StyledAccordionContainer, StyledAccordionMissingContainer,} from "../Styles/StyledAccordionContainer";
 import { registerLicense } from "@syncfusion/ej2-base";
 import { StyledRadioButtonContainer, StyledRadioButton, StyledSkillButtonContainer, StyledSkillContainer} from "../Styles/StyledRadioButton";
-import { StyledTextArea } from "../Styles/StyledTextArea";
+import { StyledTextAreaWrapper } from "../Styles/StyledTextArea";
 import { StyledButtonComponent } from "../Styles/StyledButton";
+import { TextAreaComponent } from "@syncfusion/ej2-react-inputs";
+import React, { useEffect, useState } from "react";
 
 registerLicense(process.env.SYNCFUSION_KEY);
 
 function Home() {
+
+  const [text, setText] = useState("")
+  const [highlightedWords, setHighlightsWords] = useState([""]);
+
+  const saveHighlight = () => {
+      setHighlightsWords(highlightedWords => [...highlightedWords, text]);
+  };
+
+  useEffect(() => {
+    document.addEventListener('selectionchange', () => {
+      const activeSelection = document.getSelection();
+      const text = activeSelection.toString();
+      setText(text);
+    })
+  }, [])
+
   const aspContent = () => {
     return (
       <div>
@@ -33,7 +51,7 @@ function Home() {
             <StyledRadioButton label="Skill 5" name="skill" />
           </StyledRadioButtonContainer>
           <StyledSkillButtonContainer>
-          <StyledButtonComponent>Save</StyledButtonComponent>
+            <StyledButtonComponent>Save</StyledButtonComponent>
           </StyledSkillButtonContainer>
         </StyledSkillContainer>
 
@@ -94,6 +112,7 @@ function Home() {
             <StyledEditButtonContainer color={Constants.GREEN}>
               <h6>Add</h6>
               <StyledEditButton
+                onClick={saveHighlight}
                 isToggle={true}
                 iconCss="e-icons e-edit-2"
               ></StyledEditButton>
