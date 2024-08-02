@@ -5,12 +5,21 @@ import {GREEN} from '../constants';
 
 registerLicense(process.env.SYNCFUSION_KEY);
 
+
+const StyledSkillContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 20px;
+    margin-bottom: 10px;
+`
+
+
 const StyledRadioButtonContainer = styled.div`
 
     display: flex;
     justify-content: center;
     column-gap: 10px;
-    margin-bottom: 20px;
 
     .e-radio:checked + label::after
     {
@@ -34,4 +43,6 @@ const StyledRadioButton = styled(RadioButtonComponent)`
   
 `
 
-export { StyledRadioButtonContainer, StyledRadioButton };
+const StyledSkillButtonContainer = styled.div``
+
+export { StyledRadioButtonContainer, StyledRadioButton, StyledSkillContainer, StyledSkillButtonContainer };
