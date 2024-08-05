@@ -1,10 +1,6 @@
 import styled from "styled-components";
 import { RadioButtonComponent } from "@syncfusion/ej2-react-buttons";
-import { registerLicense } from '@syncfusion/ej2-base';
 import {GREEN} from '../constants';
-
-registerLicense(process.env.SYNCFUSION_KEY);
-
 
 const StyledSkillContainer = styled.div`
     display: flex;

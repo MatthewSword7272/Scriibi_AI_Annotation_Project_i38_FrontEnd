@@ -4,22 +4,21 @@ import { AccordionItemDirective, AccordionItemsDirective,} from "@syncfusion/ej2
 import { StyledAccordionComponent } from "../Styles/StyledAccordion";
 import { StyledEditButton, StyledEditButtonContainer,StyledEditContainer, StyledEditInnerContainer} from "../Styles/StyledEditContainer";
 import { StyledAccordionContainer, StyledAccordionMissingContainer,} from "../Styles/StyledAccordionContainer";
-import { registerLicense } from "@syncfusion/ej2-base";
 import { StyledRadioButtonContainer, StyledRadioButton, StyledSkillButtonContainer, StyledSkillContainer} from "../Styles/StyledRadioButton";
 import { StyledTextAreaWrapper } from "../Styles/StyledTextArea";
 import { StyledButtonComponent } from "../Styles/StyledButton";
 import { TextAreaComponent } from "@syncfusion/ej2-react-inputs";
+import TestText from "../testText.json"
 import React, { useEffect, useState } from "react";
-
-registerLicense(process.env.SYNCFUSION_KEY);
 
 function Home() {
 
   const [text, setText] = useState("")
-  const [highlightedWords, setHighlightsWords] = useState([""]);
+  const [highlightedWords, setHighlightedWords] = useState([""]);
+  const [hasRun, setHasRun] = useState(false); //Development State
 
   const saveHighlight = () => {
-      setHighlightsWords(highlightedWords => [...highlightedWords, text]);
+    setHighlightedWords(highlightedWords => [...highlightedWords, text]);
   };
 
   useEffect(() => {
@@ -29,6 +28,13 @@ function Home() {
       setText(text);
     })
   }, [])
+
+  useEffect(() => {
+
+    if (hasRun) setHighlightedWords(highlightedWords => [...highlightedWords, TestText.test]);
+
+    setHasRun(true);
+  }, [hasRun, setHighlightedWords]);
 
   const aspContent = () => {
     return (
@@ -61,14 +67,32 @@ function Home() {
             placeholder="Student Writing Text"
             width="650"
             rows="14"
-          />
+            value={highlightedWords}
+          ></TextAreaComponent>
         </StyledTextAreaWrapper>
       </div>
 
       <StyledSubBodyContainer2>
         <StyledAccordionContainer>
-          <h2>Annotation</h2>
+          <h2>Notes</h2>
+          <StyledAccordionComponent expandMode="Multiple" color={Constants.CAM}>
+            <AccordionItemsDirective>
+              <AccordionItemDirective
+                expanded={false}
+                header="ASP.NET"
+                content={aspContent}
+              />
+              <AccordionItemDirective
+                expanded={false}
+                header="ASP.NET2"
+                content={aspContent}
+              />
+            </AccordionItemsDirective>
+          </StyledAccordionComponent>
+        </StyledAccordionContainer>
 
+        <StyledAccordionContainer>
+          <h2>Annotation</h2>
           <StyledAccordionComponent expandMode="Multiple" color={Constants.CAM}>
             <AccordionItemsDirective>
               <AccordionItemDirective
@@ -113,14 +137,14 @@ function Home() {
               <h6>Add</h6>
               <StyledEditButton
                 onClick={saveHighlight}
-                isToggle={true}
+                // isToggle={true}
                 iconCss="e-icons e-edit-2"
               ></StyledEditButton>
             </StyledEditButtonContainer>
             <StyledEditButtonContainer color={Constants.RED}>
               <h6>Delete</h6>
               <StyledEditButton
-                isToggle={true}
+                // isToggle={true}
                 iconCss="e-icons e-delete-2"
               ></StyledEditButton>
             </StyledEditButtonContainer>

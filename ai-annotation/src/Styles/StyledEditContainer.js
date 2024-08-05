@@ -1,15 +1,12 @@
 import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
 import styled from "styled-components";
-import { registerLicense } from '@syncfusion/ej2-base';
-
-registerLicense(process.env.SYNCFUSION_KEY);
 
 const StyledEditContainer = styled.div`
     border-radius: 10px;
     text-align: center;
     background-color: #fff;
     font-family: "Raleway", sans-serif;
-    box-shadow: 1px 2px 1px rgba(0, 0, 0, .5);
+    box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
 
     h2 {
         margin: 0;
