@@ -3,15 +3,18 @@ import * as Constants from "../constants";
 
 const StyledAccordionContainer = styled.div`
     background-color: ${Constants.WHITE};
-    margin: 20px;
-    box-shadow: 1px 2px 1px rgba(0, 0, 0, .5);
+    margin: 20px 0;
+    box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
     border-radius: 10px;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     font-family: "Raleway", sans-serif;
-    width: 30em;
+
+    h2 {
+        margin-top: 0;
+    }
 
 `
 

@@ -6,7 +6,7 @@ const StyledEditContainer = styled.div`
     text-align: center;
     background-color: #fff;
     font-family: "Raleway", sans-serif;
-    box-shadow: 1px 2px 1px rgba(0, 0, 0, .5);
+    box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
 
     h2 {
         margin: 0;

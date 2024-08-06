@@ -2,13 +2,15 @@ import { AccordionComponent } from "@syncfusion/ej2-react-navigations";
 import styled from "styled-components";
 import {WHITE, BLACK} from '../constants';
 
+
 const StyledAccordionComponent = styled(AccordionComponent)`
   background-color: transparent;
   border: transparent;
   font-family: "Raleway", sans-serif;
   text-align: center;
   font-weight: 500;
-  width: 30vw !important;
+  width: 35em !important;
+  max-width: 25em;
   display: flex;
   flex-direction: column;
   row-gap: 25px;
