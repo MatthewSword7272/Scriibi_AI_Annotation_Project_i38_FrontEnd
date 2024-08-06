@@ -7,34 +7,32 @@ import { StyledAccordionContainer, StyledAccordionMissingContainer,} from "../St
 import { StyledRadioButtonContainer, StyledRadioButton, StyledSkillButtonContainer, StyledSkillContainer} from "../Styles/StyledRadioButton";
 import { StyledTextAreaWrapper } from "../Styles/StyledTextArea";
 import { StyledButtonComponent } from "../Styles/StyledButton";
-import { TextAreaComponent } from "@syncfusion/ej2-react-inputs";
 import TestText from "../testText.json"
 import React, { useEffect, useState } from "react";
+import { HtmlEditor, Inject, RichTextEditorComponent, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 
 function Home() {
 
-  const [text, setText] = useState("")
-  const [highlightedWords, setHighlightedWords] = useState([""]);
-  const [hasRun, setHasRun] = useState(false); //Development State
+  const fetchedText = TestText.test;
+
+  const [text, setText] = useState("");
+  const [highlightedWords, setHighlightedWords] = useState([]);
+  const [presentingText, setPresentingText] = useState(fetchedText);
 
   const saveHighlight = () => {
-    setHighlightedWords(highlightedWords => [...highlightedWords, text]);
+    const updatedHighlights = [...highlightedWords, text];
+    setHighlightedWords(updatedHighlights);
+    
+    // Update the highlighted text
+    const highlightedText = highlightText(fetchedText, updatedHighlights);
+    setPresentingText(highlightedText);
+    setText("");
   };
 
-  useEffect(() => {
-    document.addEventListener('selectionchange', () => {
-      const activeSelection = document.getSelection();
-      const text = activeSelection.toString();
-      setText(text);
-    })
-  }, [])
-
-  useEffect(() => {
-
-    if (hasRun) setHighlightedWords(highlightedWords => [...highlightedWords, TestText.test]);
-
-    setHasRun(true);
-  }, [hasRun, setHighlightedWords]);
+  const highlightText = (text, highlights) => {
+    const regex = new RegExp(`(${highlights.join("|")})`, "gi");
+    return text.replace(regex, (match) => `<mark>${match}</mark>`);
+  }
 
   const aspContent = () => {
     return (
@@ -44,6 +42,20 @@ function Home() {
       </div>
     );
   };
+
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      const activeSelection = document.getSelection();
+      const selectedText = activeSelection.toString();
+      setText(selectedText);
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+    };
+  }, []);
 
   return (
     <StyledBodyContainer>
@@ -61,17 +73,13 @@ function Home() {
           </StyledSkillButtonContainer>
         </StyledSkillContainer>
 
-        <StyledTextAreaWrapper>
-          <TextAreaComponent
-            cssClass="e-bigger e-filled"
-            placeholder="Student Writing Text"
-            width="650"
-            rows="14"
-            value={highlightedWords}
-          ></TextAreaComponent>
+       <StyledTextAreaWrapper>
+          <RichTextEditorComponent value={presentingText}>
+            <Inject services={[Toolbar, HtmlEditor]}/>
+          </RichTextEditorComponent>
         </StyledTextAreaWrapper>
+        
       </div>
-
       <StyledSubBodyContainer2>
         <StyledAccordionContainer>
           <h2>Notes</h2>
@@ -136,7 +144,7 @@ function Home() {
             <StyledEditButtonContainer color={Constants.GREEN}>
               <h6>Add</h6>
               <StyledEditButton
-                onClick={saveHighlight}
+                onClick={() => text !== "" && saveHighlight()}
                 // isToggle={true}
                 iconCss="e-icons e-edit-2"
               ></StyledEditButton>
