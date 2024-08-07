@@ -9,7 +9,8 @@ const StyledBodyContainer = styled.div`
     margin-top: 30px;
     display: inline-flex;
     justify-content: space-evenly;
-    width: 94vw;
+    width: 90vw;
+    column-gap: 20px;
 `
 
 const StyledSubBodyContainer2 = styled.div`

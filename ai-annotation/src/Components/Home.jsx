@@ -5,15 +5,27 @@ import { StyledAccordionComponent } from "../Styles/StyledAccordion";
 import { StyledEditButton, StyledEditButtonContainer,StyledEditContainer, StyledEditInnerContainer} from "../Styles/StyledEditContainer";
 import { StyledAccordionContainer, StyledAccordionMissingContainer,} from "../Styles/StyledAccordionContainer";
 import { StyledRadioButtonContainer, StyledRadioButton, StyledSkillButtonContainer, StyledSkillContainer} from "../Styles/StyledRadioButton";
-import { StyledTextAreaWrapper } from "../Styles/StyledTextArea";
+import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import { StyledButtonComponent } from "../Styles/StyledButton";
 import TestText from "../testText.json"
 import React, { useEffect, useState } from "react";
-import { HtmlEditor, Inject, RichTextEditorComponent, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
+import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 
 function Home() {
 
+  const colours  = [
+    "#B1E1B7",
+    "#E5F9B5",
+    "#F9ADF5",
+    "#B3EEFB",
+    "#B5D6D3"
+  ]
+
   const fetchedText = TestText.test;
+  // const parser = new DOMParser();
+  // const startingText =  parser.parseFromString(fetchedText, "text/html")
+
+  //So far it only adds marks to strings. We need to further develop this.
 
   const [text, setText] = useState("");
   const [highlightedWords, setHighlightedWords] = useState([]);
@@ -24,14 +36,23 @@ function Home() {
     setHighlightedWords(updatedHighlights);
     
     // Update the highlighted text
-    const highlightedText = highlightText(fetchedText, updatedHighlights);
+    const highlightedText = highlightText(presentingText, updatedHighlights); //.body.innerHTML
+    //Update the presenting text
     setPresentingText(highlightedText);
+    //Resets the getText back to default
     setText("");
   };
 
   const highlightText = (text, highlights) => {
-    const regex = new RegExp(`(${highlights.join("|")})`, "gi");
-    return text.replace(regex, (match) => `<mark>${match}</mark>`);
+    // Skip existing <mark> tags
+    const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
+    return text.replace(regex, (match) => 
+      match.startsWith('<mark') ? match : `<mark style="background-color: ${colours[generateRandomColour()]}">${match}</mark>`
+    );
+  };
+
+  const generateRandomColour = () => {
+    return Math.floor(Math.random() * colours.length);
   }
 
   const aspContent = () => {
@@ -44,7 +65,8 @@ function Home() {
   };
 
   useEffect(() => {
-    const handleSelectionChange = () => {
+    const handleSelectionChange = (event) => {
+      //Get Highlighted text and save State
       const activeSelection = document.getSelection();
       const selectedText = activeSelection.toString();
       setText(selectedText);
@@ -73,11 +95,12 @@ function Home() {
           </StyledSkillButtonContainer>
         </StyledSkillContainer>
 
-       <StyledTextAreaWrapper>
-          <RichTextEditorComponent value={presentingText}>
+       
+          <StyledRichTextEditor value={presentingText}>
+          {/* .body.innerHTML */}
             <Inject services={[Toolbar, HtmlEditor]}/>
-          </RichTextEditorComponent>
-        </StyledTextAreaWrapper>
+          </StyledRichTextEditor>
+        
         
       </div>
       <StyledSubBodyContainer2>
