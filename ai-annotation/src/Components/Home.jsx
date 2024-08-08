@@ -5,36 +5,55 @@ import { StyledAccordionComponent } from "../Styles/StyledAccordion";
 import { StyledEditButton, StyledEditButtonContainer,StyledEditContainer, StyledEditInnerContainer} from "../Styles/StyledEditContainer";
 import { StyledAccordionContainer, StyledAccordionMissingContainer,} from "../Styles/StyledAccordionContainer";
 import { StyledRadioButtonContainer, StyledRadioButton, StyledSkillButtonContainer, StyledSkillContainer} from "../Styles/StyledRadioButton";
-import { StyledTextAreaWrapper } from "../Styles/StyledTextArea";
+import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import { StyledButtonComponent } from "../Styles/StyledButton";
-import { TextAreaComponent } from "@syncfusion/ej2-react-inputs";
 import TestText from "../testText.json"
 import React, { useEffect, useState } from "react";
+import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 
 function Home() {
 
-  const [text, setText] = useState("")
-  const [highlightedWords, setHighlightedWords] = useState([""]);
-  const [hasRun, setHasRun] = useState(false); //Development State
+  const colours  = [
+    "#B1E1B7",
+    "#E5F9B5",
+    "#F9ADF5",
+    "#B3EEFB",
+    "#B5D6D3"
+  ]
+
+  const fetchedText = TestText.test;
+  // const parser = new DOMParser();
+  // const startingText =  parser.parseFromString(fetchedText, "text/html")
+
+  //So far it only adds marks to strings. We need to further develop this.
+
+  const [text, setText] = useState("");
+  const [highlightedWords, setHighlightedWords] = useState([]);
+  const [presentingText, setPresentingText] = useState(fetchedText);
 
   const saveHighlight = () => {
-    setHighlightedWords(highlightedWords => [...highlightedWords, text]);
+    const updatedHighlights = [...highlightedWords, text];
+    setHighlightedWords(updatedHighlights);
+    
+    // Update the highlighted text
+    const highlightedText = highlightText(presentingText, updatedHighlights); //.body.innerHTML
+    //Update the presenting text
+    setPresentingText(highlightedText);
+    //Resets the getText back to default
+    setText("");
   };
 
-  useEffect(() => {
-    document.addEventListener('selectionchange', () => {
-      const activeSelection = document.getSelection();
-      const text = activeSelection.toString();
-      setText(text);
-    })
-  }, [])
+  const highlightText = (text, highlights) => {
+    // Skip existing <mark> tags
+    const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
+    return text.replace(regex, (match) => 
+      match.startsWith('<mark') ? match : `<mark style="background-color: ${colours[generateRandomColour()]}">${match}</mark>`
+    );
+  };
 
-  useEffect(() => {
-
-    if (hasRun) setHighlightedWords(highlightedWords => [...highlightedWords, TestText.test]);
-
-    setHasRun(true);
-  }, [hasRun, setHighlightedWords]);
+  const generateRandomColour = () => {
+    return Math.floor(Math.random() * colours.length);
+  }
 
   const aspContent = () => {
     return (
@@ -44,6 +63,21 @@ function Home() {
       </div>
     );
   };
+
+  useEffect(() => {
+    const handleSelectionChange = (event) => {
+      //Get Highlighted text and save State
+      const activeSelection = document.getSelection();
+      const selectedText = activeSelection.toString();
+      setText(selectedText);
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+    
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+    };
+  }, []);
 
   return (
     <StyledBodyContainer>
@@ -61,17 +95,14 @@ function Home() {
           </StyledSkillButtonContainer>
         </StyledSkillContainer>
 
-        <StyledTextAreaWrapper>
-          <TextAreaComponent
-            cssClass="e-bigger e-filled"
-            placeholder="Student Writing Text"
-            width="650"
-            rows="14"
-            value={highlightedWords}
-          ></TextAreaComponent>
-        </StyledTextAreaWrapper>
+       
+          <StyledRichTextEditor value={presentingText}>
+          {/* .body.innerHTML */}
+            <Inject services={[Toolbar, HtmlEditor]}/>
+          </StyledRichTextEditor>
+        
+        
       </div>
-
       <StyledSubBodyContainer2>
         <StyledAccordionContainer>
           <h2>Notes</h2>
@@ -136,7 +167,7 @@ function Home() {
             <StyledEditButtonContainer color={Constants.GREEN}>
               <h6>Add</h6>
               <StyledEditButton
-                onClick={saveHighlight}
+                onClick={() => text !== "" && saveHighlight()}
                 // isToggle={true}
                 iconCss="e-icons e-edit-2"
               ></StyledEditButton>
