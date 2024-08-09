@@ -8,8 +8,10 @@ import { StyledRadioButtonContainer, StyledRadioButton, StyledSkillButtonContain
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import { StyledButtonComponent } from "../Styles/StyledButton";
 import TestText from "../testText.json"
+import testSkillsInfo from '../testSkilsInfo'
 import React, { useEffect, useState } from "react";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
+import skillsInterface from "../Interfaces/SkillsInterface";
 
 function Home() {
 
@@ -30,6 +32,9 @@ function Home() {
   const [text, setText] = useState("");
   const [highlightedWords, setHighlightedWords] = useState([]);
   const [presentingText, setPresentingText] = useState(fetchedText);
+  const [selectedSkill, setSelectedSkill] = useState(0);
+
+  const skillData = testSkillsInfo[skillsInterface[selectedSkill]]; //Use Interface to get Skills Level and Description
 
   const saveHighlight = () => {
     const updatedHighlights = [...highlightedWords, text];
@@ -64,6 +69,10 @@ function Home() {
     );
   };
 
+  const handleSkillChange = (event) => {
+    setSelectedSkill(parseInt(event.target.value));
+  };
+
   useEffect(() => {
     const handleSelectionChange = (event) => {
       //Get Highlighted text and save State
@@ -84,24 +93,64 @@ function Home() {
       <div>
         <StyledSkillContainer>
           <StyledRadioButtonContainer>
-            <StyledRadioButton label="Skill 1" name="skill" />
-            <StyledRadioButton label="Skill 2" name="skill" />
-            <StyledRadioButton label="Skill 3" name="skill" />
-            <StyledRadioButton label="Skill 4" name="skill" />
-            <StyledRadioButton label="Skill 5" name="skill" />
+            <StyledRadioButton
+              label="Punctuation"
+              name="skill"
+              value="0"
+              checked={true}
+              onChange={handleSkillChange}
+            />
+            <StyledRadioButton
+              label="Vocabulary"
+              name="skill"
+              value="1"
+              onChange={handleSkillChange}
+            />
+            <StyledRadioButton
+              label="Cohesion"
+              value="2"
+              name="skill"
+              onChange={handleSkillChange}
+            />
+            <StyledRadioButton
+              label="Sentence Type and Structure"
+              value="3"
+              name="skill"
+              onChange={handleSkillChange}
+            />
+            <StyledRadioButton
+              label="Developing & Elaborating Ideas"
+              value="4"
+              name="skill"
+              onChange={handleSkillChange}
+            />
           </StyledRadioButtonContainer>
           <StyledSkillButtonContainer>
             <StyledButtonComponent>Save</StyledButtonComponent>
           </StyledSkillButtonContainer>
         </StyledSkillContainer>
 
-       
-          <StyledRichTextEditor value={presentingText}>
+        <div>
+          {Object.keys(skillData)
+            .filter((key) => key.startsWith("Level"))
+            .map((levelKey) => (
+              <div key={levelKey}>
+                <h2>{skillData[levelKey].title}</h2>
+                <div>
+                  <ul>
+                    {skillData[levelKey].description.map((desc, index) => (
+                      <li key={index}>{desc}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+        </div>
+
+        <StyledRichTextEditor value={presentingText}>
           {/* .body.innerHTML */}
-            <Inject services={[Toolbar, HtmlEditor]}/>
-          </StyledRichTextEditor>
-        
-        
+          <Inject services={[Toolbar, HtmlEditor]} />
+        </StyledRichTextEditor>
       </div>
       <StyledSubBodyContainer2>
         <StyledAccordionContainer>
