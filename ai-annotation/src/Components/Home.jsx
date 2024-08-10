@@ -12,7 +12,13 @@ import testSkillsInfo from '../testSkilsInfo'
 import React, { useEffect, useState } from "react";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 import skillsInterface from "../Interfaces/SkillsInterface";
-import {StyledCarouselContainer, StyledCarouselDesc} from '../Styles/StyledCarousel';
+import {
+  StyledCarouselContainer, 
+  StyledCarouselDesc, 
+  StyledCarouselInnerContainer, 
+  StyledArrowButtonLeft, 
+  StyledArrowButtonRight
+} from '../Styles/StyledCarousel';
 
 function Home() {
 
@@ -132,6 +138,8 @@ function Home() {
         </StyledSkillContainer>
 
         <StyledCarouselContainer>
+          <StyledArrowButtonLeft/>
+          <StyledCarouselInnerContainer>
           {Object.keys(skillData).filter((key) => key.startsWith("Level")).map((levelKey) => (
               <StyledCarouselDesc key={levelKey}>
                 <h2>{skillData[levelKey].title}</h2>
@@ -144,6 +152,8 @@ function Home() {
                 </div>
               </StyledCarouselDesc>
             ))}
+            </StyledCarouselInnerContainer>
+            <StyledArrowButtonRight/>
         </StyledCarouselContainer>
 
         <StyledRichTextEditor value={presentingText}>
