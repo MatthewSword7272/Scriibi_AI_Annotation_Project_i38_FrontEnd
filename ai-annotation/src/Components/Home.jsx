@@ -3,7 +3,7 @@ import * as Constants from "../constants";
 import { AccordionItemDirective, AccordionItemsDirective,} from "@syncfusion/ej2-react-navigations";
 import { StyledAccordionComponent } from "../Styles/StyledAccordion";
 import { StyledEditButton, StyledEditButtonContainer,StyledEditContainer, StyledEditInnerContainer} from "../Styles/StyledEditContainer";
-import { StyledAccordionContainer, StyledAccordionMissingContainer,} from "../Styles/StyledAccordionContainer";
+import { StyledAccordionContainer, StyledAccordionMissingContainer} from "../Styles/StyledAccordionContainer";
 import { StyledRadioButtonContainer, StyledRadioButton, StyledSkillButtonContainer, StyledSkillContainer} from "../Styles/StyledRadioButton";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import { StyledButtonComponent } from "../Styles/StyledButton";
@@ -12,6 +12,7 @@ import testSkillsInfo from '../testSkilsInfo'
 import React, { useEffect, useState } from "react";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 import skillsInterface from "../Interfaces/SkillsInterface";
+import {StyledCarouselContainer, StyledCarouselDesc} from '../Styles/StyledCarousel';
 
 function Home() {
 
@@ -56,11 +57,11 @@ function Home() {
     );
   };
 
-  const generateRandomColour = () => {
+  const generateRandomColour = () => { //Select colour
     return Math.floor(Math.random() * colours.length);
   }
 
-  const aspContent = () => {
+  const aspContent = () => { //Dummy Data
     return (
       <div>
         Microsoft ASP.NET is a set of technologies in the Microsoft .NET
@@ -130,11 +131,9 @@ function Home() {
           </StyledSkillButtonContainer>
         </StyledSkillContainer>
 
-        <div>
-          {Object.keys(skillData)
-            .filter((key) => key.startsWith("Level"))
-            .map((levelKey) => (
-              <div key={levelKey}>
+        <StyledCarouselContainer>
+          {Object.keys(skillData).filter((key) => key.startsWith("Level")).map((levelKey) => (
+              <StyledCarouselDesc key={levelKey}>
                 <h2>{skillData[levelKey].title}</h2>
                 <div>
                   <ul>
@@ -143,9 +142,9 @@ function Home() {
                     ))}
                   </ul>
                 </div>
-              </div>
+              </StyledCarouselDesc>
             ))}
-        </div>
+        </StyledCarouselContainer>
 
         <StyledRichTextEditor value={presentingText}>
           {/* .body.innerHTML */}

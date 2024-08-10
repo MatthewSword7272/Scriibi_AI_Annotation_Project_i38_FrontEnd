@@ -9,7 +9,7 @@ const StyledBodyContainer = styled.div`
     margin-top: 30px;
     display: inline-flex;
     justify-content: space-evenly;
-    width: 90vw;
+    width: 95vw;
     column-gap: 20px;
 `
 
