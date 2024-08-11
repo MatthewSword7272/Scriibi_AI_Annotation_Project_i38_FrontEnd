@@ -1,13 +1,31 @@
-import React from "react";
-import { StyledArrowButtonLeft, StyledArrowButtonRight, StyledCarouselContainer, StyledCarouselDesc, StyledCarouselInnerContainer } from "../Styles/StyledCarousel";
+import React, { useState } from "react";
+import {
+  StyledArrowButtonLeft,
+  StyledArrowButtonRight,
+  StyledCarouselContainer,
+  StyledCarouselDesc,
+  StyledCarouselInnerContainer,
+} from "../Styles/StyledCarousel";
 
-const SkillCarousel = (skillData) => {
-    return ( 
-        <StyledCarouselContainer>
-        <StyledArrowButtonLeft/>
-        <StyledCarouselInnerContainer>
-        {Object.keys(skillData).filter((key) => key.startsWith("Level")).map((levelKey) => (
-            <StyledCarouselDesc key={levelKey}>
+const SkillCarousel = ({ skillData }) => {
+  const [activeIndex, setActiveIndex] = useState(1);
+
+  const nextSlide = () => {
+    activeIndex === skillData.length - 1 ? setActiveIndex(0) : setActiveIndex(activeIndex + 1);
+  };
+
+  const prevSlide = () => {
+    activeIndex === 0 ? setActiveIndex(skillData.length - 1) : setActiveIndex(activeIndex - 1);
+  };
+
+  console.log(activeIndex);
+
+  return (
+    <StyledCarouselContainer>
+      <StyledArrowButtonLeft onClick={prevSlide}/>
+      <StyledCarouselInnerContainer>
+        {Object.keys(skillData).filter((key) => key.startsWith("Level")).map((levelKey, index) => (
+            <StyledCarouselDesc key={levelKey} index={index} activeIndex={activeIndex}>
               <h2>{skillData[levelKey].title}</h2>
               <div>
                 <ul>
@@ -18,10 +36,10 @@ const SkillCarousel = (skillData) => {
               </div>
             </StyledCarouselDesc>
           ))}
-          </StyledCarouselInnerContainer>
-          <StyledArrowButtonRight/>
-      </StyledCarouselContainer>
-    );
-}
- 
+      </StyledCarouselInnerContainer>
+      <StyledArrowButtonRight onClick={nextSlide}/>
+    </StyledCarouselContainer>
+  );
+};
+
 export default SkillCarousel;

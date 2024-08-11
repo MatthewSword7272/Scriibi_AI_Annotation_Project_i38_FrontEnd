@@ -13,9 +13,15 @@ const StyledBodyContainer = styled.div`
     column-gap: 20px;
 `
 
+const StyledSubBodyContainer1 = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
 const StyledSubBodyContainer2 = styled.div`
     width: 30em;
 
 `
 
-export {StyledBodyContainer, StyledSubBodyContainer2};
+export {StyledBodyContainer, StyledSubBodyContainer1, StyledSubBodyContainer2};
