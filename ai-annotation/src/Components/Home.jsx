@@ -12,13 +12,7 @@ import testSkillsInfo from '../testSkilsInfo'
 import React, { useEffect, useState } from "react";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 import skillsInterface from "../Interfaces/SkillsInterface";
-import {
-  StyledCarouselContainer, 
-  StyledCarouselDesc, 
-  StyledCarouselInnerContainer, 
-  StyledArrowButtonLeft, 
-  StyledArrowButtonRight
-} from '../Styles/StyledCarousel';
+import SkillCarousel from "./SkillCarousel";
 
 function Home() {
 
@@ -137,24 +131,7 @@ function Home() {
           </StyledSkillButtonContainer>
         </StyledSkillContainer>
 
-        <StyledCarouselContainer>
-          <StyledArrowButtonLeft/>
-          <StyledCarouselInnerContainer>
-          {Object.keys(skillData).filter((key) => key.startsWith("Level")).map((levelKey) => (
-              <StyledCarouselDesc key={levelKey}>
-                <h2>{skillData[levelKey].title}</h2>
-                <div>
-                  <ul>
-                    {skillData[levelKey].description.map((desc, index) => (
-                      <li key={index}>{desc}</li>
-                    ))}
-                  </ul>
-                </div>
-              </StyledCarouselDesc>
-            ))}
-            </StyledCarouselInnerContainer>
-            <StyledArrowButtonRight/>
-        </StyledCarouselContainer>
+          <SkillCarousel skillData={skillData}/>
 
         <StyledRichTextEditor value={presentingText}>
           {/* .body.innerHTML */}
@@ -241,7 +218,7 @@ function Home() {
         </StyledEditContainer>
       </StyledSubBodyContainer2>
     </StyledBodyContainer>
-  );
+  )
 }
 
 export default Home;
