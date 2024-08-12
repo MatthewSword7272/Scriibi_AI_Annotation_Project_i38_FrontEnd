@@ -25,7 +25,10 @@ const SkillCarousel = ({ skillData }) => {
       <StyledArrowButtonLeft onClick={prevSlide}/>
       <StyledCarouselInnerContainer>
         {Object.keys(skillData).filter((key) => key.startsWith("Level")).map((levelKey, index) => (
-            <StyledCarouselDesc key={levelKey} index={index} activeIndex={activeIndex}>
+            <StyledCarouselDesc key={levelKey} 
+              // @ts-ignore
+            index={index} activeIndex={activeIndex}>
+              
               <h2>{skillData[levelKey].title}</h2>
               <div>
                 <ul>

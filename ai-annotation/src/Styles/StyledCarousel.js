@@ -20,7 +20,9 @@ const StyledCarouselInnerContainer = styled.div`
 `
 
 const StyledCarouselDesc = styled.div`
-    transform: translateX(${props => (props.index - props.activeIndex) * 110}%);
+    transform: translateX(${props => (props
+// @ts-ignore
+    .index - props.activeIndex) * 110}%);
     transition: opacity 0.5s ease;
     transform: 0.5s ease;
     position: absolute;
