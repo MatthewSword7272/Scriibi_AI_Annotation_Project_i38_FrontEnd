@@ -24,7 +24,7 @@ const StyledAccordionMissingContainer = styled.div`
     border-radius: 10px;
     padding: 10px;
     border: #D86918 solid 2px;
-    max-width: 27em;
+    max-width: 100%;
 
     h3 {
         color: #D86918;

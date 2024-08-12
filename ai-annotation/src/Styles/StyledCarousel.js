@@ -6,15 +6,17 @@ const StyledCarouselContainer = styled.div`
     display: flex;
     column-gap: 15px;
     overflow: hidden;
-    max-width: 70%;
+    width: 100%;
     height: 45%;
+    justify-content: center;
 `
 
 const StyledCarouselInnerContainer = styled.div`
     display: flex;
     margin: 20px 0;
     position: relative;
-    width: 20vw;
+    width: 15vw;
+    height: 22em;
 `
 
 const StyledCarouselDesc = styled.div`
@@ -33,6 +35,7 @@ const StyledCarouselDesc = styled.div`
 
         ul{
             padding: 0 30px;
+            font-size: 15px;
         }
     }
 `
@@ -40,6 +43,7 @@ const StyledCarouselDesc = styled.div`
 const StyledArrowButtonLeft = styled(Arrow_Left)`
     position: relative;
     top: 120px;
+    right: 17vw;
     &:hover {
         cursor: pointer;
     }
@@ -47,6 +51,7 @@ const StyledArrowButtonLeft = styled(Arrow_Left)`
 const StyledArrowButtonRight = styled(Arrow_Right)`
     position: relative;
     top: 120px;
+    left: 17vw;
     &:hover {
         cursor: pointer;
     }

@@ -14,9 +14,11 @@ import { GREEN } from "../constants";
 // `
 
 const StyledRichTextEditor = styled(RichTextEditorComponent)`
-    width: 100em !important;
-    height: 50% !important;
     text-align: left;
+
+    div div {
+        height: 30em;
+    }
 `
 
 export {StyledRichTextEditor}
