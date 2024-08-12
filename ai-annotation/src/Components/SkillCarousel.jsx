@@ -5,31 +5,35 @@ import {
   StyledCarouselContainer,
   StyledCarouselDesc,
   StyledCarouselInnerContainer,
+  StyledCarouselDot,
+  StyledDotContainer,
 } from "../Styles/StyledCarousel";
 
 const SkillCarousel = ({ skillData }) => {
   const [activeIndex, setActiveIndex] = useState(1);
 
   const nextSlide = () => {
-    activeIndex === skillData.length - 1 ? setActiveIndex(0) : setActiveIndex(activeIndex + 1);
+    activeIndex !== (Object.keys(skillData).length - 1) && setActiveIndex(activeIndex + 1);
   };
 
   const prevSlide = () => {
-    activeIndex === 0 ? setActiveIndex(skillData.length - 1) : setActiveIndex(activeIndex - 1);
+    activeIndex !== 0 && setActiveIndex(activeIndex - 1);
   };
-
-  console.log(activeIndex);
 
   return (
     <StyledCarouselContainer>
-      <StyledArrowButtonLeft onClick={prevSlide}/>
+      <StyledArrowButtonLeft onClick={prevSlide} />
       <StyledCarouselInnerContainer>
         {Object.keys(skillData).filter((key) => key.startsWith("Level")).map((levelKey, index) => (
-            <StyledCarouselDesc key={levelKey} 
+            <StyledCarouselDesc key={levelKey}
               // @ts-ignore
-            index={index} activeIndex={activeIndex}>
-              
-              <h2>{skillData[levelKey].title}</h2>
+              index={index} activeIndex={activeIndex}>
+              <h4>{skillData[levelKey].title}</h4>
+              <StyledDotContainer>
+                
+                <StyledCarouselDot activeIndex={activeIndex} currentIndex={index}/>
+                  
+              </StyledDotContainer>
               <div>
                 <ul>
                   {skillData[levelKey].description.map((desc, index) => (
@@ -40,7 +44,7 @@ const SkillCarousel = ({ skillData }) => {
             </StyledCarouselDesc>
           ))}
       </StyledCarouselInnerContainer>
-      <StyledArrowButtonRight onClick={nextSlide}/>
+      <StyledArrowButtonRight onClick={nextSlide} />
     </StyledCarouselContainer>
   );
 };

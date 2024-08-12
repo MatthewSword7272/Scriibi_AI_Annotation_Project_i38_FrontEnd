@@ -17,6 +17,7 @@ const StyledCarouselInnerContainer = styled.div`
     position: relative;
     width: 15vw;
     height: 22em;
+    
 `
 
 const StyledCarouselDesc = styled.div`
@@ -27,8 +28,6 @@ const StyledCarouselDesc = styled.div`
     transform: 0.5s ease;
     position: absolute;
     width: 100%;
-    box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
-    border-radius: 10px;
     z-index: -1;
     height: 100%;
     
@@ -40,6 +39,23 @@ const StyledCarouselDesc = styled.div`
             font-size: 15px;
         }
     }
+`
+
+const StyledCarouselDot = styled.div`
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    width: 20px;
+    height: 20px;
+    background-color: ${({ activeIndex, currentIndex }) => activeIndex === currentIndex ? 'green' : '#b5b5b5'};
+    border-radius: 50%;
+  
+`
+
+const StyledDotContainer = styled.div`
+    box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
+    border-radius: 10px;
+    padding: 5px 0;
 `
 
 const StyledArrowButtonLeft = styled(Arrow_Left)`
@@ -59,4 +75,4 @@ const StyledArrowButtonRight = styled(Arrow_Right)`
     }
 `;
 
-export {StyledCarouselContainer, StyledCarouselDesc, StyledCarouselInnerContainer, StyledArrowButtonLeft, StyledArrowButtonRight}
+export {StyledCarouselContainer, StyledCarouselDesc, StyledCarouselInnerContainer, StyledCarouselDot, StyledArrowButtonLeft, StyledArrowButtonRight, StyledDotContainer}
