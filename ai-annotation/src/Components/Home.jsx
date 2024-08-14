@@ -33,6 +33,7 @@ function Home() {
   const [highlightedWords, setHighlightedWords] = useState([]);
   const [presentingText, setPresentingText] = useState(fetchedText);
   const [selectedSkill, setSelectedSkill] = useState(0);
+  const [checkedBoxes, setCheckedBoxes] = useState([]);
 
   const skillData = testSkillsInfo[skillsInterface[selectedSkill]]; //Use Interface to get Skills Level and Description
 
@@ -47,6 +48,15 @@ function Home() {
     //Resets the getText back to default
     setText("");
   };
+
+  const nextSkill = () => {
+    const allSkills = Object.keys(testSkillsInfo);
+    setSelectedSkill(selectedSkill + 1);
+
+    if (checkedBoxes.length < allSkills.length) {
+      setCheckedBoxes(prev => [...prev, allSkills[prev.length]]);
+    }
+  } 
 
   const highlightText = (text, highlights) => {
     // Skip existing <mark> tags
@@ -69,15 +79,10 @@ function Home() {
     );
   };
 
-  const handleSkillChange = (event) => {
-    setSelectedSkill(parseInt(event.target.value));
-  };
-
   useEffect(() => {
-    const handleSelectionChange = (event) => {
+    const handleSelectionChange = () => {
       //Get Highlighted text and save State
-      const activeSelection = document.getSelection();
-      const selectedText = activeSelection.toString();
+      const selectedText = document.getSelection().toString();
       setText(selectedText);
     };
 
@@ -91,7 +96,7 @@ function Home() {
   return (
     <StyledBodyContainer>
       <StyledSubBodyContainer1>
-        <SkillSelector handleSkillChange={handleSkillChange}/>
+      <SkillSelector skillData={testSkillsInfo} nextSkill={nextSkill} checkedBoxes={checkedBoxes}/>
         <SkillCarousel skillData={skillData}/>
         <StyledRichTextEditor value={presentingText}>
            {/* .body.innerHTML  */}

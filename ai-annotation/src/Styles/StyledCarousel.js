@@ -7,7 +7,7 @@ const StyledCarouselContainer = styled.div`
     column-gap: 15px;
     overflow: hidden;
     width: 100%;
-    height: 45%;
+    min-height: 30%;
     justify-content: center;
 `
 
@@ -21,14 +21,11 @@ const StyledCarouselInnerContainer = styled.div`
 `
 
 const StyledCarouselDesc = styled.div`
-    transform: translateX(${props => (props
-// @ts-ignore
-    .index - props.activeIndex) * 110}%);
+    transform: translateX(${({index, activeIndex}) => (index - activeIndex) * 110}%);
     transition: opacity 0.5s ease;
     transform: 0.5s ease;
     position: absolute;
     width: 100%;
-    z-index: -1;
     height: 100%;
     
     div {
@@ -62,6 +59,7 @@ const StyledArrowButtonLeft = styled(Arrow_Left)`
     position: relative;
     top: 120px;
     right: 17vw;
+    z-index: 1;
     &:hover {
         cursor: pointer;
     }
@@ -70,6 +68,7 @@ const StyledArrowButtonRight = styled(Arrow_Right)`
     position: relative;
     top: 120px;
     left: 17vw;
+    z-index: 1;
     &:hover {
         cursor: pointer;
     }
