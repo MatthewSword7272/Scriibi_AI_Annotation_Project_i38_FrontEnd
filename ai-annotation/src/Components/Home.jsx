@@ -1,5 +1,5 @@
 import { StyledBodyContainer, StyledSubBodyContainer1, StyledSubBodyContainer2 } from "../Styles/StyledBody";
-import * as Constants from "../constants";
+import * as Constants from "../Constraints/constants";
 import { AccordionItemDirective, AccordionItemsDirective,} from "@syncfusion/ej2-react-navigations";
 import { StyledAccordionComponent } from "../Styles/StyledAccordion";
 import { StyledEditButton, StyledEditButtonContainer,StyledEditContainer, StyledEditInnerContainer} from "../Styles/StyledEditContainer";
@@ -172,7 +172,7 @@ function Home() {
                 iconCss="e-icons e-edit-2"
               ></StyledEditButton>
             </StyledEditButtonContainer>
-            <StyledEditButtonContainer color={Constants.RED}>
+            <StyledEditButtonContainer color={Constants.ORANGE}>
               <h6>Delete</h6>
               <StyledEditButton
                 // isToggle={true}

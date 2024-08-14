@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { RichTextEditorComponent } from '@syncfusion/ej2-react-richtexteditor';
-import { GREEN } from "../constants";
+import { GREEN } from "../Constraints/constants";
 
 // const StyledTextAreaWrapper = styled.div`
     

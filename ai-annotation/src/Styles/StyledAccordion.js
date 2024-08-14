@@ -1,6 +1,6 @@
 import { AccordionComponent } from "@syncfusion/ej2-react-navigations";
 import styled from "styled-components";
-import {WHITE, BLACK} from '../constants';
+import {WHITE, BLACK} from '../Constraints/constants';
 
 
 const StyledAccordionComponent = styled(AccordionComponent)`

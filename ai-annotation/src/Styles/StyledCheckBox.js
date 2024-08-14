@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { CheckBoxComponent } from "@syncfusion/ej2-react-buttons";
-import {GREEN} from '../constants';
+import {GREEN} from '../Constraints/constants';
 
 const StyledSkillContainer = styled.div`
     display: flex;

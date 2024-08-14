@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import * as Constants from "../constants";
+import {ORANGE, WHITE} from "../Constraints/constants";
 
 const StyledAccordionContainer = styled.div`
-    background-color: ${Constants.WHITE};
+    background-color: ${WHITE};
     margin: 20px 0;
     box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
     border-radius: 10px;
@@ -23,11 +23,11 @@ const StyledAccordionMissingContainer = styled.div`
     margin: 10px;
     border-radius: 10px;
     padding: 10px;
-    border: #D86918 solid 2px;
+    border: ${ORANGE} solid 2px;
     max-width: 100%;
 
     h3 {
-        color: #D86918;
+        color: ${ORANGE};
         text-align: center;
         margin: 0 0 10px 0;
         font-weight: 500;
