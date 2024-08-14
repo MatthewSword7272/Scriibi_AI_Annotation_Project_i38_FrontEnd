@@ -10,7 +10,7 @@ import {
 } from "../Styles/StyledCarousel";
 
 const SkillCarousel = ({ skillData }) => {
-  const [activeIndex, setActiveIndex] = useState(1);
+  const [activeIndex, setActiveIndex] = useState(1); //Start at the Middle Carousel Item
 
   const nextSlide = () => {
     activeIndex !== (Object.keys(skillData).length - 1) && setActiveIndex(activeIndex + 1);
@@ -25,14 +25,12 @@ const SkillCarousel = ({ skillData }) => {
       <StyledArrowButtonLeft onClick={prevSlide} />
       <StyledCarouselInnerContainer>
         {Object.keys(skillData).filter((key) => key.startsWith("Level")).map((levelKey, index) => (
-            <StyledCarouselDesc key={levelKey}
-              // @ts-ignore
-              index={index} activeIndex={activeIndex}>
+            <StyledCarouselDesc key={levelKey} index={index} activeIndex={activeIndex}>
               <h4>{skillData[levelKey].title}</h4>
               <StyledDotContainer>
-                
-                <StyledCarouselDot activeIndex={activeIndex} currentIndex={index}/>
-                  
+  
+              <StyledCarouselDot activeIndex={activeIndex} currentIndex={index}/>
+    
               </StyledDotContainer>
               <div>
                 <ul>

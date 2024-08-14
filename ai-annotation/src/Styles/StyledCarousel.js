@@ -22,8 +22,7 @@ const StyledCarouselInnerContainer = styled.div`
 
 const StyledCarouselDesc = styled.div`
     transform: translateX(${({index, activeIndex}) => (index - activeIndex) * 110}%);
-    transition: opacity 0.5s ease;
-    transform: 0.5s ease;
+    transition: 0.5s ease;
     position: absolute;
     width: 100%;
     height: 100%;
