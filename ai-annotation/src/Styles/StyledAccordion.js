@@ -1,6 +1,6 @@
 import { AccordionComponent } from "@syncfusion/ej2-react-navigations";
 import styled from "styled-components";
-import {WHITE, BLACK} from '../constants';
+import {WHITE, BLACK} from '../Constraints/constants';
 
 
 const StyledAccordionComponent = styled(AccordionComponent)`
@@ -9,8 +9,8 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   font-family: "Raleway", sans-serif;
   text-align: center;
   font-weight: 500;
-  width: 35em !important;
-  max-width: 25em;
+  width: 35vw !important;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   row-gap: 25px;

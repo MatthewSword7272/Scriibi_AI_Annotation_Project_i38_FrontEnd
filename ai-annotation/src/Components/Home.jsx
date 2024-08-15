@@ -1,15 +1,17 @@
-import { StyledBodyContainer, StyledSubBodyContainer2 } from "../Styles/StyledBody";
-import * as Constants from "../constants";
+import { StyledBodyContainer, StyledSubBodyContainer1, StyledSubBodyContainer2 } from "../Styles/StyledBody";
+import * as Constants from "../Constraints/constants";
 import { AccordionItemDirective, AccordionItemsDirective,} from "@syncfusion/ej2-react-navigations";
 import { StyledAccordionComponent } from "../Styles/StyledAccordion";
 import { StyledEditButton, StyledEditButtonContainer,StyledEditContainer, StyledEditInnerContainer} from "../Styles/StyledEditContainer";
-import { StyledAccordionContainer, StyledAccordionMissingContainer,} from "../Styles/StyledAccordionContainer";
-import { StyledRadioButtonContainer, StyledRadioButton, StyledSkillButtonContainer, StyledSkillContainer} from "../Styles/StyledRadioButton";
+import { StyledAccordionContainer, StyledAccordionMissingContainer} from "../Styles/StyledAccordionContainer";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
-import { StyledButtonComponent } from "../Styles/StyledButton";
 import TestText from "../testText.json"
+import testSkillsInfo from '../testSkilsInfo'
 import React, { useEffect, useState } from "react";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
+import skillsInterface from "../Interfaces/SkillsInterface";
+import SkillCarousel from "./SkillCarousel";
+import SkillSelector from "./SkillSelector";
 
 function Home() {
 
@@ -30,6 +32,10 @@ function Home() {
   const [text, setText] = useState("");
   const [highlightedWords, setHighlightedWords] = useState([]);
   const [presentingText, setPresentingText] = useState(fetchedText);
+  const [selectedSkill, setSelectedSkill] = useState(0);
+  const [checkedBoxes, setCheckedBoxes] = useState([]);
+
+  const skillData = testSkillsInfo[skillsInterface[selectedSkill]]; //Use Interface to get Skills Level and Description
 
   const saveHighlight = () => {
     const updatedHighlights = [...highlightedWords, text];
@@ -43,6 +49,15 @@ function Home() {
     setText("");
   };
 
+  const nextSkill = () => {
+    const allSkills = Object.keys(testSkillsInfo);
+    setSelectedSkill(selectedSkill + 1);
+
+    if (checkedBoxes.length < allSkills.length) {
+      setCheckedBoxes(prev => [...prev, allSkills[prev.length]]);
+    }
+  } 
+
   const highlightText = (text, highlights) => {
     // Skip existing <mark> tags
     const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
@@ -51,11 +66,11 @@ function Home() {
     );
   };
 
-  const generateRandomColour = () => {
+  const generateRandomColour = () => { //Select colour
     return Math.floor(Math.random() * colours.length);
   }
 
-  const aspContent = () => {
+  const aspContent = () => { //Dummy Data
     return (
       <div>
         Microsoft ASP.NET is a set of technologies in the Microsoft .NET
@@ -65,10 +80,9 @@ function Home() {
   };
 
   useEffect(() => {
-    const handleSelectionChange = (event) => {
+    const handleSelectionChange = () => {
       //Get Highlighted text and save State
-      const activeSelection = document.getSelection();
-      const selectedText = activeSelection.toString();
+      const selectedText = document.getSelection().toString();
       setText(selectedText);
     };
 
@@ -81,28 +95,14 @@ function Home() {
 
   return (
     <StyledBodyContainer>
-      <div>
-        <StyledSkillContainer>
-          <StyledRadioButtonContainer>
-            <StyledRadioButton label="Skill 1" name="skill" />
-            <StyledRadioButton label="Skill 2" name="skill" />
-            <StyledRadioButton label="Skill 3" name="skill" />
-            <StyledRadioButton label="Skill 4" name="skill" />
-            <StyledRadioButton label="Skill 5" name="skill" />
-          </StyledRadioButtonContainer>
-          <StyledSkillButtonContainer>
-            <StyledButtonComponent>Save</StyledButtonComponent>
-          </StyledSkillButtonContainer>
-        </StyledSkillContainer>
-
-       
-          <StyledRichTextEditor value={presentingText}>
-          {/* .body.innerHTML */}
-            <Inject services={[Toolbar, HtmlEditor]}/>
-          </StyledRichTextEditor>
-        
-        
-      </div>
+      <StyledSubBodyContainer1>
+      <SkillSelector skillData={testSkillsInfo} nextSkill={nextSkill} checkedBoxes={checkedBoxes}/>
+        <SkillCarousel skillData={skillData}/>
+        <StyledRichTextEditor value={presentingText}>
+           {/* .body.innerHTML  */}
+          <Inject services={[Toolbar, HtmlEditor]} />
+        </StyledRichTextEditor>
+      </StyledSubBodyContainer1>
       <StyledSubBodyContainer2>
         <StyledAccordionContainer>
           <h2>Notes</h2>
@@ -172,7 +172,7 @@ function Home() {
                 iconCss="e-icons e-edit-2"
               ></StyledEditButton>
             </StyledEditButtonContainer>
-            <StyledEditButtonContainer color={Constants.RED}>
+            <StyledEditButtonContainer color={Constants.ORANGE}>
               <h6>Delete</h6>
               <StyledEditButton
                 // isToggle={true}
@@ -183,7 +183,7 @@ function Home() {
         </StyledEditContainer>
       </StyledSubBodyContainer2>
     </StyledBodyContainer>
-  );
+  )
 }
 
 export default Home;

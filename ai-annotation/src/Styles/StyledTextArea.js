@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { RichTextEditorComponent } from '@syncfusion/ej2-react-richtexteditor';
-import { GREEN } from "../constants";
+import { GREEN } from "../Constraints/constants";
 
 // const StyledTextAreaWrapper = styled.div`
     
@@ -14,9 +14,11 @@ import { GREEN } from "../constants";
 // `
 
 const StyledRichTextEditor = styled(RichTextEditorComponent)`
-    width: 65em !important;
-    height: 40em !important;
     text-align: left;
+
+    div div {
+        height: 30em;
+    }
 `
 
 export {StyledRichTextEditor}
