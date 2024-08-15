@@ -37,16 +37,13 @@ function Home() {
 
   const skillData = testSkillsInfo[skillsInterface[selectedSkill]]; //Use Interface to get Skills Level and Description
 
-  const saveHighlight = () => {
+  const createHighlight = () => {
     const updatedHighlights = [...highlightedWords, text];
     setHighlightedWords(updatedHighlights);
     
     // Update the highlighted text
-    const highlightedText = highlightText(presentingText, updatedHighlights); //.body.innerHTML
-    //Update the presenting text
-    setPresentingText(highlightedText);
-    //Resets the getText back to default
-    setText("");
+    highlightText(updatedHighlights); //.body.innerHTML
+    
   };
 
   const nextSkill = () => {
@@ -58,13 +55,33 @@ function Home() {
     }
   } 
 
-  const highlightText = (text, highlights) => {
+  const highlightText = (highlights) => {
     // Skip existing <mark> tags
     const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
-    return text.replace(regex, (match) => 
-      match.startsWith('<mark') ? match : `<mark style="background-color: ${colours[generateRandomColour()]}">${match}</mark>`
+    const annotatedText = fetchedText.replace(regex, (match) => 
+      match.startsWith('<mark') ? match : `<mark class="highlight" style="background-color: ${colours[generateRandomColour()]}; cursor: pointer;" data-highlight">${match}</mark>`
     );
+
+    //Update the presenting text
+    setPresentingText(annotatedText);
+    //Resets the getText back to default
+    setText("");
   };
+
+  const deleteHighlight = (element) => {
+    if (element && element.parentNode) {
+      const text = element.textContent;
+      const textNode = document.createTextNode(text);
+      element.parentNode.replaceChild(textNode, element);
+
+      setHighlightedWords(prevHighlightedWords => {
+      const newArray = prevHighlightedWords.filter(word => word !== text);
+      highlightText(newArray);
+      return newArray;
+    });
+    }
+    
+  }
 
   const generateRandomColour = () => { //Select colour
     return Math.floor(Math.random() * colours.length);
@@ -81,17 +98,25 @@ function Home() {
 
   useEffect(() => {
     const handleSelectionChange = () => {
-      //Get Highlighted text and save State
+      // Get highlighted text and save state
       const selectedText = document.getSelection().toString();
-      setText(selectedText);
+      setText(selectedText.trim());
     };
-
+  
+    const handleDeleteHighlight = (event) => {
+      if (event.target.matches(".highlight") || event.target.matches("[data-highlight]")) {
+        deleteHighlight(event.target);
+      }
+    };
+  
     document.addEventListener('selectionchange', handleSelectionChange);
-    
+    document.addEventListener("click", handleDeleteHighlight);
+  
     return () => {
       document.removeEventListener('selectionchange', handleSelectionChange);
+      document.removeEventListener("click", handleDeleteHighlight);
     };
-  }, []);
+  }, [deleteHighlight, highlightedWords]);
 
   return (
     <StyledBodyContainer>
@@ -167,7 +192,7 @@ function Home() {
             <StyledEditButtonContainer color={Constants.GREEN}>
               <h6>Add</h6>
               <StyledEditButton
-                onClick={() => text !== "" && saveHighlight()}
+                onClick={() => text !== "" && createHighlight()}
                 // isToggle={true}
                 iconCss="e-icons e-edit-2"
               ></StyledEditButton>
