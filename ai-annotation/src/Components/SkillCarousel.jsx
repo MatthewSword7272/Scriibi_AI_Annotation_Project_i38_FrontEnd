@@ -25,7 +25,7 @@ const SkillCarousel = ({ skillData }) => {
       <StyledArrowButtonLeft onClick={prevSlide} />
       <StyledCarouselInnerContainer>
         {Object.keys(skillData).filter((key) => key.startsWith("Level")).map((levelKey, index) => (
-            <StyledCarouselDesc key={levelKey} index={index} activeIndex={activeIndex}>
+            <StyledCarouselDesc key={index} activeIndex={activeIndex}>
               <h4>{skillData[levelKey].title}</h4>
               <StyledDotContainer>
   

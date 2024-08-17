@@ -1,13 +1,22 @@
-import { StyledBodyContainer, StyledSubBodyContainer1, StyledSubBodyContainer2 } from "../Styles/StyledBody";
+import { 
+  StyledBodyContainer, 
+  StyledSubBodyContainer1, 
+  StyledSubBodyContainer2 
+} from "../Styles/StyledBody";
 import * as Constants from "../Constraints/constants";
 import { AccordionItemDirective, AccordionItemsDirective,} from "@syncfusion/ej2-react-navigations";
 import { StyledAccordionComponent } from "../Styles/StyledAccordion";
-import { StyledEditButton, StyledEditButtonContainer,StyledEditContainer, StyledEditInnerContainer} from "../Styles/StyledEditContainer";
+import { 
+  StyledEditButton, 
+  StyledEditButtonContainer,
+  StyledEditContainer, 
+  StyledEditInnerContainer
+} from "../Styles/StyledEditContainer";
 import { StyledAccordionContainer, StyledAccordionMissingContainer} from "../Styles/StyledAccordionContainer";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import TestText from "../testText.json"
 import testSkillsInfo from '../testSkilsInfo'
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 import skillsInterface from "../Interfaces/SkillsInterface";
 import SkillCarousel from "./SkillCarousel";
@@ -15,13 +24,13 @@ import SkillSelector from "./SkillSelector";
 
 function Home() {
 
-  const colours  = [
+  const colours = useMemo(() => [
     "#B1E1B7",
     "#E5F9B5",
     "#F9ADF5",
     "#B3EEFB",
     "#B5D6D3"
-  ]
+  ], []);
 
   const fetchedText = TestText.test;
   // const parser = new DOMParser();
@@ -34,19 +43,19 @@ function Home() {
   const [presentingText, setPresentingText] = useState(fetchedText);
   const [selectedSkill, setSelectedSkill] = useState(0);
   const [checkedBoxes, setCheckedBoxes] = useState([]);
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
 
   const skillData = testSkillsInfo[skillsInterface[selectedSkill]]; //Use Interface to get Skills Level and Description
 
-  const saveHighlight = () => {
-    const updatedHighlights = [...highlightedWords, text];
-    setHighlightedWords(updatedHighlights);
+  const createHighlight = () => {
+    if (text) {
+      const updatedHighlights = [...highlightedWords, text];
+      setHighlightedWords(updatedHighlights);
     
-    // Update the highlighted text
-    const highlightedText = highlightText(presentingText, updatedHighlights); //.body.innerHTML
-    //Update the presenting text
-    setPresentingText(highlightedText);
-    //Resets the getText back to default
-    setText("");
+      // Update the highlighted text
+      highlightText(updatedHighlights); //.body.innerHTML
+      setText(""); //Resets the getText back to default
+    }
   };
 
   const nextSkill = () => {
@@ -58,17 +67,35 @@ function Home() {
     }
   } 
 
-  const highlightText = (text, highlights) => {
+  const generateRandomColour = useCallback(() => { //Select colour
+    return Math.floor(Math.random() * colours.length);
+  }, [colours.length])
+
+  const highlightText = useCallback((highlights) => {
     // Skip existing <mark> tags
     const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
-    return text.replace(regex, (match) => 
-      match.startsWith('<mark') ? match : `<mark style="background-color: ${colours[generateRandomColour()]}">${match}</mark>`
+    const annotatedText = fetchedText.replace(regex, (match) => 
+      /*match.startsWith('<mark') ? match : */ `<mark class="highlight" style="background-color: ${colours[generateRandomColour()]}; cursor: pointer;" data-highlight">${match}</mark>`
     );
-  };
 
-  const generateRandomColour = () => { //Select colour
-    return Math.floor(Math.random() * colours.length);
-  }
+    //Update the presenting text
+    setPresentingText(annotatedText);
+  }, [colours, fetchedText, generateRandomColour]);
+
+  const deleteHighlight = useCallback((element) => {
+    if (element && element.parentNode) {
+      const textContent = element.textContent;
+      element.parentNode.replaceChild(document.createTextNode(textContent), element);
+
+      setHighlightedWords(prevHighlightedWords => {
+        const newArray = prevHighlightedWords.filter(word => word !== textContent);
+        highlightText(newArray);
+        return newArray;
+      });
+    }
+  }, [highlightText])
+
+  
 
   const aspContent = () => { //Dummy Data
     return (
@@ -81,17 +108,25 @@ function Home() {
 
   useEffect(() => {
     const handleSelectionChange = () => {
-      //Get Highlighted text and save State
+      // Get highlighted text and save state
       const selectedText = document.getSelection().toString();
-      setText(selectedText);
+      setText(selectedText.trim());
     };
-
+  
+    const handleDeleteHighlight = (event) => {
+      if (isDeleteMode && (event.target.matches(".highlight") || event.target.matches("[data-highlight]"))) {
+        deleteHighlight(event.target);
+      }
+    };
+  
     document.addEventListener('selectionchange', handleSelectionChange);
-    
+    document.addEventListener("click", handleDeleteHighlight);
+  
     return () => {
       document.removeEventListener('selectionchange', handleSelectionChange);
+      document.removeEventListener("click", handleDeleteHighlight);
     };
-  }, []);
+  }, [deleteHighlight, isDeleteMode]);
 
   return (
     <StyledBodyContainer>
@@ -167,7 +202,7 @@ function Home() {
             <StyledEditButtonContainer color={Constants.GREEN}>
               <h6>Add</h6>
               <StyledEditButton
-                onClick={() => text !== "" && saveHighlight()}
+                onClick={() => text !== "" && createHighlight()}
                 // isToggle={true}
                 iconCss="e-icons e-edit-2"
               ></StyledEditButton>
@@ -175,8 +210,9 @@ function Home() {
             <StyledEditButtonContainer color={Constants.ORANGE}>
               <h6>Delete</h6>
               <StyledEditButton
-                // isToggle={true}
+                isToggle={true}
                 iconCss="e-icons e-delete-2"
+                onClick={() => setIsDeleteMode(prevState => !prevState)}
               ></StyledEditButton>
             </StyledEditButtonContainer>
           </StyledEditInnerContainer>
