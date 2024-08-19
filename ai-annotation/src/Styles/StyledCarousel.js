@@ -17,7 +17,7 @@ const StyledCarouselInnerContainer = styled.div`
     margin: 20px 0;
     position: relative;
     width: 15vw;
-    height: 22em;
+    height: 45vw;
     
 `
 
@@ -27,14 +27,15 @@ const StyledCarouselDesc = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-    
-    div {
-        text-align: left;
+`
 
-        ul{
-            padding: 0 30px;
-            font-size: 15px;
-        }
+const StyledCarouselDescription = styled.div`
+    text-align: left;
+    min-height: 40%;
+
+    ul {
+        padding: 0 30px;
+        font-size: 15px;
     }
 `
 
@@ -74,4 +75,12 @@ const StyledArrowButtonRight = styled(Arrow_Right)`
     }
 `;
 
-export {StyledCarouselContainer, StyledCarouselDesc, StyledCarouselInnerContainer, StyledCarouselDot, StyledArrowButtonLeft, StyledArrowButtonRight, StyledDotContainer}
+export {
+    StyledCarouselContainer, 
+    StyledCarouselDesc, 
+    StyledCarouselInnerContainer, 
+    StyledCarouselDot, 
+    StyledArrowButtonLeft, 
+    StyledArrowButtonRight, 
+    StyledDotContainer,
+    StyledCarouselDescription}

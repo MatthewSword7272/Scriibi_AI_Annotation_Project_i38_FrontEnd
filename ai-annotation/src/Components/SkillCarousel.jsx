@@ -7,6 +7,7 @@ import {
   StyledCarouselInnerContainer,
   StyledCarouselDot,
   StyledDotContainer,
+  StyledCarouselDescription,
 } from "../Styles/StyledCarousel";
 
 const SkillCarousel = ({ skillData }) => {
@@ -25,20 +26,20 @@ const SkillCarousel = ({ skillData }) => {
       <StyledArrowButtonLeft onClick={prevSlide} />
       <StyledCarouselInnerContainer>
         {Object.keys(skillData).filter((key) => key.startsWith("Level")).map((levelKey, index) => (
-            <StyledCarouselDesc key={index} activeIndex={activeIndex}>
+            <StyledCarouselDesc key={index} index={index} activeIndex={activeIndex}>
               <h4>{skillData[levelKey].title}</h4>
               <StyledDotContainer>
   
-              <StyledCarouselDot activeIndex={activeIndex} currentIndex={index}/>
+                <StyledCarouselDot activeIndex={activeIndex} currentIndex={index}/>
     
               </StyledDotContainer>
-              <div>
+              <StyledCarouselDescription>
                 <ul>
                   {skillData[levelKey].description.map((desc, index) => (
                     <li key={index}>{desc}</li>
                   ))}
                 </ul>
-              </div>
+              </StyledCarouselDescription>
             </StyledCarouselDesc>
           ))}
       </StyledCarouselInnerContainer>
