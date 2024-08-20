@@ -42,6 +42,7 @@ function Home() {
   const [highlightedWords, setHighlightedWords] = useState([]);
   const [presentingText, setPresentingText] = useState(fetchedText);
   const [selectedSkill, setSelectedSkill] = useState(0);
+  const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
 
   const skillData = testSkillsInfo[skillsInterface[selectedSkill]]; //Use Interface to get Skills Level and Description
@@ -114,13 +115,26 @@ function Home() {
         deleteHighlight(event.target);
       }
     };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        if (isAddingMode) {
+          setIsAddingMode(false);
+        }
+        else if (isDeleteMode) {
+          setIsDeleteMode(false);
+        }
+      }
+    }
   
     document.addEventListener('selectionchange', handleSelectionChange);
     document.addEventListener("click", handleDeleteHighlight);
+    document.addEventListener('keydown', handleKeyDown);
   
     return () => {
       document.removeEventListener('selectionchange', handleSelectionChange);
       document.removeEventListener("click", handleDeleteHighlight);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [deleteHighlight, isDeleteMode]);
 
