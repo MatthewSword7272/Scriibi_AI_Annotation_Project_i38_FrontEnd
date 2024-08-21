@@ -17,6 +17,16 @@ const StyledRadioButtonContainer = styled.div`
     justify-content: center;
     column-gap: 10px;
 
+    div label span {
+        text-overflow: ellipsis;
+        white-space: nowrap !important;
+        overflow: hidden;
+
+        @media only screen and (max-width: 1780px){
+            width: 6vw
+        }
+    }
+
     .e-radio:checked + label::after
     {
         background-color: ${GREEN};

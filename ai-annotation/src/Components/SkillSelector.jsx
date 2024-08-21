@@ -24,6 +24,9 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData }) => {
     ))}
     </StyledRadioButtonContainer>
     <StyledSkillButtonContainer>
+      <StyledButtonComponent>Annotate</StyledButtonComponent>
+    </StyledSkillButtonContainer>
+    <StyledSkillButtonContainer>
       <StyledButtonComponent>Save</StyledButtonComponent>
     </StyledSkillButtonContainer>
   </StyledSkillContainer>
