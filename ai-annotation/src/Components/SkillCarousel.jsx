@@ -3,16 +3,17 @@ import {
   StyledArrowButtonLeft,
   StyledArrowButtonRight,
   StyledCarouselContainer,
-  StyledCarouselInnerContainer,
   StyledCarouselDot,
   StyledDotContainer,
   StyledCarouselDescription,
   StyledH4,
   StyledCarouselDescriptionContainer,
-  StyledLevelHeadingContainer,
+  StyledLevelHeadingInnerContainer,
+  StyledLevelHeadingContainer
 } from "../Styles/StyledCarousel";
 
 const SkillCarousel = ({ skillData }) => {
+  const levels = Object.keys(skillData).filter((key) => key.startsWith("Level"));
   const [activeIndex, setActiveIndex] = useState(1); //Start at the Middle Carousel Item
 
   const nextSlide = () => {
@@ -24,24 +25,24 @@ const SkillCarousel = ({ skillData }) => {
     activeIndex !== 0 && setActiveIndex(activeIndex - 1);
   };
 
-  const levels = Object.keys(skillData).filter((key) => key.startsWith("Level"));
 
   return (
     <StyledCarouselContainer>
-      <StyledCarouselInnerContainer>
+        <StyledLevelHeadingContainer>
           <StyledArrowButtonLeft onClick={prevSlide} />
-          <StyledLevelHeadingContainer>
+          <StyledLevelHeadingInnerContainer>
             {levels.map((levelKey, index) => (
               <StyledH4 index={index} activeIndex={activeIndex}>
                 {skillData[levelKey].title}
               </StyledH4>
             ))}
-          </StyledLevelHeadingContainer>
+          </StyledLevelHeadingInnerContainer>
           <StyledArrowButtonRight onClick={nextSlide} />
+          </StyledLevelHeadingContainer>
         
-        <StyledDotContainer>
+        <StyledDotContainer activeIndex={activeIndex} totalItems={levels.length}>
           {levels.map((_, index) => (
-            <StyledCarouselDot activeIndex={activeIndex} currentIndex={index} />
+            <StyledCarouselDot key={index} activeIndex={activeIndex} currentIndex={index} />
           ))}
         </StyledDotContainer>
 
@@ -56,7 +57,6 @@ const SkillCarousel = ({ skillData }) => {
             </StyledCarouselDescription>
           ))}
         </StyledCarouselDescriptionContainer>
-      </StyledCarouselInnerContainer>
     </StyledCarouselContainer>
   );
 };

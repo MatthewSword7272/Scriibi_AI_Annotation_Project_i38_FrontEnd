@@ -10,6 +10,7 @@ const StyledHeader = styled.header`
     justify-content: space-between;
     align-items: center;
     padding: 0 10px;
+    width: 99%;
 `;
 
 const StyledHeaderSection = styled.div`
