@@ -5,8 +5,6 @@ import { GREEN, GREY } from "Constraints/constants";
 
 const StyledCarouselContainer = styled.div`
     display: flex;
-    column-gap: 15px;
-    overflow: hidden;
     width: 100%;
     min-height: 30%;
     justify-content: center;
@@ -18,19 +16,9 @@ const StyledCarouselContainer = styled.div`
 const StyledCarouselInnerContainer = styled.div`
     display: flex;
     margin: 20px 0;
-    position: relative;
     flex-direction: column;
     align-items: center;
     width: 90%;
-    
-`
-
-const StyledCarouselDesc = styled.div`
-    transform: translateX(${({currentIndex, activeIndex}) => (currentIndex - activeIndex) * 110}%);
-    transition: 0.5s ease;
-    position: absolute;
-    width: 100%;
-    height: 100%;
 `
 
 const StyledLevelHeadingContainer = styled.div`
@@ -54,12 +42,11 @@ const StyledH4 = styled.h4`
 `
 
 const StyledCarouselDot = styled.div`
-    margin: auto;
     width: 20px;
     height: 20px;
     background-color: ${({ activeIndex, currentIndex }) => activeIndex === currentIndex ? `${GREEN}` : `${GREY}`};
+    transform: translateX(${({currentIndex, activeIndex}) => (currentIndex - activeIndex) * 110}%);
     border-radius: 50%;
-    transform: translateX(${({activeIndex, currentIndex}) => (currentIndex - activeIndex) * 110}%);
   
 `
 
@@ -68,10 +55,9 @@ const StyledDotContainer = styled.div`
     border-radius: 10px;
     padding: 5px 5%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     width: 100%;
     margin: 10px 0;
-    
 `
 
 const StyledCarouselDescriptionContainer = styled.div`
@@ -80,15 +66,16 @@ const StyledCarouselDescriptionContainer = styled.div`
     overflow: visible;
     height: 300px;
     margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `
 
 const StyledCarouselDescription = styled.div`
-    width: 300px;
+    width: 500px;
     height: 100%;
-    position: absolute;
-    /* width: 30%; */
-    left: ${({currentIndex}) => currentIndex * 20}%;
-    transform: translateX(${({currentIndex, activeIndex}) => (currentIndex - activeIndex) * 100}%);
+    position: relative;
+    transform: translateX(${({currentIndex, activeIndex}) => (currentIndex - activeIndex) * 110}%);
     box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
     transition: 0.5s ease;
     border-radius: 10px;
@@ -120,8 +107,7 @@ const StyledArrowButtonRight = styled(Arrow_Right)`
 `;
 
 export {
-    StyledCarouselContainer, 
-    StyledCarouselDesc, 
+    StyledCarouselContainer,
     StyledCarouselInnerContainer, 
     StyledCarouselDot, 
     StyledArrowButtonLeft, 

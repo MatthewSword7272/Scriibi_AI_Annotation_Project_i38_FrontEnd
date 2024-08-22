@@ -3,7 +3,6 @@ import {
   StyledArrowButtonLeft,
   StyledArrowButtonRight,
   StyledCarouselContainer,
-  StyledCarouselDesc,
   StyledCarouselInnerContainer,
   StyledCarouselDot,
   StyledDotContainer,
@@ -25,14 +24,11 @@ const SkillCarousel = ({ skillData }) => {
     activeIndex !== 0 && setActiveIndex(activeIndex - 1);
   };
 
-  const levels = Object.keys(skillData).filter((key) =>
-    key.startsWith("Level")
-  );
+  const levels = Object.keys(skillData).filter((key) => key.startsWith("Level"));
 
   return (
     <StyledCarouselContainer>
       <StyledCarouselInnerContainer>
-        
           <StyledArrowButtonLeft onClick={prevSlide} />
           <StyledLevelHeadingContainer>
             {levels.map((levelKey, index) => (
@@ -51,10 +47,7 @@ const SkillCarousel = ({ skillData }) => {
 
         <StyledCarouselDescriptionContainer>
           {levels.map((levelKey, index) => (
-            <StyledCarouselDescription
-              activeIndex={activeIndex}
-              currentIndex={index}
-            >
+            <StyledCarouselDescription activeIndex={activeIndex} currentIndex={index}>
               <ul>
                 {skillData[levelKey].description.map((desc, index) => (
                   <li key={index}>{desc}</li>
