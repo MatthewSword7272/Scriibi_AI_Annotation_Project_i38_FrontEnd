@@ -17,7 +17,7 @@ const StyledSubBodyContainer1 = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 60vw;
+    width: 70vw;
 `;
 
 const StyledSubBodyContainer2 = styled.div`

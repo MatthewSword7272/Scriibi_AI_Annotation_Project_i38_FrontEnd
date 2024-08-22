@@ -10,66 +10,110 @@ const StyledCarouselContainer = styled.div`
     width: 100%;
     min-height: 30%;
     justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    margin-bottom: 50px;
 `
 
 const StyledCarouselInnerContainer = styled.div`
     display: flex;
     margin: 20px 0;
     position: relative;
-    width: 15vw;
-    height: 45vw;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
     
 `
 
 const StyledCarouselDesc = styled.div`
-    transform: translateX(${({index, activeIndex}) => (index - activeIndex) * 110}%);
+    transform: translateX(${({currentIndex, activeIndex}) => (currentIndex - activeIndex) * 110}%);
     transition: 0.5s ease;
     position: absolute;
     width: 100%;
     height: 100%;
 `
 
-const StyledCarouselDescription = styled.div`
-    text-align: left;
-    min-height: 40%;
+const StyledLevelHeadingContainer = styled.div`
+    display: flex;
+    width: 100%;
+    position: relative;
+    justify-content: center;
+    height: 45px;
+    align-items: center;
+    overflow: hidden;
+`
 
-    ul {
-        padding: 0 30px;
-        font-size: 15px;
-    }
+
+const StyledH4 = styled.h4`
+    transform: translateX(${({index, activeIndex}) => (index - activeIndex) * 110}%);
+    position: absolute;
+    transition: 0.5s ease;
+    margin: 0;
+    text-align: center;
+    width: 35%;
 `
 
 const StyledCarouselDot = styled.div`
     margin: auto;
-    display: flex;
-    justify-content: space-between;
     width: 20px;
     height: 20px;
     background-color: ${({ activeIndex, currentIndex }) => activeIndex === currentIndex ? `${GREEN}` : `${GREY}`};
     border-radius: 50%;
+    transform: translateX(${({activeIndex, currentIndex}) => (currentIndex - activeIndex) * 110}%);
   
 `
 
 const StyledDotContainer = styled.div`
     box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
     border-radius: 10px;
-    padding: 5px 0;
+    padding: 5px 5%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 10px 0;
+    
+`
+
+const StyledCarouselDescriptionContainer = styled.div`
+    width: 100%;
+    position: relative;
+    overflow: visible;
+    height: 300px;
+    margin-top: 20px;
+`
+
+const StyledCarouselDescription = styled.div`
+    width: 300px;
+    height: 100%;
+    position: absolute;
+    /* width: 30%; */
+    left: ${({currentIndex}) => currentIndex * 20}%;
+    transform: translateX(${({currentIndex, activeIndex}) => (currentIndex - activeIndex) * 100}%);
+    box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
+    transition: 0.5s ease;
+    border-radius: 10px;
+    box-sizing: border-box;
+
+    ul {
+        text-align: left;
+        padding: 10px 30px;
+        font-size: 15px;
+        margin: 0;
+        height: 100%;
+        overflow-y: auto;
+    }
 `
 
 const StyledArrowButtonLeft = styled(Arrow_Left)`
     position: relative;
-    top: 120px;
-    right: 17vw;
-    z-index: 1;
+    
     &:hover {
         cursor: pointer;
     }
 `;
 const StyledArrowButtonRight = styled(Arrow_Right)`
     position: relative;
-    top: 120px;
-    left: 17vw;
-    z-index: 1;
+   
     &:hover {
         cursor: pointer;
     }
@@ -83,4 +127,7 @@ export {
     StyledArrowButtonLeft, 
     StyledArrowButtonRight, 
     StyledDotContainer,
-    StyledCarouselDescription}
+    StyledCarouselDescription,
+    StyledH4,
+    StyledCarouselDescriptionContainer,
+    StyledLevelHeadingContainer}

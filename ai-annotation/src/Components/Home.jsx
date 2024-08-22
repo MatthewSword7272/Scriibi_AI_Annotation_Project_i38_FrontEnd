@@ -136,7 +136,7 @@ function Home() {
       document.removeEventListener("click", handleDeleteHighlight);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [deleteHighlight, isDeleteMode]);
+  }, [deleteHighlight, isAddingMode, isDeleteMode]);
 
   return (
     <StyledBodyContainer>
