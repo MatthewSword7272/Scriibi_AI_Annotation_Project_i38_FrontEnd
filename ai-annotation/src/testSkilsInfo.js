@@ -10,6 +10,9 @@ const testData = {
           "Uses quotes for simple dialogue."
         ]
       },
+      "Level 4.5":{
+        "title": "4.5"
+      },
       "Level 5": {
         "title": "5",
         "description": [
@@ -17,6 +20,9 @@ const testData = {
           "'Mostly' correct comma usage to separate clauses.",
           "Accurate markers enable smooth reading."
         ]
+      },
+      "Level 5.5":{
+        "title": "5.5"
       },
       "Level 6": {
         "title": "6",
@@ -37,6 +43,9 @@ const testData = {
           "Uses four or more precise words or word groups (can be wordplay/phrases to describe action and affect the reader)."
         ]
       },
+      "Level 4.5":{
+        "title": "4.5"
+      },
       "Level 5": {
         "title": "5",
         "description": [
@@ -44,6 +53,9 @@ const testData = {
           "Accurately uses words that have different meanings in different contexts (homonyms).",
           "Developing consistent use of precise words, word groups & discipline-specific terms for greater precision of meaning."
         ]
+      },
+      "Level 5.5":{
+        "title": "5.5"
       },
       "Level 6": {
         "title": "6",
@@ -61,12 +73,18 @@ const testData = {
             "Makes cohesive links throughout text using: Common connectives (also, then, but, and), Referring words/Pronouns (he, this, those), Word associations (Mr Banks/the teacher)"
         ]
       },
+      "Level 4.5":{
+        "title": "4.5"
+      },
       "Level 5": {
         "title": "5",
         "description": [
             "Makes cohesive links throughout using a range of pronouns (she, this, that, those) connectives and synonyms to minimise repetition / improve flow.",
             "For persuasive texts, effectively uses: Compare and contrast (similarly), Elaborate (additionally, also), Conclude (to sum up, in conclusion)",
         ]
+      },
+      "Level 5.5":{
+        "title": "5.5"
       },
       "Level 6": {
         "title": "6",
@@ -85,6 +103,9 @@ const testData = {
             "Attempts to create richer and more specific descriptions using: prepositional (During the storm, we hid.), verb groups/phrases. 'She sang loudly', noun groups/phrases. 'My rusty old bike'"
         ]
       },
+      "Level 4.5":{
+        "title": "4.5"
+      },
       "Level 5": {
         "title": "5",
         "description": [
@@ -93,6 +114,9 @@ const testData = {
             "Understands the difference between main and subordinate clauses.",
             "Requires sustained piece of 200+ words.",  
         ]
+      },
+      "Level 5.5":{
+        "title": "5.5"
       },
       "Level 6": {
         "title": "6",
@@ -110,12 +134,18 @@ const testData = {
             "Important ideas are enriched with 'simple' noun groups, prepositional phrases and show don't tell."
         ]
       },
+      "Level 4.5":{
+        "title": "4.5"
+      },
       "Level 5": {
         "title": "5",
         "description": [
             "Can provide a fuller description of people, places, things and ideas with noun, verb and/or adjective groups/phrases within various text types.",
             "Narrative: a 'suggestion' of an underlying theme."
         ]
+      },
+      "Level 5.5":{
+        "title": "5.5"
       },
       "Level 6": {
         "title": "6",

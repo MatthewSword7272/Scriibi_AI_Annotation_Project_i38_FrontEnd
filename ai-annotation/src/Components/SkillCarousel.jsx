@@ -14,7 +14,7 @@ import {
 
 const SkillCarousel = ({ skillData }) => {
   const levels = Object.keys(skillData).filter((key) => key.startsWith("Level"));
-  const [activeIndex, setActiveIndex] = useState(1); //Start at the Middle Carousel Item
+  const [activeIndex, setActiveIndex] = useState(2); //Start at the Middle Carousel Item
 
   const nextSlide = () => {
     activeIndex !== Object.keys(skillData).length - 1 &&
@@ -47,7 +47,7 @@ const SkillCarousel = ({ skillData }) => {
         </StyledDotContainer>
 
         <StyledCarouselDescriptionContainer>
-          {levels.map((levelKey, index) => (
+          {levels.map((levelKey, index) => skillData[levelKey]?.description && (
             <StyledCarouselDescription activeIndex={activeIndex} currentIndex={index}>
               <ul>
                 {skillData[levelKey].description.map((desc, index) => (

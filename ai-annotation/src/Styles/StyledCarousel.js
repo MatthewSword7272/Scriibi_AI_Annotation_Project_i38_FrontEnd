@@ -19,7 +19,7 @@ const StyledH4 = styled.h4`
     transition: 0.5s ease;
     margin: 0;
     text-align: center;
-    width: 27.5%;
+    width: 18.5%;
 `
 
 const StyledLevelHeadingInnerContainer = styled.div`
@@ -46,7 +46,7 @@ const StyledCarouselDot = styled.div`
 `
 
 const StyledDotContainer = styled.div`
-    box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, .5);
     border-radius: 10px;
     padding: 5px 5%;
     column-gap: 60px;
@@ -68,7 +68,6 @@ const StyledCarouselDescription = styled.div`
     min-width: 40%;
     position: absolute;
     transform: translateX(${({currentIndex, activeIndex}) => (currentIndex - activeIndex) * 105}%);
-    box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
     transition: 0.5s ease;
     border-radius: 10px;
     width: 20vw;
