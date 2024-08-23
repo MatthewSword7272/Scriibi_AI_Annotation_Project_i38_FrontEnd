@@ -4,15 +4,12 @@ import {
   StyledSubBodyContainer2 
 } from "../Styles/StyledBody";
 import * as Constants from "../Constraints/constants";
-import { AccordionItemDirective, AccordionItemsDirective,} from "@syncfusion/ej2-react-navigations";
-import { StyledAccordionComponent } from "../Styles/StyledAccordion";
 import { 
   StyledEditButton, 
   StyledEditButtonContainer,
   StyledEditContainer, 
   StyledEditInnerContainer
 } from "../Styles/StyledEditContainer";
-import { StyledAccordionContainer, StyledAccordionMissingContainer} from "../Styles/StyledAccordionContainer";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import TestText from "../testText.json"
 import testSkillsInfo from '../testSkilsInfo'
@@ -22,24 +19,11 @@ import skillsInterface from "../Interfaces/SkillsInterface";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import { COLOURS } from "Constraints/colours";
+import AccordionContainer from "./AccordionContainer";
 
-function Home() {
-
-  const colours = shuffleArray(COLOURS);
-
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
+const Home = () => {
 
   const fetchedText = TestText.test;
-  // const parser = new DOMParser();
-  // const startingText =  parser.parseFromString(fetchedText, "text/html")
-
-  //So far it only adds marks to strings. We need to further develop this.
 
   const [text, setText] = useState("");
   const [highlightedWords, setHighlightedWords] = useState([]);
@@ -47,6 +31,21 @@ function Home() {
   const [selectedSkill, setSelectedSkill] = useState(0);
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
+
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  const colours = shuffleArray(COLOURS);
+
+  // const parser = new DOMParser();
+  // const startingText =  parser.parseFromString(fetchedText, "text/html")
+
+  //So far it only adds marks to strings. We need to further develop this.
 
   const skillData = testSkillsInfo[skillsInterface[selectedSkill]]; //Use Interface to get Skills Level and Description
 
@@ -97,16 +96,6 @@ function Home() {
     }
   }, [highlightText])
 
-  
-
-  const aspContent = () => { //Dummy Data
-    return (
-      <div>
-        Microsoft ASP.NET is a set of technologies in the Microsoft .NET
-        Framework for building Web applications and XML Web services.
-      </div>
-    );
-  };
 
   useEffect(() => {
     const handleSelectionChange = () => {
@@ -154,63 +143,7 @@ function Home() {
         </StyledRichTextEditor>
       </StyledSubBodyContainer1>
       <StyledSubBodyContainer2>
-        <StyledAccordionContainer>
-          <h2>Notes</h2>
-          <StyledAccordionComponent expandMode="Multiple" color={Constants.CAM}>
-            <AccordionItemsDirective>
-              <AccordionItemDirective
-                expanded={false}
-                header="ASP.NET"
-                content={aspContent}
-              />
-              <AccordionItemDirective
-                expanded={false}
-                header="ASP.NET2"
-                content={aspContent}
-              />
-            </AccordionItemsDirective>
-          </StyledAccordionComponent>
-        </StyledAccordionContainer>
-
-        <StyledAccordionContainer>
-          <h2>Annotation</h2>
-          <StyledAccordionComponent expandMode="Multiple" color={Constants.CAM}>
-            <AccordionItemsDirective>
-              <AccordionItemDirective
-                expanded={false}
-                header="ASP.NET"
-                content={aspContent}
-              />
-              <AccordionItemDirective
-                expanded={false}
-                header="ASP.NET2"
-                content={aspContent}
-              />
-            </AccordionItemsDirective>
-          </StyledAccordionComponent>
-          <StyledAccordionMissingContainer>
-            <h3>Missing</h3>
-
-            <StyledAccordionComponent
-              expandMode="Multiple"
-              color={Constants.CAM}
-            >
-              <AccordionItemsDirective>
-                <AccordionItemDirective
-                  expanded={false}
-                  header="ASP.NET3"
-                  content={aspContent}
-                />
-                <AccordionItemDirective
-                  expanded={false}
-                  header="ASP.NET4"
-                  content={aspContent}
-                />
-              </AccordionItemsDirective>
-            </StyledAccordionComponent>
-          </StyledAccordionMissingContainer>
-        </StyledAccordionContainer>
-
+        <AccordionContainer/>
         <StyledEditContainer>
           <h2>Edit</h2>
           <StyledEditInnerContainer>
