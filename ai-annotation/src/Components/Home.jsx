@@ -16,21 +16,24 @@ import { StyledAccordionContainer, StyledAccordionMissingContainer} from "../Sty
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import TestText from "../testText.json"
 import testSkillsInfo from '../testSkilsInfo'
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 import skillsInterface from "../Interfaces/SkillsInterface";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
+import { COLOURS } from "Constraints/colours";
 
 function Home() {
 
-  const colours = useMemo(() => [
-    "#B1E1B7",
-    "#E5F9B5",
-    "#F9ADF5",
-    "#B3EEFB",
-    "#B5D6D3"
-  ], []);
+  const colours = shuffleArray(COLOURS);
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 
   const fetchedText = TestText.test;
   // const parser = new DOMParser();
@@ -64,20 +67,22 @@ function Home() {
   };
 
 
-  const generateRandomColour = useCallback(() => { //Select colour
-    return Math.floor(Math.random() * colours.length);
-  }, [colours.length])
+  // const generateRandomColour = useCallback(() => { //Select colour
+  //   return Math.floor(Math.random() * colours.length);
+  // }, [colours.length])
 
   const highlightText = useCallback((highlights) => {
-    // Skip existing <mark> tags
+    let index = 0;
     const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
-    const annotatedText = fetchedText.replace(regex, (match) => 
-      /*match.startsWith('<mark') ? match : */ `<mark class="highlight" style="background-color: ${colours[generateRandomColour()]}; cursor: pointer;" data-highlight">${match}</mark>`
-    );
+    const annotatedText = fetchedText.replace(regex, (match) => {
+      const color = colours[index % colours.length];
+      index++;
+      return `<mark class="highlight" style="background-color: ${color}; cursor: pointer;" data-highlight">${match}</mark>`
+    });
 
     //Update the presenting text
     setPresentingText(annotatedText);
-  }, [colours, fetchedText, generateRandomColour]);
+  }, [colours, fetchedText]);
 
   const deleteHighlight = useCallback((element) => {
     if (element && element.parentNode) {
@@ -212,7 +217,7 @@ function Home() {
             <StyledEditButtonContainer color={Constants.GREEN}>
               <h6>Add</h6>
               <StyledEditButton
-                onClick={() => text !== "" && createHighlight()}
+                onClick={() => (text !== "" && !isDeleteMode) && createHighlight()}
                 // isToggle={true}
                 iconCss="e-icons e-edit-2"
               ></StyledEditButton>
@@ -222,7 +227,7 @@ function Home() {
               <StyledEditButton
                 isToggle={true}
                 iconCss="e-icons e-delete-2"
-                onClick={() => setIsDeleteMode(prevState => !prevState)}
+                onClick={() => !isAddingMode && setIsDeleteMode(prevState => !prevState)}
               ></StyledEditButton>
             </StyledEditButtonContainer>
           </StyledEditInnerContainer>
