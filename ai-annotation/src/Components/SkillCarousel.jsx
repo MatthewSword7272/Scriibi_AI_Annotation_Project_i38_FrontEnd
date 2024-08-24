@@ -3,61 +3,77 @@ import {
   StyledArrowButtonLeft,
   StyledArrowButtonRight,
   StyledCarouselContainer,
-  StyledCarouselDot,
-  StyledDotContainer,
   StyledCarouselDescription,
+  StyledCarouselDot,
+  StyledCarouselGrid,
+  StyledCarouselInnerContainer,
+  StyledCarouselRow,
+  StyledDotContainer,
   StyledH4,
-  StyledCarouselDescriptionContainer,
-  StyledLevelHeadingInnerContainer,
-  StyledLevelHeadingContainer
 } from "../Styles/StyledCarousel";
 
 const SkillCarousel = ({ skillData }) => {
   const levels = Object.keys(skillData).filter((key) => key.startsWith("Level"));
-  const [activeIndex, setActiveIndex] = useState(2); //Start at the Middle Carousel Item
+  const [selectedLevel, setSelectedLevel] = useState(null); 
+  const [gridCentre, setGridCentre] = useState(0); //Start at the Middle Carousel Item
 
   const nextSlide = () => {
-    activeIndex !== Object.keys(skillData).length - 1 &&
-      setActiveIndex(activeIndex + 1);
+    setGridCentre((prevIndex) => 
+      prevIndex < levels.length - 1 ? prevIndex + 1 : prevIndex
+    );
   };
 
   const prevSlide = () => {
-    activeIndex !== 0 && setActiveIndex(activeIndex - 1);
+    setGridCentre((prevIndex) => 
+      prevIndex > 0 ? prevIndex - 1 : prevIndex
+    );
   };
+
+  const chooseLevel = (index) => {
+    setSelectedLevel(index);
+  }
 
 
   return (
     <StyledCarouselContainer>
-        <StyledLevelHeadingContainer>
-          <StyledArrowButtonLeft onClick={prevSlide} />
-          <StyledLevelHeadingInnerContainer>
+    <StyledArrowButtonLeft onClick={prevSlide} />
+    <StyledCarouselInnerContainer gridCentre={gridCentre}>
+      <StyledCarouselGrid>
+        <StyledCarouselRow>
+          
             {levels.map((levelKey, index) => (
-              <StyledH4 index={index} activeIndex={activeIndex}>
-                {skillData[levelKey].title}
-              </StyledH4>
+              <StyledH4 key={index}>{skillData[levelKey].title}</StyledH4>
             ))}
-          </StyledLevelHeadingInnerContainer>
-          <StyledArrowButtonRight onClick={nextSlide} />
-          </StyledLevelHeadingContainer>
-        
-        <StyledDotContainer activeIndex={activeIndex} totalItems={levels.length}>
-          {levels.map((_, index) => (
-            <StyledCarouselDot key={index} activeIndex={activeIndex} currentIndex={index} />
+            
+        </StyledCarouselRow>
+        <StyledCarouselRow>
+          <StyledDotContainer>
+            {levels.map((_, index) => (
+              <StyledCarouselDot 
+                key={index}
+                isActive={index === selectedLevel}
+                onClick={() => chooseLevel(index)}
+              />
+            ))}
+          </StyledDotContainer>
+        </StyledCarouselRow>
+        <StyledCarouselRow>
+          {levels.map((levelKey, index) => (
+            index % 2 === 0 && (
+              <StyledCarouselDescription key={index}>
+                <ul>
+                  {skillData[levelKey].description.map((desc, descIndex) => (
+                    <li key={descIndex}>{desc}</li>
+                  ))}
+                </ul>
+              </StyledCarouselDescription>
+            )
           ))}
-        </StyledDotContainer>
-
-        <StyledCarouselDescriptionContainer>
-          {levels.map((levelKey, index) => skillData[levelKey]?.description && (
-            <StyledCarouselDescription activeIndex={activeIndex} currentIndex={index}>
-              <ul>
-                {skillData[levelKey].description.map((desc, index) => (
-                  <li key={index}>{desc}</li>
-                ))}
-              </ul>
-            </StyledCarouselDescription>
-          ))}
-        </StyledCarouselDescriptionContainer>
-    </StyledCarouselContainer>
+        </StyledCarouselRow>
+      </StyledCarouselGrid>
+    </StyledCarouselInnerContainer>
+    <StyledArrowButtonRight onClick={nextSlide} />
+  </StyledCarouselContainer>
   );
 };
 
