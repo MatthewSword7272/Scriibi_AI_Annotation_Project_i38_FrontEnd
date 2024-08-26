@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   StyledArrowButtonLeft,
   StyledArrowButtonRight,
+  StyledArrowContainer,
   StyledCarouselContainer,
   StyledCarouselDescription,
   StyledCarouselDot,
@@ -17,15 +18,15 @@ const SkillCarousel = ({ skillData }) => {
   const [selectedLevel, setSelectedLevel] = useState(null); 
   const [gridCentre, setGridCentre] = useState(0); //Start at the Middle Carousel Item
 
-  const nextSlide = () => {
+  const moveLeft = () => {
     setGridCentre((prevIndex) => 
-      prevIndex < levels.length - 1 ? prevIndex + 1 : prevIndex
+      prevIndex < Math.round(levels.length / 2) ? prevIndex + 1 : prevIndex
     );
   };
 
-  const prevSlide = () => {
+  const moveRight = () => {
     setGridCentre((prevIndex) => 
-      prevIndex > 0 ? prevIndex - 1 : prevIndex
+      prevIndex > -Math.round(levels.length / 2) ? prevIndex - 1 : prevIndex
     );
   };
 
@@ -36,15 +37,16 @@ const SkillCarousel = ({ skillData }) => {
 
   return (
     <StyledCarouselContainer>
-    <StyledArrowButtonLeft onClick={prevSlide} />
+      <StyledArrowContainer>
+        <StyledArrowButtonLeft onClick={moveLeft} />
+        <StyledArrowButtonRight onClick={moveRight} />
+      </StyledArrowContainer>
     <StyledCarouselInnerContainer gridCentre={gridCentre}>
       <StyledCarouselGrid>
         <StyledCarouselRow>
-          
-            {levels.map((levelKey, index) => (
-              <StyledH4 key={index}>{skillData[levelKey].title}</StyledH4>
-            ))}
-            
+          {levels.map((levelKey, index) => (
+            <StyledH4 key={index}>{skillData[levelKey].title}</StyledH4>
+          ))}
         </StyledCarouselRow>
         <StyledCarouselRow>
           <StyledDotContainer>
@@ -72,7 +74,6 @@ const SkillCarousel = ({ skillData }) => {
         </StyledCarouselRow>
       </StyledCarouselGrid>
     </StyledCarouselInnerContainer>
-    <StyledArrowButtonRight onClick={nextSlide} />
   </StyledCarouselContainer>
   );
 };

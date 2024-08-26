@@ -13,7 +13,7 @@ const StyledCarouselContainer = styled.div`
 
 const StyledCarouselInnerContainer = styled.div`
   transition: transform 0.5s ease;
-  transform: translateX(${({gridCentre}) => -gridCentre * 120}px);
+  transform: translateX(${({gridCentre}) => -gridCentre * 150}px);
   width: 95%;
 `;
 
@@ -30,15 +30,13 @@ const StyledCarouselRow = styled.div`
 
   &:nth-child(1) {
     margin-bottom: 20px;
-    justify-content: center;
-    column-gap: 54px;
   }
 `;
 
 const StyledH4 = styled.h4`
   margin: 0;
   text-align: center;
-  width: 120px;
+  width: 20px;
   flex-shrink: 0;
 `;
 
@@ -46,10 +44,11 @@ const StyledDotContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center; 
-  width: 95%;
+  width: 90%;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, .5);
   border-radius: 10px;
   padding: 3px 0;
+  column-gap: 3vw;
 `;
 
 const StyledCarouselDot = styled.div`
@@ -69,13 +68,21 @@ const StyledCarouselDot = styled.div`
 const StyledCarouselDescription = styled.div`
   width: 240px;
   flex-shrink: 0;
+  font-size: 14px;
 
   ul {
     padding: 0 20px;
-    font-size: 12px;
     max-height: 200px;
     overflow-y: auto;
   }
+`;
+
+const StyledArrowContainer = styled.div`
+  position: absolute;
+  top: 12em;
+  display: flex;
+  justify-content: space-between;
+  column-gap: 55vw;
 `;
 
 const StyledArrowButtonLeft = styled(Arrow_Left)`
@@ -91,20 +98,6 @@ const StyledArrowButtonRight = styled(Arrow_Right)`
 `;
 
 
-// const StyledLevelHeadingContainer = styled.div`
-//     display: flex;
-//     align-items: center;
-//     width: 100%;
-// `
-
-// const StyledCarouselDescriptionContainer = styled.div`
-//     position: relative;
-//     width: 75%;
-//     height: 300px;
-// `
-
-
-
 export {
     StyledCarouselContainer,
     StyledCarouselDot, 
@@ -115,5 +108,6 @@ export {
     StyledCarouselInnerContainer,
     StyledCarouselGrid,
     StyledCarouselDescription,
-    StyledCarouselRow
+    StyledCarouselRow,
+    StyledArrowContainer
 }
