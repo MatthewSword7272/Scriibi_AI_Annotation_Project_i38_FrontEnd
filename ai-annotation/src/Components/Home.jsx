@@ -42,7 +42,7 @@ function Home() {
   const [highlightedWords, setHighlightedWords] = useState([]);
   const [presentingText, setPresentingText] = useState(fetchedText);
   const [selectedSkill, setSelectedSkill] = useState(0);
-  const [checkedBoxes, setCheckedBoxes] = useState([]);
+  const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
 
   const skillData = testSkillsInfo[skillsInterface[selectedSkill]]; //Use Interface to get Skills Level and Description
@@ -58,14 +58,11 @@ function Home() {
     }
   };
 
-  const nextSkill = () => {
-    const allSkills = Object.keys(testSkillsInfo);
-    setSelectedSkill(selectedSkill + 1);
+  const handleSkillChange = (event) => {
+    var skill = parseInt(event.target.value)
+    setSelectedSkill(skill);
+  };
 
-    if (checkedBoxes.length < allSkills.length) {
-      setCheckedBoxes(prev => [...prev, allSkills[prev.length]]);
-    }
-  } 
 
   const generateRandomColour = useCallback(() => { //Select colour
     return Math.floor(Math.random() * colours.length);
@@ -118,20 +115,33 @@ function Home() {
         deleteHighlight(event.target);
       }
     };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        if (isAddingMode) {
+          setIsAddingMode(false);
+        }
+        else if (isDeleteMode) {
+          setIsDeleteMode(false);
+        }
+      }
+    }
   
     document.addEventListener('selectionchange', handleSelectionChange);
     document.addEventListener("click", handleDeleteHighlight);
+    document.addEventListener('keydown', handleKeyDown);
   
     return () => {
       document.removeEventListener('selectionchange', handleSelectionChange);
       document.removeEventListener("click", handleDeleteHighlight);
+      document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [deleteHighlight, isDeleteMode]);
+  }, [deleteHighlight, isAddingMode, isDeleteMode]);
 
   return (
     <StyledBodyContainer>
       <StyledSubBodyContainer1>
-      <SkillSelector skillData={testSkillsInfo} nextSkill={nextSkill} checkedBoxes={checkedBoxes}/>
+      <SkillSelector handleSkillChange={handleSkillChange} selectedSkill={selectedSkill} skillData={testSkillsInfo}/>
         <SkillCarousel skillData={skillData}/>
         <StyledRichTextEditor value={presentingText}>
            {/* .body.innerHTML  */}

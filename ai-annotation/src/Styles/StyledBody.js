@@ -18,6 +18,7 @@ const StyledSubBodyContainer1 = styled.div`
     flex-direction: column;
     align-items: center;
     width: 60vw;
+    overflow-y: hidden;
 `;
 
 const StyledSubBodyContainer2 = styled.div`

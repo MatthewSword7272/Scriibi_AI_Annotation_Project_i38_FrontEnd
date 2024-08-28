@@ -4,74 +4,116 @@ import {ReactComponent as Arrow_Right} from '../Assets/Arrow_Right.svg';
 import { GREEN, GREY } from "Constraints/constants";
 
 const StyledCarouselContainer = styled.div`
-    display: flex;
-    column-gap: 15px;
-    overflow: hidden;
-    width: 100%;
-    min-height: 30%;
-    justify-content: center;
-`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 20px 0;
+`;
 
 const StyledCarouselInnerContainer = styled.div`
-    display: flex;
-    margin: 20px 0;
-    position: relative;
-    width: 15vw;
-    height: 22em;
-    
-`
+  transition: transform 0.5s ease;
+  transform: translateX(${({gridCentre}) => -gridCentre * 150}px);
+  width: 95%;
+`;
 
-const StyledCarouselDesc = styled.div`
-    transform: translateX(${({index, activeIndex}) => (index - activeIndex) * 110}%);
-    transition: 0.5s ease;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    
-    div {
-        text-align: left;
+const StyledCarouselGrid = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
-        ul{
-            padding: 0 30px;
-            font-size: 15px;
-        }
-    }
-`
+const StyledCarouselRow = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-bottom: 15px;
 
-const StyledCarouselDot = styled.div`
-    margin: auto;
-    display: flex;
+  &:nth-child(1) {
+    margin-bottom: 20px;
+    column-gap: 5%;
+  }
+
+  &:nth-child(3) {
     justify-content: space-between;
-    width: 20px;
-    height: 20px;
-    background-color: ${({ activeIndex, currentIndex }) => activeIndex === currentIndex ? `${GREEN}` : `${GREY}`};
-    border-radius: 50%;
-  
-`
+    align-items: flex-start;
+  }
+`;
+
+const StyledH4 = styled.h4`
+  margin: 0;
+  text-align: center;
+  width: 20px;
+  flex-shrink: 0;
+`;
 
 const StyledDotContainer = styled.div`
-    box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
-    border-radius: 10px;
-    padding: 5px 0;
-`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center; 
+  width: 100%;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, .5);
+  border-radius: 10px;
+  padding: 3px 0;
+  column-gap: 3vw;
+`;
+
+const StyledCarouselDot = styled.div`
+  width: 20px;
+  height: 20px;
+  background-color: ${({ isActive }) => isActive ? GREEN : GREY};
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+  }
+`;
+
+const StyledCarouselDescription = styled.div`
+  width: 300px;
+  flex-shrink: 0;
+  font-size: 15px;
+
+  ul {
+    padding: 0 20px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+`;
+
+const StyledArrowContainer = styled.div`
+  position: absolute;
+  top: 12em;
+  display: flex;
+  justify-content: space-between;
+  column-gap: 55vw;
+`;
 
 const StyledArrowButtonLeft = styled(Arrow_Left)`
-    position: relative;
-    top: 120px;
-    right: 17vw;
-    z-index: 1;
-    &:hover {
-        cursor: pointer;
-    }
-`;
-const StyledArrowButtonRight = styled(Arrow_Right)`
-    position: relative;
-    top: 120px;
-    left: 17vw;
-    z-index: 1;
-    &:hover {
-        cursor: pointer;
-    }
+  width: 20px;
+  cursor: pointer;
+  z-index: 2;
 `;
 
-export {StyledCarouselContainer, StyledCarouselDesc, StyledCarouselInnerContainer, StyledCarouselDot, StyledArrowButtonLeft, StyledArrowButtonRight, StyledDotContainer}
+const StyledArrowButtonRight = styled(Arrow_Right)`
+  width: 20px;
+  cursor: pointer;
+  z-index: 2;
+`;
+
+
+export {
+    StyledCarouselContainer,
+    StyledCarouselDot, 
+    StyledArrowButtonLeft, 
+    StyledArrowButtonRight, 
+    StyledDotContainer,
+    StyledH4,
+    StyledCarouselInnerContainer,
+    StyledCarouselGrid,
+    StyledCarouselDescription,
+    StyledCarouselRow,
+    StyledArrowContainer
+}

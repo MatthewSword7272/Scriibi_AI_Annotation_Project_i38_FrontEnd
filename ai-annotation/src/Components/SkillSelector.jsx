@@ -1,28 +1,33 @@
 import React from "react";
 import { StyledButtonComponent } from "Styles/StyledButton";
 import {
-  StyledCheckBox,
-  StyledCheckBoxContainer,
+  StyledRadioButton,
+  StyledRadioButtonContainer,
   StyledSkillButtonContainer,
   StyledSkillContainer,
-} from "Styles/StyledCheckBox";
+} from "Styles/StyledRadioButton";
 
-const SkillSelector = ({ skillData, nextSkill, checkedBoxes }) => {
+const SkillSelector = ({ handleSkillChange, selectedSkill, skillData }) => {
 
   return (
     <StyledSkillContainer>
-    <StyledCheckBoxContainer>
+    <StyledRadioButtonContainer>
     {Object.keys(skillData).map((skillName, index) => (
-       <StyledCheckBox
+       <StyledRadioButton
         label={skillName}
         key={index}
-        value={skillName}
-        checked={checkedBoxes.includes(skillName)}
+        name="skill"
+        value={index.toString()}
+        checked={selectedSkill === index}
+        onChange={handleSkillChange}
      />
     ))}
-    </StyledCheckBoxContainer>
+    </StyledRadioButtonContainer>
     <StyledSkillButtonContainer>
-      <StyledButtonComponent onClick={nextSkill}>Save</StyledButtonComponent>
+      <StyledButtonComponent>Annotate</StyledButtonComponent>
+    </StyledSkillButtonContainer>
+    <StyledSkillButtonContainer>
+      <StyledButtonComponent>Save</StyledButtonComponent>
     </StyledSkillButtonContainer>
   </StyledSkillContainer>
   );
