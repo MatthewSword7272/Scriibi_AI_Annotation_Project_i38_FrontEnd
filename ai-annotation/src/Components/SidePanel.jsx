@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2-react-navigations";
 import * as Constants from "../Constraints/constants";
 import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
@@ -6,23 +6,39 @@ import { StyledAccordionComponent } from 'Styles/StyledAccordion';
 import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
 import { StyledDialog } from 'Styles/StyledDialog';
 import { StyledEditContainer, StyledEditInnerContainer, StyledEditButtonContainer, StyledEditButton } from 'Styles/StyledEditContainer';
+import { StyledNotesButtonComponent } from 'Styles/StyledButton';
 
 const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, setIsDeleteMode,aspContent}) => {
-  const [visibility, setDialogVisibility] = useState(true);
+  const [visibility, setDialogVisibility] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogText, setDialogTest] = useState("");
 
   const dialogClose = () => setDialogVisibility(false);
   const dialogOpen = () => setDialogVisibility(true);
 
-  const position = { X: 'center', Y: 160 };
+  // const position = { X: 'center', Y: 160 };
 
   const onBeforeOpen = (args) => {
     args.maxHeight = '800px';
   };
 
+  let testString = "Microsoft ASP.NET is a set of technologies in the Microsoft .NET Framework for building Web applications and XML Web services.";
+
+  const showDialog = useCallback((title, text) => {
+    setDialogTitle(title);
+    setDialogTest(text);
+    setDialogVisibility(true);
+  }, [])
+
+  const handleDialogClick = useCallback(() => {
+    showDialog("ASP.NET", testString);
+  }, [showDialog, testString]);
+
   return (
     <StyledSubBodyContainer2 id="target">
       <StyledDialog
-        header="Resize Me!!!"
+        header={dialogTitle}
+        content={dialogText}
         showCloseIcon={true}
         visible={visibility}
         width="400px"
@@ -31,29 +47,12 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, setIsDel
         resizeHandles={["All"]}
         open={dialogOpen}
         close={dialogClose}
-        position={position}
         beforeOpen={onBeforeOpen}
-      >
-        This is a dialog with resizable support.
-      </StyledDialog>
+      />
       <StyledAccordionContainer>
         <h2>Notes</h2>
-        <StyledAccordionComponent expandMode="Multiple" color={Constants.CAM}>
-          <AccordionItemsDirective>
-            <AccordionItemDirective
-              expanded={false}
-              header="ASP.NET"
-              content={aspContent}
-            />
-            <AccordionItemDirective
-              expanded={false}
-              header="ASP.NET2"
-              content={aspContent}
-            />
-          </AccordionItemsDirective>
-        </StyledAccordionComponent>
+        <StyledNotesButtonComponent color={Constants.CAM} onClick={handleDialogClick}>ASP.NET</StyledNotesButtonComponent>
       </StyledAccordionContainer>
-
       <StyledAccordionContainer>
         <h2>Annotation</h2>
         <StyledAccordionComponent expandMode="Multiple" color={Constants.CAM}>
