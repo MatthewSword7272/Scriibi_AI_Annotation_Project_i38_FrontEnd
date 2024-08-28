@@ -30,6 +30,12 @@ const StyledCarouselRow = styled.div`
 
   &:nth-child(1) {
     margin-bottom: 20px;
+    column-gap: 5%;
+  }
+
+  &:nth-child(3) {
+    justify-content: space-between;
+    align-items: flex-start;
   }
 `;
 
@@ -44,7 +50,7 @@ const StyledDotContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center; 
-  width: 90%;
+  width: 100%;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, .5);
   border-radius: 10px;
   padding: 3px 0;
@@ -66,9 +72,9 @@ const StyledCarouselDot = styled.div`
 `;
 
 const StyledCarouselDescription = styled.div`
-  width: 240px;
+  width: 300px;
   flex-shrink: 0;
-  font-size: 14px;
+  font-size: 15px;
 
   ul {
     padding: 0 20px;
