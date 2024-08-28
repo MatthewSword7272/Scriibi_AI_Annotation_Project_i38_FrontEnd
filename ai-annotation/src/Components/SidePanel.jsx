@@ -6,7 +6,7 @@ import { StyledAccordionComponent } from 'Styles/StyledAccordion';
 import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
 import { StyledDialog } from 'Styles/StyledDialog';
 import { StyledEditContainer, StyledEditInnerContainer, StyledEditButtonContainer, StyledEditButton } from 'Styles/StyledEditContainer';
-import { StyledNotesButtonComponent } from 'Styles/StyledButton';
+import { StyledNotesButton } from 'Styles/StyledButton';
 
 const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, setIsDeleteMode,aspContent}) => {
   const [visibility, setDialogVisibility] = useState(false);
@@ -14,9 +14,9 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, setIsDel
   const [dialogText, setDialogTest] = useState("");
 
   const dialogClose = () => setDialogVisibility(false);
-  const dialogOpen = () => setDialogVisibility(true);
+  // const dialogOpen = () => setDialogVisibility(true);
 
-  // const position = { X: 'center', Y: 160 };
+  const position = { X: 'center', Y: 160 };
 
   const onBeforeOpen = (args) => {
     args.maxHeight = '800px';
@@ -45,13 +45,14 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, setIsDel
         height="750px"
         target="#target"
         resizeHandles={["All"]}
-        open={dialogOpen}
+        isModal={true}
         close={dialogClose}
         beforeOpen={onBeforeOpen}
+        position={position}
       />
       <StyledAccordionContainer>
         <h2>Notes</h2>
-        <StyledNotesButtonComponent color={Constants.CAM} onClick={handleDialogClick}>ASP.NET</StyledNotesButtonComponent>
+        <StyledNotesButton color={Constants.CAM} onClick={handleDialogClick}>ASP.NET</StyledNotesButton>
       </StyledAccordionContainer>
       <StyledAccordionContainer>
         <h2>Annotation</h2>

@@ -3,10 +3,10 @@ import {
   StyledSubBodyContainer1,
 } from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
-import TestText from "../testText.json";
-import testSkillsInfo from "../testSkilsInfo";
+import TestText from "../testText.json"
+import testSkillsInfo from '../testSkilsInfo'
 import React, { useCallback, useEffect, useState } from "react";
-import { HtmlEditor, Inject, Toolbar,} from "@syncfusion/ej2-react-richtexteditor";
+import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 import skillsInterface from "../Interfaces/SkillsInterface";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";

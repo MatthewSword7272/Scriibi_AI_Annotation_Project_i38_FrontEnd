@@ -17,7 +17,7 @@ const StyledSubBodyContainer1 = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 60vw;
+    width: 65vw;
     overflow-y: hidden;
 `;
 

@@ -8,27 +8,28 @@ const StyledButtonComponent = styled(ButtonComponent)`
     padding: 15px 40px;
     color: ${WHITE};
     text-transform: capitalize;
+    font-family: "Raleway", sans-serif;
+    font-weight: 700;
     transition: 0.3s ease;
 
     &:hover {
-        background-color: #006400;
-        color: white;
+        background-color: ${GREEN};
+        color: ${WHITE};
     }
 `
 
-const StyledNotesButtonComponent = styled(StyledButtonComponent)`
-    background-color: ${({ color }) => color};
-    box-shadow: none;
-    width: 100%;
+const StyledNotesButton = styled(StyledButtonComponent)`
     border-radius: 20px;
-    padding: 10px 20px;
+    width: 95%;
+    background-color: ${({ color }) => color};
+    font-size: 15px;
+    padding: 10px 15px;
     color: ${BLACK};
-    font-size: 16px;
 
     &:hover {
         background-color: ${({ color }) => color};
-        color: ${BLACK};
+        color: revert;
     }
-`
+`;
 
-export {StyledButtonComponent, StyledNotesButtonComponent}
+export {StyledButtonComponent, StyledNotesButton}
