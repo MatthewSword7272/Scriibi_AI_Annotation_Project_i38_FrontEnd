@@ -6,7 +6,6 @@ import {WHITE, BLACK} from '../Constraints/constants';
 const StyledAccordionComponent = styled(AccordionComponent)`
   background-color: transparent;
   border: transparent;
-  font-family: "Raleway", sans-serif;
   text-align: center;
   font-weight: 500;
   width: 35vw !important;

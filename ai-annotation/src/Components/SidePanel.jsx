@@ -11,12 +11,12 @@ import { StyledNotesButton } from 'Styles/StyledButton';
 const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, setIsDeleteMode,aspContent}) => {
   const [visibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
-  const [dialogText, setDialogTest] = useState("");
+  const [dialogText, setDialogText] = useState("");
 
   const dialogClose = () => setDialogVisibility(false);
   // const dialogOpen = () => setDialogVisibility(true);
 
-  const position = { X: 'center', Y: 160 };
+  const position = { X: 'center', Y: 'top' };
 
   const onBeforeOpen = (args) => {
     args.maxHeight = '800px';
@@ -26,7 +26,7 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, setIsDel
 
   const showDialog = useCallback((title, text) => {
     setDialogTitle(title);
-    setDialogTest(text);
+    setDialogText(text);
     setDialogVisibility(true);
   }, [])
 
@@ -41,11 +41,11 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, setIsDel
         content={dialogText}
         showCloseIcon={true}
         visible={visibility}
-        width="400px"
-        height="750px"
+        width="100px"
+        height="350px"
         target="#target"
         resizeHandles={["All"]}
-        isModal={true}
+        allowDragging={true}
         close={dialogClose}
         beforeOpen={onBeforeOpen}
         position={position}

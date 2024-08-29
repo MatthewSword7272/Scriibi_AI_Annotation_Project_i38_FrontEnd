@@ -8,7 +8,6 @@ const StyledButtonComponent = styled(ButtonComponent)`
     padding: 15px 40px;
     color: ${WHITE};
     text-transform: capitalize;
-    font-family: "Raleway", sans-serif;
     font-weight: 700;
     transition: 0.3s ease;
 

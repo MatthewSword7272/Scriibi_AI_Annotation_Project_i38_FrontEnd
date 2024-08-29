@@ -10,7 +10,7 @@ const StyledAccordionContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: "Raleway", sans-serif;
+
 
     h2 {
         margin-top: 0;

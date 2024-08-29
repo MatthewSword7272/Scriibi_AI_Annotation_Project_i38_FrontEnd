@@ -12,12 +12,8 @@ const StyledCarouselContainer = styled.div`
 `;
 
 const StyledCarouselInnerContainer = styled.div`
-  transition: transform 0.5s ease;
-  transform: translateX(${({gridCentre}) => -gridCentre * 150}px);
+  /* transform: translateX(${({gridCentre}) => -gridCentre * 40}%); */
   width: 95%;
-`;
-
-const StyledCarouselGrid = styled.div`
   display: flex;
   flex-direction: column;
 `;
@@ -25,6 +21,7 @@ const StyledCarouselGrid = styled.div`
 const StyledCarouselRow = styled.div`
   display: flex;
   justify-content: space-evenly;
+  transform: translateX(${({gridCentre}) => -gridCentre * 40}%);
   align-items: center;
   margin-bottom: 15px;
 
@@ -44,18 +41,24 @@ const StyledH4 = styled.h4`
   text-align: center;
   width: 20px;
   flex-shrink: 0;
+  font-weight: 600;
 `;
 
 const StyledDotContainer = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center; 
   width: 100%;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, .5);
   border-radius: 10px;
   padding: 3px 0;
-  column-gap: 3vw;
+  
 `;
+
+const StyledDotInnerContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center; 
+  column-gap: 3vw;
+  transform: translateX(${({gridCentre}) => -gridCentre * 40}%);
+`
 
 const StyledCarouselDot = styled.div`
   width: 20px;
@@ -77,6 +80,9 @@ const StyledCarouselDescription = styled.div`
   font-size: 15px;
 
   ul {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;;
     padding: 0 20px;
     max-height: 200px;
     overflow-y: auto;
@@ -112,8 +118,8 @@ export {
     StyledDotContainer,
     StyledH4,
     StyledCarouselInnerContainer,
-    StyledCarouselGrid,
     StyledCarouselDescription,
     StyledCarouselRow,
-    StyledArrowContainer
+    StyledArrowContainer,
+    StyledDotInnerContainer
 }
