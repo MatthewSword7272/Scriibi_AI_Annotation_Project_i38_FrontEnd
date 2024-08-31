@@ -5,16 +5,13 @@ import { GREEN } from "Constraints/constants";
 const StyledSkillContainer = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center;
     column-gap: 20px;
     margin-bottom: 10px;
 `
 
 
 const StyledRadioButtonContainer = styled.div`
-
     display: flex;
-    justify-content: center;
     column-gap: 15px;
 
     .e-radio:checked + label::after
@@ -38,7 +35,7 @@ const StyledRadioButtonContainer = styled.div`
         text-align: center;
 
         @media only screen and (max-width: 1780px){
-            width: 6vw;
+            width: 5vw;
         }
     }
 `

@@ -13,7 +13,7 @@ const StyledCarouselContainer = styled.div`
 
 const StyledCarouselInnerContainer = styled.div`
   /* transform: translateX(${({gridCentre}) => -gridCentre * 40}%); */
-  width: 95%;
+  width: 99%;
   display: flex;
   flex-direction: column;
 `;
@@ -21,7 +21,7 @@ const StyledCarouselInnerContainer = styled.div`
 const StyledCarouselRow = styled.div`
   display: flex;
   justify-content: space-evenly;
-  transform: translateX(${({gridCentre}) => -gridCentre * 40}%);
+  transform: translateX(${({gridCentre}) => -gridCentre * 35}%);
   align-items: center;
   margin-bottom: 15px;
 
@@ -31,7 +31,6 @@ const StyledCarouselRow = styled.div`
   }
 
   &:nth-child(3) {
-    justify-content: space-between;
     align-items: flex-start;
   }
 `;
@@ -57,7 +56,7 @@ const StyledDotInnerContainer = styled.div`
   justify-content: space-evenly;
   align-items: center; 
   column-gap: 3vw;
-  transform: translateX(${({gridCentre}) => -gridCentre * 40}%);
+  transform: translateX(${({gridCentre}) => -gridCentre * 35}%);
 `
 
 const StyledCarouselDot = styled.div`
@@ -75,8 +74,7 @@ const StyledCarouselDot = styled.div`
 `;
 
 const StyledCarouselDescription = styled.div`
-  width: 300px;
-  flex-shrink: 0;
+  flex-shrink: 1;
   font-size: 15px;
 
   ul {

@@ -20,13 +20,13 @@ const SkillCarousel = ({ skillData }) => {
 
   const moveLeft = () => {
     setGridCentre((prevIndex) => 
-      prevIndex < Math.round(levels.length / 2) ? prevIndex + 1 : prevIndex
+      prevIndex < Math.floor(levels.length / 2) ? prevIndex + 1 : prevIndex
     );
   };
 
   const moveRight = () => {
     setGridCentre((prevIndex) => 
-      prevIndex > -Math.round(levels.length / 2) ? prevIndex - 1 : prevIndex
+      prevIndex > -Math.floor(levels.length / 2) ? prevIndex - 1 : prevIndex
     );
   };
 
