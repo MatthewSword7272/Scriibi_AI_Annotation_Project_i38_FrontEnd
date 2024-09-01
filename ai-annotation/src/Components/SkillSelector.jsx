@@ -1,3 +1,5 @@
+import axios from "axios";
+import { NLP_URL } from "Constraints/constants";
 import React from "react";
 import { StyledButtonComponent } from "Styles/StyledButton";
 import {
@@ -7,7 +9,21 @@ import {
   StyledSkillContainer,
 } from "Styles/StyledRadioButton";
 
-const SkillSelector = ({ handleSkillChange, selectedSkill, skillData }) => {
+const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) => {
+
+  const sendText = () => {
+    axios({
+      method: 'post',
+      url: NLP_URL,
+      data: {
+        text: text
+      },
+    }).then( res => {
+      console.log(res);
+    }).catch( err => {
+      console.log()
+    })
+  }
 
   return (
     <StyledSkillContainer>
@@ -27,7 +43,7 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData }) => {
       <StyledButtonComponent>Annotate</StyledButtonComponent>
     </StyledSkillButtonContainer>
     <StyledSkillButtonContainer>
-      <StyledButtonComponent>Save</StyledButtonComponent>
+      <StyledButtonComponent onClick={sendText}>Save</StyledButtonComponent>
     </StyledSkillButtonContainer>
   </StyledSkillContainer>
   );
