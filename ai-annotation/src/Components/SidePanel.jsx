@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2-react-navigations";
 import * as Constants from "../Constraints/constants";
 import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
-import { StyledAccordionComponent, StyledAccordionItem } from 'Styles/StyledAccordion';
+import { StyledAccordionComponent } from 'Styles/StyledAccordion';
 import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
 import { StyledEditContainer, StyledEditInnerContainer, StyledEditButtonContainer, StyledEditButton } from 'Styles/StyledEditContainer';
 import { StyledNotesButton } from 'Styles/StyledButton';
@@ -12,13 +12,6 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, colors, 
   const [visibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogText, setDialogText] = useState("");
-
-  const generateRandomColour = () => { //Select colour
-    let color = Math.floor(Math.random() * colors.length);
-    return color
-  }
-
-  const [accordionColor, setAccordionColor] = useState(colors)
 
   const dialogClose = () => setDialogVisibility(false);
   // const dialogOpen = () => setDialogVisibility(true);
@@ -50,8 +43,8 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, colors, 
         content={dialogText}
         showCloseIcon={true}
         visible={visibility}
-        width="500px"
-        height="650px"
+        width="20vw"
+        height="90vh"
         target="#target"
         resizeHandles={["All"]}
         allowDragging={true}
@@ -66,14 +59,13 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, colors, 
       </StyledAccordionContainer>
       <StyledAccordionContainer>
         <h2>Annotation</h2>
-        <StyledAccordionComponent expandMode="Multiple">
+        <StyledAccordionComponent expandMode="Multiple" colors={colors}>
           <AccordionItemsDirective>
-            {array.map(index => (
-              <StyledAccordionItem
+            {array.map(() => (
+              <AccordionItemDirective
                 expanded={false}
                 header="ASP.NET"
                 content={aspContent}
-                color={colors[index]}
               />
             ))}
           </AccordionItemsDirective>
@@ -82,19 +74,16 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, colors, 
           <h3>Missing</h3>
           <StyledAccordionComponent
             expandMode="Multiple"
-            color={Constants.CAM}
+            colors={colors}
           >
             <AccordionItemsDirective>
+            {array.map(() => (
               <AccordionItemDirective
                 expanded={false}
-                header="ASP.NET3"
+                header="ASP.NET"
                 content={aspContent}
               />
-              <AccordionItemDirective
-                expanded={false}
-                header="ASP.NET4"
-                content={aspContent}
-              />
+            ))}
             </AccordionItemsDirective>
           </StyledAccordionComponent>
         </StyledAccordionMissingContainer>
