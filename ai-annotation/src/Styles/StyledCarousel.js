@@ -27,7 +27,7 @@ const StyledCarouselRow = styled.div`
 
   &:nth-child(1) {
     margin-bottom: 20px;
-    column-gap: 5%;
+    column-gap: 4.5%;
   }
 
   &:nth-child(3) {
@@ -65,7 +65,7 @@ const StyledCarouselDot = styled.div`
   background-color: ${({ isActive }) => isActive ? GREEN : GREY};
   border-radius: 50%;
   transition: transform 0.3s ease;
-  flex-shrink: 0;
+  /* flex-shrink: 0; */
 
   &:hover {
     cursor: pointer;
@@ -75,13 +75,12 @@ const StyledCarouselDot = styled.div`
 
 const StyledCarouselDescription = styled.div`
   flex-shrink: 1;
-  font-size: 15px;
 
   ul {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;;
-    padding: 0 20px;
+    padding: 0 2vw;
     max-height: 200px;
     overflow-y: auto;
   }

@@ -66,10 +66,6 @@ const Home = () => {
     setSelectedSkill(skill);
   };
 
-  // const generateRandomColour = useCallback(() => { //Select colour
-  //   return Math.floor(Math.random() * colours.length);
-  // }, [colours.length])
-
   const highlightText = useCallback(
     (highlights) => {
       let index = 0;
@@ -139,7 +135,7 @@ const Home = () => {
   }, [deleteHighlight, isAddingMode, isDeleteMode]);
 
   return (
-    <StyledBodyContainer>
+    <StyledBodyContainer id="target">
       <StyledSubBodyContainer1>
         <SkillSelector
           handleSkillChange={handleSkillChange}
@@ -155,6 +151,7 @@ const Home = () => {
       </StyledSubBodyContainer1>
       <SidePanel 
         text={text} 
+        colors={colours}
         isDeleteMode={isDeleteMode} 
         isAddingMode={isAddingMode} 
         createHighlight={createHighlight} 

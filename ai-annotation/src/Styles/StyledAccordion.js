@@ -1,4 +1,4 @@
-import { AccordionComponent } from "@syncfusion/ej2-react-navigations";
+import { AccordionComponent, AccordionItemDirective } from "@syncfusion/ej2-react-navigations";
 import styled from "styled-components";
 import {WHITE, BLACK} from '../Constraints/constants';
 
@@ -15,10 +15,7 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   row-gap: 25px;
   border-radius: 20px !important;
 
-  .e-acrdn-item.e-select,
-  .e-acrdn-item .e-select .e-expand-state .e-selected .e-active {
-    background-color: ${props => props.color};
-  }
+  
 
   .e-acrdn-item, .e-acrdn-item.e-selected {
     border-radius: 20px !important;
@@ -54,4 +51,11 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   }
 `;
 
-export { StyledAccordionComponent };
+const StyledAccordionItem = styled(AccordionItemDirective)`
+  .e-acrdn-item.e-select,
+  .e-acrdn-item .e-select .e-expand-state .e-selected .e-active {
+    background-color: ${props => props.color};
+  }
+`
+
+export { StyledAccordionComponent, StyledAccordionItem };
