@@ -16,7 +16,7 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, colors, 
   const dialogClose = () => setDialogVisibility(false);
   // const dialogOpen = () => setDialogVisibility(true);
 
-  const position = { X: 'right', Y: 'top' };
+  const position = { X: 1140, Y: 150 };
 
   const onBeforeOpen = (args) => {
     args.maxHeight = '800px';
