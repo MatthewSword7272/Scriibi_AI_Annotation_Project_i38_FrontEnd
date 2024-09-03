@@ -1,5 +1,4 @@
 import axios from "axios";
-import { NLP_URL } from "Constraints/constants";
 import React from "react";
 import { StyledButtonComponent } from "Styles/StyledButton";
 import {
@@ -11,10 +10,15 @@ import {
 
 const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) => {
 
-  const sendText = () => {
+  const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
+
+  const sendText = async () => {
     axios({
       method: 'post',
-      url: NLP_URL,
+      url: pronounURL,
+      headers: {
+        "Content-Type": 'application/JSON'
+      },
       data: {
         text: text
       },
@@ -24,6 +28,8 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) =>
       console.log()
     })
   }
+
+  console.log(text)
 
   return (
     <StyledSkillContainer>

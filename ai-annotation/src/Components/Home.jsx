@@ -14,7 +14,7 @@ import { COLOURS } from "Constraints/colours";
 import SidePanel from "./SidePanel";
 
 const Home = () => {
-  const fetchedText = TestText.pronouns;
+  const fetchedText = TestText.pronouns2;
 
   const [text, setText] = useState("");
   const [highlightedWords, setHighlightedWords] = useState([]);
@@ -141,7 +141,7 @@ const Home = () => {
           handleSkillChange={handleSkillChange}
           selectedSkill={selectedSkill}
           skillData={testSkillsInfo}
-          text={text}
+          text={presentingText}
         />
         <SkillCarousel skillData={skillData} />
         <StyledRichTextEditor value={presentingText}>
