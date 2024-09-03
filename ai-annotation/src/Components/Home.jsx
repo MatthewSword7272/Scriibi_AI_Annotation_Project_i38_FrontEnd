@@ -22,6 +22,7 @@ const Home = () => {
   const [selectedSkill, setSelectedSkill] = useState(0);
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [wordCount, setWordCount] = useState(0);
 
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -31,7 +32,7 @@ const Home = () => {
     return array;
   };
 
-  const colours = shuffleArray(COLOURS);
+  const [colours] = useState(COLOURS)
 
   const aspContent = () => {
     //Dummy Data
@@ -100,6 +101,20 @@ const Home = () => {
     [highlightText]
   );
 
+  const countWords = (text) => {
+    const words = text.replace(/<[^>]*>/g, '')  // Remove HTML tags
+                      .replace(/[^a-zA-Z\s]/g, '')  // Remove special characters
+                      .trim()
+                      .split(/\s+/);
+    return words.filter(word => word !== '').length;
+  };
+
+  const handleWordCount = (args) => {
+    const text = args.value;
+    const count = countWords(text);
+    setWordCount(count);
+  }
+
   useEffect(() => {
     const handleSelectionChange = () => {
       // Get highlighted text and save state
@@ -144,10 +159,12 @@ const Home = () => {
           text={presentingText}
         />
         <SkillCarousel skillData={skillData} />
-        <StyledRichTextEditor value={presentingText}>
-          {/* .body.innerHTML  */}
+        <StyledRichTextEditor
+          value={presentingText}
+          change={handleWordCount}>
           <Inject services={[Toolbar, HtmlEditor]} />
         </StyledRichTextEditor>
+        <div><b>Word Count: {wordCount}</b></div>
       </StyledSubBodyContainer1>
       <SidePanel 
         text={text} 
