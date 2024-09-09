@@ -24,14 +24,6 @@ const Home = () => {
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
 
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
-
   const [colours] = useState(COLOURS)
 
   const aspContent = () => {
@@ -164,11 +156,10 @@ const Home = () => {
           change={handleWordCount}>
           <Inject services={[Toolbar, HtmlEditor]} />
         </StyledRichTextEditor>
-        <div><b>Word Count: {wordCount}</b></div>
+        <div><b>Word Count: {wordCount}</b></div> {/* Word Count*/}
       </StyledSubBodyContainer1>
       <SidePanel 
-        text={text} 
-        colors={colours}
+        text={text}
         isDeleteMode={isDeleteMode} 
         isAddingMode={isAddingMode} 
         createHighlight={createHighlight} 

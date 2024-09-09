@@ -8,7 +8,8 @@ import { StyledEditContainer, StyledEditInnerContainer, StyledEditButtonContaine
 import { StyledNotesButton } from 'Styles/StyledButton';
 import { DialogComponent } from '@syncfusion/ej2-react-popups';
 
-const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, colors, setIsDeleteMode,aspContent}) => {
+const SidePanel = ({text, isDeleteMode, isAddingMode, createHighlight, setIsAddingMode, setIsDeleteMode, aspContent}) => {
+
   const [visibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogText, setDialogText] = useState("");
@@ -16,10 +17,10 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, colors, 
   const dialogClose = () => setDialogVisibility(false);
   // const dialogOpen = () => setDialogVisibility(true);
 
-  const position = { X: 1140, Y: 150 };
+  const position = { X: 'right'};
 
   const onBeforeOpen = (args) => {
-    args.maxHeight = '800px';
+    args.maxHeight = "80%";
   };
 
   let testString = "Microsoft ASP.NET is a set of technologies in the Microsoft .NET Framework for building Web applications and XML Web services.";
@@ -34,7 +35,7 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, colors, 
     showDialog("ASP.NET", testString);
   }, [showDialog, testString]);
 
-  const array = [1, 2, 3]
+  const testArray = [1, 2, 3];
 
   return (
     <StyledSubBodyContainer2>
@@ -43,25 +44,26 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, colors, 
         content={dialogText}
         showCloseIcon={true}
         visible={visibility}
-        width="20vw"
+        width="25vw"
         height="90vh"
         target="#target"
-        resizeHandles={["All"]}
+        resizeHandles={["South"]}
         allowDragging={true}
-        enableResize={true}
         close={dialogClose}
         beforeOpen={onBeforeOpen}
         position={position}
       />
       <StyledAccordionContainer>
         <h2>Notes</h2>
-        <StyledNotesButton color={Constants.CAM} onClick={handleDialogClick}>ASP.NET</StyledNotesButton>
+        <StyledNotesButton color={Constants.CAM} onClick={handleDialogClick}>
+          ASP.NET
+        </StyledNotesButton>
       </StyledAccordionContainer>
       <StyledAccordionContainer>
         <h2>Annotation</h2>
-        <StyledAccordionComponent expandMode="Multiple" colors={colors}>
+        <StyledAccordionComponent expandMode="Multiple">
           <AccordionItemsDirective>
-            {array.map(() => (
+            {testArray.map(() => (
               <AccordionItemDirective
                 expanded={false}
                 header="ASP.NET"
@@ -70,24 +72,21 @@ const SidePanel = ({ text, isDeleteMode, isAddingMode, createHighlight, colors, 
             ))}
           </AccordionItemsDirective>
         </StyledAccordionComponent>
-        <StyledAccordionMissingContainer>
-          <h3>Missing</h3>
-          <StyledAccordionComponent
-            expandMode="Multiple"
-            colors={colors}
-          >
-            <AccordionItemsDirective>
-            {array.map(() => (
+      </StyledAccordionContainer>
+      <StyledAccordionMissingContainer>
+        <h2>Missing</h2>
+        <StyledAccordionComponent expandMode="Multiple">
+          <AccordionItemsDirective>
+            {testArray.map(() => (
               <AccordionItemDirective
                 expanded={false}
                 header="ASP.NET"
                 content={aspContent}
               />
             ))}
-            </AccordionItemsDirective>
-          </StyledAccordionComponent>
-        </StyledAccordionMissingContainer>
-      </StyledAccordionContainer>
+          </AccordionItemsDirective>
+        </StyledAccordionComponent>
+      </StyledAccordionMissingContainer>
       <StyledEditContainer>
         <h2>Edit</h2>
         <StyledEditInnerContainer>

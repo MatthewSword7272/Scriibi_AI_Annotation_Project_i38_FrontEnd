@@ -1,5 +1,5 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { StyledButtonComponent } from "Styles/StyledButton";
 import {
   StyledRadioButton,
@@ -11,6 +11,7 @@ import {
 const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) => {
 
   const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
+  const [isAnnotated, setIsAnnotated] = useState(false);
 
   const sendText = async () => {
     axios({
@@ -29,7 +30,9 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) =>
     })
   }
 
-  console.log(text)
+  const annotate = () => {
+    setIsAnnotated(true); //This will annotate the text and switch between the Buttons between Annotate to Save
+  }
 
   return (
     <StyledSkillContainer>
@@ -46,10 +49,10 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) =>
     ))}
     </StyledRadioButtonContainer>
     <StyledSkillButtonContainer>
-      <StyledButtonComponent>Annotate</StyledButtonComponent>
+      <StyledButtonComponent onClick={annotate} disabled={isAnnotated}>Annotate</StyledButtonComponent>
     </StyledSkillButtonContainer>
     <StyledSkillButtonContainer>
-      <StyledButtonComponent onClick={sendText}>Save</StyledButtonComponent>
+      <StyledButtonComponent onClick={sendText} disabled={!isAnnotated}>Save</StyledButtonComponent>
     </StyledSkillButtonContainer>
   </StyledSkillContainer>
   );

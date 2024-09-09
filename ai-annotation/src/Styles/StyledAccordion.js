@@ -1,6 +1,17 @@
 import { AccordionComponent } from "@syncfusion/ej2-react-navigations";
 import styled from "styled-components";
 import {WHITE, BLACK} from '../Constraints/constants';
+import { COLOURS } from "Constraints/colours";
+
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
+const shuffledColours = shuffleArray(COLOURS)
 
 
 const StyledAccordionComponent = styled(AccordionComponent)`
@@ -11,10 +22,10 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   max-width: 100%;
   display: flex;
   flex-direction: column;
-  row-gap: 25px;
+  row-gap: 10px;
   border-radius: 20px !important;
 
-  ${props => props.colors.map((color, index) => `
+  ${() => shuffledColours.map((color, index) => `
       .e-acrdn-item:nth-child(${index + 1}), .e-acrdn-item.e-selected:nth-child(${index + 1}) {
         border-radius: 20px !important;
         border: none;
@@ -39,11 +50,6 @@ const StyledAccordionComponent = styled(AccordionComponent)`
       }
     `)
   }
-
-  .e-toggle-icon {
-      padding-left: 10px;
-      border-left: 2px solid black;
-    }
 
   .e-acrdn-item.e-item-focus.e-expand-state.e-select, 
   .e-acrdn-item.e-item-focus.e-select.e-selected.e-expand-state,
