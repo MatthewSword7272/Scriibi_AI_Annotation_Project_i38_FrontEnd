@@ -12,7 +12,6 @@ const StyledCarouselContainer = styled.div`
 `;
 
 const StyledCarouselInnerContainer = styled.div`
-  /* transform: translateX(${({gridCentre}) => -gridCentre * 40}%); */
   width: 99%;
   display: flex;
   flex-direction: column;
@@ -21,7 +20,7 @@ const StyledCarouselInnerContainer = styled.div`
 const StyledCarouselRow = styled.div`
   display: flex;
   justify-content: space-evenly;
-  transform: translateX(${({gridCentre}) => -gridCentre * 35}%);
+  transform: translateX(${props => -props.gridCentre * 35}%);
   align-items: center;
   margin-bottom: 15px;
 
@@ -56,13 +55,13 @@ const StyledDotInnerContainer = styled.div`
   justify-content: space-evenly;
   align-items: center; 
   column-gap: 3vw;
-  transform: translateX(${({gridCentre}) => -gridCentre * 35}%);
+  transform: translateX(${props => -props.gridCentre * 35}%);
 `
 
 const StyledCarouselDot = styled.div`
   width: 20px;
   height: 20px;
-  background-color: ${({ isActive }) => isActive ? GREEN : GREY};
+  background-color: ${props => props.isActive ? GREEN : GREY};
   border-radius: 50%;
   transition: transform 0.3s ease;
   /* flex-shrink: 0; */
@@ -77,9 +76,7 @@ const StyledCarouselDescription = styled.div`
   flex-shrink: 1;
 
   ul {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;;
+    font-family: 'Segoe UI', sans-serif;
     padding: 0 2vw;
     max-height: 200px;
     overflow-y: auto;

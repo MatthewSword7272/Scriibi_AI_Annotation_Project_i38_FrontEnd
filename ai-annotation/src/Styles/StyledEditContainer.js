@@ -6,6 +6,7 @@ const StyledEditContainer = styled.div`
     text-align: center;
     background-color: #fff;
     box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
+    padding-top: 10px;
 
     h2 {
         margin: 0;
