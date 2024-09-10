@@ -6,7 +6,7 @@ import { StyledAccordionComponent } from 'Styles/StyledAccordion';
 import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
 import { StyledEditContainer, StyledEditInnerContainer, StyledEditButtonContainer, StyledEditButton } from 'Styles/StyledEditContainer';
 import { StyledNotesButton } from 'Styles/StyledButton';
-import { DialogComponent } from '@syncfusion/ej2-react-popups';
+import { StyledDialogBox } from 'Styles/StyledDialogBox';
 
 const SidePanel = ({text, isDeleteMode, isAddingMode, createHighlight, setIsAddingMode, setIsDeleteMode, aspContent}) => {
 
@@ -39,20 +39,23 @@ const SidePanel = ({text, isDeleteMode, isAddingMode, createHighlight, setIsAddi
 
   return (
     <StyledSubBodyContainer2>
-      <DialogComponent
-        header={dialogTitle}
-        content={dialogText}
-        showCloseIcon={true}
-        visible={visibility}
-        width="25vw"
-        height="90vh"
-        target="#target"
-        resizeHandles={["South"]}
-        allowDragging={true}
-        close={dialogClose}
-        beforeOpen={onBeforeOpen}
-        position={position}
-      />
+
+        <StyledDialogBox
+          header={dialogTitle}
+          content={dialogText}
+          showCloseIcon={true}
+          visible={visibility}
+          width="25vw"
+          height="90vh"
+          target="#target"
+          resizeHandles={["South"]}
+          enableResize={true}
+          allowDragging={true}
+          close={dialogClose}
+          beforeOpen={onBeforeOpen}
+          position={position}
+        />
+
       <StyledAccordionContainer>
         <h2>Notes</h2>
         <StyledNotesButton color={Constants.CAM} onClick={handleDialogClick}>
@@ -93,7 +96,7 @@ const SidePanel = ({text, isDeleteMode, isAddingMode, createHighlight, setIsAddi
           <StyledEditButtonContainer color={Constants.GREEN}>
             <h6>Add</h6>
             <StyledEditButton
-              onClick={() => text !== "" && !isDeleteMode && createHighlight()}
+              onClick={() =>!isDeleteMode && setIsAddingMode((prevState) => !prevState)}
               iconCss="e-icons e-edit-2"
             ></StyledEditButton>
           </StyledEditButtonContainer>

@@ -163,7 +163,8 @@ const Home = () => {
         isDeleteMode={isDeleteMode} 
         isAddingMode={isAddingMode} 
         createHighlight={createHighlight} 
-        setIsDeleteMode={setIsDeleteMode} 
+        setIsDeleteMode={setIsDeleteMode}
+        setIsAddingMode={setIsAddingMode}
         aspContent={aspContent}/>
     </StyledBodyContainer>
   );

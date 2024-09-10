@@ -49,10 +49,10 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) =>
     ))}
     </StyledRadioButtonContainer>
     <StyledSkillButtonContainer>
-      <StyledButtonComponent onClick={annotate} disabled={isAnnotated}>Annotate</StyledButtonComponent>
-    </StyledSkillButtonContainer>
-    <StyledSkillButtonContainer>
-      <StyledButtonComponent onClick={sendText} disabled={!isAnnotated}>Save</StyledButtonComponent>
+      {isAnnotated 
+        ? <StyledButtonComponent onClick={sendText}>Save</StyledButtonComponent> 
+        : <StyledButtonComponent onClick={annotate}>Annotate</StyledButtonComponent>
+      }
     </StyledSkillButtonContainer>
   </StyledSkillContainer>
   );
