@@ -8,12 +8,28 @@ import { StyledEditContainer, StyledEditInnerContainer, StyledEditButtonContaine
 import { StyledNotesButton } from 'Styles/StyledButton';
 import { StyledDialogBox } from 'Styles/StyledDialogBox';
 
-const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createHighlight, setIsAddingMode, setIsDeleteMode}) => {
+const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createHighlight, setIsAddingMode, setIsDeleteMode, setHighlightedWords, highlightText}) => {
 
   const [visibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogText, setDialogText] = useState("");
   const [selectedText, setSelectedText] = useState("");
+
+  const deleteHighlight = useCallback((element) => {
+    if (element && element.parentNode) {
+      const textContent = element.textContent;
+      const compTitle = element.id;
+      element.parentNode.replaceChild(document.createTextNode(textContent),element);
+
+      setHighlightedWords((prevHighlightedWords) => {
+        const newArray = prevHighlightedWords.filter(
+          (word) => word !== textContent
+        );
+        highlightText(newArray);
+        return newArray;
+      });
+    }
+  },[highlightText, setHighlightedWords]);
 
   useEffect(() => {
     const handleSelectionChange = () => {
@@ -25,26 +41,31 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
       }
     };
 
+    const handleDeleteHighlight = (event) => {
+      if (isDeleteMode && (event.target.matches(".highlight") || event.target.matches("[data-highlight]"))) {
+        deleteHighlight(event.target);
+      }
+    };
+
     document.addEventListener("selectionchange", handleSelectionChange);
+    document.addEventListener("click", handleDeleteHighlight);
 
     return () => {
       document.removeEventListener("selectionchange", handleSelectionChange);
+      document.removeEventListener("click", handleDeleteHighlight);
     }
-  }, [])
+  }, [deleteHighlight, isDeleteMode])
+
+  console.log(selectedText);
   
 
   const dialogClose = () => setDialogVisibility(false);
-  // const dialogOpen = () => setDialogVisibility(true);
-
   const position = { X: 'right'};
-
-  console.log(selectedText);
+  let testString = "Microsoft ASP.NET is a set of technologies in the Microsoft .NET Framework for building Web applications and XML Web services.";
 
   const onBeforeOpen = (args) => {
     args.maxHeight = "80%";
   };
-
-  let testString = "Microsoft ASP.NET is a set of technologies in the Microsoft .NET Framework for building Web applications and XML Web services.";
 
   const showDialog = useCallback((title, text) => {
     setDialogTitle(title);
@@ -56,10 +77,10 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
     showDialog("ASP.NET", testString);
   }, [showDialog, testString]);
 
-  const handleAccordionClick = useCallback((comp, element) => {
+  const handleAccordionClick = useCallback((comp) => {
 
     if (isAddingMode && selectedText !== "") {
-      createHighlight(comp, element, selectedText);
+      createHighlight(comp, selectedText);
     }
     setIsAddingMode(false);
     setSelectedText("");
@@ -110,7 +131,7 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
         <StyledAccordionComponent expandMode="Multiple"
           expanding={(e) => {
             const comp = missingComps.find(c => c.title === e.item.header);
-            if (comp) handleAccordionClick(comp, e);
+            if (comp) handleAccordionClick(comp);
           }}
         >
           <AccordionItemsDirective>

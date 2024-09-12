@@ -32,7 +32,22 @@ const Home = () => {
 
   const skillData = testSkillsInfo[skillsObject[selectedSkill]]; //Use Interface to get Skills Level and Description
 
-  const createHighlight = (component, event, text) => {
+  const highlightText = useCallback((highlights, componentTitle) => {
+      let index = 0;
+      const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
+      const annotatedText = fetchedText.replace(regex, (match) => {
+        const color = colours[index % colours.length];
+        index++;
+        return `<mark class="highlight" id="${componentTitle}" style="background-color: ${color}; cursor: pointer;" data-highlight">${match}</mark>`;
+      });
+
+      //Update the presenting text
+      setPresentingText(annotatedText);
+    },
+    [colours, fetchedText]
+  );
+
+  const createHighlight = useCallback((component, text) => {
     if (text) {
       const updatedHighlights = [...highlightedWords, text];
 
@@ -45,48 +60,14 @@ const Home = () => {
       setHighlightedWords(updatedHighlights);
 
       // Update the highlighted text
-      highlightText(updatedHighlights); //.body.innerHTML
+      highlightText(updatedHighlights, component.title); //.body.innerHTML
     }
-  };
+  }, [highlightText, highlightedWords, missingComps, textComps]);
 
   const handleSkillChange = (event) => {
     var skill = parseInt(event.target.value);
     setSelectedSkill(skill);
   };
-
-  const highlightText = useCallback(
-    (highlights) => {
-      let index = 0;
-      const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
-      const annotatedText = fetchedText.replace(regex, (match) => {
-        const color = colours[index % colours.length];
-        index++;
-        return `<mark class="highlight" style="background-color: ${color}; cursor: pointer;" data-highlight">${match}</mark>`;
-      });
-
-      //Update the presenting text
-      setPresentingText(annotatedText);
-    },
-    [colours, fetchedText]
-  );
-
-  const deleteHighlight = useCallback(
-    (element) => {
-      if (element && element.parentNode) {
-        const textContent = element.textContent;
-        element.parentNode.replaceChild(document.createTextNode(textContent),element);
-
-        setHighlightedWords((prevHighlightedWords) => {
-          const newArray = prevHighlightedWords.filter(
-            (word) => word !== textContent
-          );
-          highlightText(newArray);
-          return newArray;
-        });
-      }
-    },
-    [highlightText]
-  );
 
   const countWords = (text) => {
     const words = text.replace(/<[^>]*>/g, '')  // Remove HTML tags
@@ -103,14 +84,6 @@ const Home = () => {
   }
 
   useEffect(() => {
-    
-
-    const handleDeleteHighlight = (event) => {
-      if (isDeleteMode && (event.target.matches(".highlight") || event.target.matches("[data-highlight]"))) {
-        deleteHighlight(event.target);
-      }
-    };
-
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
         if (isAddingMode) {
@@ -121,14 +94,12 @@ const Home = () => {
       }
     };
 
-    document.addEventListener("click", handleDeleteHighlight);
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("click", handleDeleteHighlight);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [deleteHighlight, isAddingMode, isDeleteMode]);
+  }, [createHighlight, isAddingMode, isDeleteMode]);
 
   return (
     <StyledBodyContainer id="target">
@@ -154,7 +125,10 @@ const Home = () => {
         missingComps={missingComps}
         createHighlight={createHighlight} 
         setIsDeleteMode={setIsDeleteMode}
-        setIsAddingMode={setIsAddingMode}/>
+        setIsAddingMode={setIsAddingMode}
+        setHighlightedWords={setHighlightedWords}
+        highlightText={highlightText}
+        />
     </StyledBodyContainer>
   );
 };
