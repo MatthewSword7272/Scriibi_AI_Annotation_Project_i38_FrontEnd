@@ -3,11 +3,12 @@ import {
   StyledSubBodyContainer1,
 } from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
-import TestText from "../testText.json"
-import testSkillsInfo from '../testSkilsInfo'
+import TestText from "../testText.json";
+import testSkillsInfo from '../testSkillsInfo';
+import TestComp from "../testComp.json";
 import React, { useCallback, useEffect, useState } from "react";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
-import skillsInterface from "../Interfaces/SkillsInterface";
+import skillsObject from "../Constraints/SkillsObject";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import { COLOURS } from "Constraints/colours";
@@ -16,41 +17,35 @@ import SidePanel from "./SidePanel";
 const Home = () => {
   const fetchedText = TestText.pronouns2;
 
-  const [text, setText] = useState("");
   const [highlightedWords, setHighlightedWords] = useState([]);
   const [presentingText, setPresentingText] = useState(fetchedText);
   const [selectedSkill, setSelectedSkill] = useState(0);
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
+  const [textComps, setTextComps] = useState([]);
+  const [missingComps, setMissingComps] = useState(TestComp);
 
   const [colours] = useState(COLOURS)
 
-  const aspContent = () => {
-    //Dummy Data
-    return (
-      <div>
-        Microsoft ASP.NET is a set of technologies in the Microsoft .NET
-        Framework for building Web applications and XML Web services.
-      </div>
-    );
-  };
-
-  // const parser = new DOMParser();
-  // const startingText =  parser.parseFromString(fetchedText, "text/html")
-
   //So far it only adds marks to strings. We need to further develop this.
 
-  const skillData = testSkillsInfo[skillsInterface[selectedSkill]]; //Use Interface to get Skills Level and Description
+  const skillData = testSkillsInfo[skillsObject[selectedSkill]]; //Use Interface to get Skills Level and Description
 
-  const createHighlight = () => {
+  const createHighlight = (component, event, text) => {
     if (text) {
       const updatedHighlights = [...highlightedWords, text];
+
+      if (!textComps.includes(component))
+      {
+        setTextComps(prevState => [...prevState, component])
+        setMissingComps(missingComps.filter(comp => comp !== component))
+      }
+      
       setHighlightedWords(updatedHighlights);
 
       // Update the highlighted text
       highlightText(updatedHighlights); //.body.innerHTML
-      setText(""); //Resets the getText back to default
     }
   };
 
@@ -108,11 +103,7 @@ const Home = () => {
   }
 
   useEffect(() => {
-    const handleSelectionChange = () => {
-      // Get highlighted text and save state
-      const selectedText = document.getSelection().toString();
-      setText(selectedText.trim());
-    };
+    
 
     const handleDeleteHighlight = (event) => {
       if (isDeleteMode && (event.target.matches(".highlight") || event.target.matches("[data-highlight]"))) {
@@ -130,12 +121,10 @@ const Home = () => {
       }
     };
 
-    document.addEventListener("selectionchange", handleSelectionChange);
     document.addEventListener("click", handleDeleteHighlight);
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("selectionchange", handleSelectionChange);
       document.removeEventListener("click", handleDeleteHighlight);
       document.removeEventListener("keydown", handleKeyDown);
     };
@@ -158,14 +147,14 @@ const Home = () => {
         </StyledRichTextEditor>
         <div><b>Word Count: {wordCount}</b></div> {/* Word Count*/}
       </StyledSubBodyContainer1>
-      <SidePanel 
-        text={text}
+      <SidePanel
         isDeleteMode={isDeleteMode} 
-        isAddingMode={isAddingMode} 
+        isAddingMode={isAddingMode}
+        textComps={textComps}
+        missingComps={missingComps}
         createHighlight={createHighlight} 
         setIsDeleteMode={setIsDeleteMode}
-        setIsAddingMode={setIsAddingMode}
-        aspContent={aspContent}/>
+        setIsAddingMode={setIsAddingMode}/>
     </StyledBodyContainer>
   );
 };

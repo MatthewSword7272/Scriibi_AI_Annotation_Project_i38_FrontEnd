@@ -38,7 +38,6 @@ const StyledH4 = styled.h4`
   margin: 0;
   text-align: center;
   width: 20px;
-  flex-shrink: 0;
   font-weight: 600;
 `;
 
@@ -64,7 +63,6 @@ const StyledCarouselDot = styled.div`
   background-color: ${props => props.isActive ? GREEN : GREY};
   border-radius: 50%;
   transition: transform 0.3s ease;
-  /* flex-shrink: 0; */
 
   &:hover {
     cursor: pointer;
@@ -80,6 +78,7 @@ const StyledCarouselDescription = styled.div`
     padding: 0 2vw;
     max-height: 200px;
     overflow-y: auto;
+    width: 75%;
   }
 `;
 

@@ -13,7 +13,6 @@ const shuffleArray = (array) => {
 
 const shuffledColours = shuffleArray(COLOURS)
 
-
 const StyledAccordionComponent = styled(AccordionComponent)`
   border: transparent;
   text-align: center;
