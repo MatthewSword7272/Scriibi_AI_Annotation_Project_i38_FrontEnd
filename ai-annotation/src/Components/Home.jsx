@@ -32,38 +32,6 @@ const Home = () => {
 
   const skillData = testSkillsInfo[skillsObject[selectedSkill]]; //Use Interface to get Skills Level and Description
 
-  const highlightText = useCallback((highlights, componentTitle) => {
-      let index = 0;
-      const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
-      const annotatedText = fetchedText.replace(regex, (match) => {
-        const color = colours[index % colours.length];
-        index++;
-        return `<mark class="highlight" id="${componentTitle}" style="background-color: ${color}; cursor: pointer;" data-highlight">${match}</mark>`;
-      });
-
-      //Update the presenting text
-      setPresentingText(annotatedText);
-    },
-    [colours, fetchedText]
-  );
-
-  const createHighlight = useCallback((component, text) => {
-    if (text) {
-      const updatedHighlights = [...highlightedWords, text];
-
-      if (!textComps.includes(component))
-      {
-        setTextComps(prevState => [...prevState, component])
-        setMissingComps(missingComps.filter(comp => comp !== component))
-      }
-      
-      setHighlightedWords(updatedHighlights);
-
-      // Update the highlighted text
-      highlightText(updatedHighlights, component.title); //.body.innerHTML
-    }
-  }, [highlightText, highlightedWords, missingComps, textComps]);
-
   const handleSkillChange = (event) => {
     var skill = parseInt(event.target.value);
     setSelectedSkill(skill);
@@ -82,6 +50,36 @@ const Home = () => {
     const count = countWords(text);
     setWordCount(count);
   }
+
+  const highlightText = useCallback((highlights, componentTitle) => {
+    let index = 0;
+    const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
+    const annotatedText = fetchedText.replace(regex, (match) => {
+      const color = colours[index % colours.length];
+      index++;
+      return `<mark class="highlight" id="${componentTitle}" style="background-color: ${color}; cursor: pointer;" data-highlight">${match}</mark>`;
+    });
+
+    //Update the presenting text
+    setPresentingText(annotatedText);
+  }, [colours, fetchedText]);
+
+  const createHighlight = useCallback((component, text) => {
+    if (text) {
+      const updatedHighlights = [...highlightedWords, text];
+
+      if (!textComps.includes(component))
+      {
+        setTextComps(prevState => [...prevState, component])
+        setMissingComps(missingComps.filter(comp => comp !== component))
+      }
+      
+      setHighlightedWords(updatedHighlights);
+
+      // Update the highlighted text
+      highlightText(updatedHighlights, component.title); //.body.innerHTML
+    }
+  }, [highlightText, highlightedWords, missingComps, textComps]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {

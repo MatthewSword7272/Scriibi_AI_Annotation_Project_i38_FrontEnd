@@ -10,11 +10,17 @@ import { StyledDialogBox } from 'Styles/StyledDialogBox';
 
 const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createHighlight, setIsAddingMode, setIsDeleteMode, setHighlightedWords, highlightText}) => {
 
+  // States
   const [visibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogText, setDialogText] = useState("");
   const [selectedText, setSelectedText] = useState("");
 
+  // Constants
+  const position = { X: 'right'};
+  let testString = "Microsoft ASP.NET is a set of technologies in the Microsoft .NET Framework for building Web applications and XML Web services.";
+
+  // useCallbacks
   const deleteHighlight = useCallback((element) => {
     if (element && element.parentNode) {
       const textContent = element.textContent;
@@ -29,8 +35,29 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
         return newArray;
       });
     }
-  },[highlightText, setHighlightedWords]);
+  }, [highlightText, setHighlightedWords]);
 
+  const showDialog = useCallback((title, text) => {
+    setDialogTitle(title);
+    setDialogText(text);
+    setDialogVisibility(true);
+  }, [])
+
+  const handleDialogClick = useCallback(() => {
+    showDialog("ASP.NET", testString);
+  }, [showDialog, testString]);
+
+  const handleAccordionClick = useCallback((comp) => {
+
+    if (isAddingMode && selectedText !== "") {
+      createHighlight(comp, selectedText);
+    }
+    setIsAddingMode(false);
+    setSelectedText("");
+
+  }, [createHighlight, isAddingMode, selectedText, setIsAddingMode]);
+
+  // useEffects
   useEffect(() => {
     const handleSelectionChange = () => {
       // Get highlighted text and save state
@@ -55,37 +82,15 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
       document.removeEventListener("click", handleDeleteHighlight);
     }
   }, [deleteHighlight, isDeleteMode])
-
-  console.log(selectedText);
   
-
+  // Helper functions
   const dialogClose = () => setDialogVisibility(false);
-  const position = { X: 'right'};
-  let testString = "Microsoft ASP.NET is a set of technologies in the Microsoft .NET Framework for building Web applications and XML Web services.";
 
   const onBeforeOpen = (args) => {
     args.maxHeight = "80%";
   };
 
-  const showDialog = useCallback((title, text) => {
-    setDialogTitle(title);
-    setDialogText(text);
-    setDialogVisibility(true);
-  }, [])
-
-  const handleDialogClick = useCallback(() => {
-    showDialog("ASP.NET", testString);
-  }, [showDialog, testString]);
-
-  const handleAccordionClick = useCallback((comp) => {
-
-    if (isAddingMode && selectedText !== "") {
-      createHighlight(comp, selectedText);
-    }
-    setIsAddingMode(false);
-    setSelectedText("");
-
-  }, [createHighlight, isAddingMode, selectedText, setIsAddingMode]);
+  console.log(selectedText);
 
   return (
     <StyledSubBodyContainer2>
