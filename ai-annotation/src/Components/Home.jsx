@@ -15,7 +15,7 @@ import { COLOURS } from "Constraints/colours";
 import SidePanel from "./SidePanel";
 
 const Home = () => {
-  const fetchedText = TestText.pronouns2;
+  const fetchedText = TestText.test;
 
   const [highlightedWords, setHighlightedWords] = useState([]);
   const [presentingText, setPresentingText] = useState(fetchedText);
@@ -25,6 +25,7 @@ const Home = () => {
   const [wordCount, setWordCount] = useState(0);
   const [textComps, setTextComps] = useState([]);
   const [missingComps, setMissingComps] = useState(TestComp);
+  const [currentComponent, setCurrentComponent] = useState(null);
 
   const [colours] = useState(COLOURS)
 
@@ -51,13 +52,13 @@ const Home = () => {
     setWordCount(count);
   }
 
-  const highlightText = useCallback((highlights, componentTitle) => {
+  const highlightText = useCallback((highlights, component) => {
     let index = 0;
     const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
     const annotatedText = fetchedText.replace(regex, (match) => {
       const color = colours[index % colours.length];
       index++;
-      return `<mark class="highlight" id="${componentTitle}" style="background-color: ${color}; cursor: pointer;" data-highlight">${match}</mark>`;
+      return `<mark class="highlight" id="${component?.title}" style="background-color: ${color}; cursor: pointer;" data-highlight">${match}</mark>`;
     });
 
     //Update the presenting text
@@ -66,20 +67,16 @@ const Home = () => {
 
   const createHighlight = useCallback((component, text) => {
     if (text) {
-      const updatedHighlights = [...highlightedWords, text];
+      setHighlightedWords(prevWords => [...prevWords, text]);
+      setCurrentComponent(component)
 
-      if (!textComps.includes(component))
-      {
+      if (!textComps.includes(component)) {
         setTextComps(prevState => [...prevState, component])
-        setMissingComps(missingComps.filter(comp => comp !== component))
+        setMissingComps(prevMissing => prevMissing.filter(comp => comp !== component))
       }
-      
-      setHighlightedWords(updatedHighlights);
 
-      // Update the highlighted text
-      highlightText(updatedHighlights, component.title); //.body.innerHTML
     }
-  }, [highlightText, highlightedWords, missingComps, textComps]);
+  }, [textComps]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -92,12 +89,15 @@ const Home = () => {
       }
     };
 
+    // Update the highlighted text
+    highlightText(highlightedWords, currentComponent);
+
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [createHighlight, isAddingMode, isDeleteMode]);
+  }, [currentComponent, highlightText, highlightedWords, isAddingMode, isDeleteMode]);
 
   return (
     <StyledBodyContainer id="target">

@@ -17,7 +17,7 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
   const [selectedText, setSelectedText] = useState("");
 
   // Constants
-  const position = { X: 'right'};
+  const dialogBoxPosition = { X: 'right'};
   let testString = "Microsoft ASP.NET is a set of technologies in the Microsoft .NET Framework for building Web applications and XML Web services.";
 
   // useCallbacks
@@ -52,10 +52,9 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
     if (isAddingMode && selectedText !== "") {
       createHighlight(comp, selectedText);
     }
-    setIsAddingMode(false);
     setSelectedText("");
 
-  }, [createHighlight, isAddingMode, selectedText, setIsAddingMode]);
+  }, [createHighlight, isAddingMode, selectedText]);
 
   // useEffects
   useEffect(() => {
@@ -108,7 +107,7 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
           allowDragging={true}
           close={dialogClose}
           beforeOpen={onBeforeOpen}
-          position={position}
+          position={dialogBoxPosition}
         />
 
       <StyledAccordionContainer>
@@ -119,7 +118,12 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
       </StyledAccordionContainer>
       <StyledAccordionContainer>
         <h2>Annotation</h2>
-        <StyledAccordionComponent expandMode="Multiple">
+        <StyledAccordionComponent expandMode="Multiple"
+          expanding={(e) => {
+            const comp = textComps.find(c => c.title === e.item.header);
+            if (comp) handleAccordionClick(comp);
+          }}
+        >
           <AccordionItemsDirective>
             {textComps && textComps.map((comp) => (
             <AccordionItemDirective
@@ -156,20 +160,28 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
           <StyledEditButtonContainer color={Constants.GREEN}>
             <h6>Add</h6>
             <StyledEditButton
-              isToggle={isAddingMode}
-              onClick={() => selectedText !== "" && !isDeleteMode && setIsAddingMode((prevState) => !prevState)}
+              isToggle={true}
+              onClick={() => {
+                isDeleteMode && setIsDeleteMode(false)
+                setIsAddingMode((prevState) => !prevState)
+              }}
               iconCss="e-icons e-edit-2"
             ></StyledEditButton>
           </StyledEditButtonContainer>
           <StyledEditButtonContainer color={Constants.ORANGE}>
             <h6>Delete</h6>
             <StyledEditButton
-              isToggle={isDeleteMode}
+              isToggle={true}
               iconCss="e-icons e-delete-2"
-              onClick={() =>!isAddingMode && setIsDeleteMode((prevState) => !prevState)}
+              onClick={() => {
+                isAddingMode && setIsAddingMode(false)
+                setIsDeleteMode((prevState) => !prevState)
+              }}
             ></StyledEditButton>
           </StyledEditButtonContainer>
         </StyledEditInnerContainer>
+        {isAddingMode && "Adding Mode is ON"}
+        {isDeleteMode && "Delete Mode is ON"}
       </StyledEditContainer>
     </StyledSubBodyContainer2>
   );
