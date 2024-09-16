@@ -53,6 +53,7 @@ const Home = () => {
   }
 
   const highlightText = useCallback((highlights, component) => {
+    if (highlights.length === 0) return;
     let index = 0;
     const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
     const annotatedText = fetchedText.replace(regex, (match) => {
@@ -67,7 +68,10 @@ const Home = () => {
 
   const createHighlight = useCallback((component, text) => {
     if (text) {
-      setHighlightedWords(prevWords => [...prevWords, text]);
+      setHighlightedWords(prevWords => {
+        const updatedWords = [...prevWords, text];
+        return updatedWords;
+      });
       setCurrentComponent(component)
 
       if (!textComps.includes(component)) {
