@@ -11,8 +11,7 @@ import { StyledDialogBox } from 'Styles/StyledDialogBox';
 const SidePanel = ({
   isDeleteMode,
   isAddingMode,
-  textComps,
-  missingComps,
+  components,
   createHighlight,
   setIsAddingMode,
   setIsDeleteMode,
@@ -49,13 +48,10 @@ const SidePanel = ({
       const hasNoOtherHighlights = document.querySelectorAll(`[id="${compTitle}"]`).length === 0;
 
       if (hasNoOtherHighlights) {
-        const compToMove = textComps.find(comp => comp.title === compTitle);
-        if (compToMove) {
-          updateComponents('REMOVE_FROM_TEXT', compToMove);
-        }
+        updateComponents('REMOVE_FROM_TEXT', { title: compTitle });
       }
     }
-  }, [highlightText, setHighlightedWords, textComps, updateComponents]);
+  }, [highlightText, setHighlightedWords, updateComponents]);
 
   const showDialog = useCallback((title, text) => {
     setDialogTitle(title);
@@ -71,9 +67,8 @@ const SidePanel = ({
 
     if (isAddingMode && selectedText !== "") {
       createHighlight(comp, selectedText);
+      setSelectedText("");
     }
-    setSelectedText("");
-
   }, [createHighlight, isAddingMode, selectedText]);
 
   // useEffects
@@ -81,9 +76,7 @@ const SidePanel = ({
     const handleSelectionChange = () => {
       const selection = window.getSelection();
       const text = selection.toString().trim();
-      if (text) {
-        setSelectedText(text);
-      }
+      if (text) setSelectedText(text);
     };
 
     const handleDeleteHighlight = (event) => {
@@ -101,6 +94,12 @@ const SidePanel = ({
     }
   }, [deleteHighlight, isDeleteMode])
   
+  useEffect(() => {
+    console.log('SidePanel received new components:', components);
+    console.log('textComps:', components.textComps);
+    console.log('missingComps:', components.missingComps);
+  }, [components]);
+
   // Helper functions
   const dialogClose = () => setDialogVisibility(false);
 
@@ -110,22 +109,21 @@ const SidePanel = ({
 
   return (
     <StyledSubBodyContainer2>
-
-        <StyledDialogBox
-          header={dialogTitle}
-          content={dialogText}
-          showCloseIcon={true}
-          visible={visibility}
-          width="25vw"
-          height="90vh"
-          target="#target"
-          resizeHandles={["South"]}
-          enableResize={true}
-          allowDragging={true}
-          close={dialogClose}
-          beforeOpen={onBeforeOpen}
-          position={DIALOG_BOX_POSITION}
-        />
+      <StyledDialogBox
+        header={dialogTitle}
+        content={dialogText}
+        showCloseIcon={true}
+        visible={visibility}
+        width="25vw"
+        height="90vh"
+        target="#target"
+        resizeHandles={["South"]}
+        enableResize={true}
+        allowDragging={true}
+        close={dialogClose}
+        beforeOpen={onBeforeOpen}
+        position={DIALOG_BOX_POSITION}
+      />
 
       <StyledAccordionContainer>
         <h2>Notes</h2>
@@ -137,12 +135,12 @@ const SidePanel = ({
         <h2>Annotation</h2>
         <StyledAccordionComponent expandMode="Single"
           expanding={(e) => {
-            const comp = textComps.find(c => c.title === e.item.header);
+            const comp = components.textComps.find(c => c.title === e.item.header);  // Change this line
             if (comp) handleAccordionClick(comp);
           }}
         >
           <AccordionItemsDirective>
-            {textComps && textComps.map((comp, index) => (
+            {components.textComps && components.textComps.map((comp, index) => (
               <AccordionItemDirective
                 key={index}
                 expanded={false}
@@ -157,12 +155,12 @@ const SidePanel = ({
         <h2>Missing</h2>
         <StyledAccordionComponent expandMode="Single"
           expanding={(e) => {
-            const comp = missingComps.find(c => c.title === e.item.header);
+            const comp = components.missingComps.find(c => c.title === e.item.header);  // Change this line
             if (comp) handleAccordionClick(comp);
           }}
         >
           <AccordionItemsDirective>
-            {missingComps && missingComps.map((comp, index) => (
+            {components.missingComps && components.missingComps.map((comp, index) => (
               <AccordionItemDirective
                 key={index}
                 expanded={false}

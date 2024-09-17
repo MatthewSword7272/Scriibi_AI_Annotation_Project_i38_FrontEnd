@@ -34,6 +34,7 @@ const Home = () => {
   const colours = useMemo(() => COLOURS, []);
   const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
 
+  // Callback Functions
   const handleSkillChange = useCallback((event) => {
     setSelectedSkill(parseInt(event.target.value, 10));
   }, []);
@@ -47,8 +48,7 @@ const Home = () => {
   }, []);
 
   const handleWordCount = useCallback((args) => {
-    const count = countWords(args.value);
-    setWordCount(count);
+    setWordCount(countWords(args.value));
   }, [countWords]);
 
   const highlightText = useCallback((highlights) => {
@@ -70,18 +70,24 @@ const Home = () => {
     setComponents(prevState => {
       switch(action) {
         case 'ADD_TO_TEXT':
-          if (!prevState.textComps.some(comp => comp.title === component.title)) {
-            return {
-              textComps: [...prevState.textComps, component],
-              missingComps: prevState.missingComps.filter(comp => comp.title !== component.title)
-            };
+          if (prevState.textComps.some(comp => comp.title === component.title)) {
+            return prevState;
           }
-          return prevState;
+          return {
+            textComps: [...prevState.textComps, component],
+            missingComps: prevState.missingComps.filter(comp => comp.title !== component.title)
+          };
+
         case 'REMOVE_FROM_TEXT':
+          const compToMove = prevState.textComps.find(comp => comp.title === component.title);
+          if (!compToMove) {
+            return prevState;
+          }
           return {
             textComps: prevState.textComps.filter(comp => comp.title !== component.title),
-            missingComps: [...prevState.missingComps, component]
+            missingComps: [...prevState.missingComps, compToMove]
           };
+
         default:
           return prevState;
       }
@@ -90,11 +96,7 @@ const Home = () => {
 
   const updateHighlights = useCallback((component, text) => {
     if (text) {
-      setHighlightedWords(prevWords => {
-        const updatedWords = [...prevWords, {text: text, component: component.title}];
-        return updatedWords;
-      });
-
+      setHighlightedWords(prevWords => [...prevWords, {text: text, component: component.title}]);
       updateComponents('ADD_TO_TEXT', component);
     }
   }, [updateComponents]);
@@ -108,7 +110,7 @@ const Home = () => {
     };
 
     highlightText(highlightedWords);
-
+    
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
@@ -134,10 +136,10 @@ const Home = () => {
         <div><b>Word Count: {wordCount}</b></div>
       </StyledSubBodyContainer1>
       <SidePanel
+        key={JSON.stringify(components)}
         isDeleteMode={isDeleteMode} 
         isAddingMode={isAddingMode}
-        textComps={components.textComps}
-        missingComps={components.missingComps}
+        components={components}
         createHighlight={updateHighlights} 
         setIsDeleteMode={setIsDeleteMode}
         setIsAddingMode={setIsAddingMode}
