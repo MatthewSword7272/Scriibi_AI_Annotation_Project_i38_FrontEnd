@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import {
   StyledBodyContainer,
   StyledSubBodyContainer1,
@@ -5,18 +6,19 @@ import {
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import TestText from "../testText.json";
 import testSkillsInfo from '../testSkillsInfo';
-import TestComp from "../testComp.json";
-import React, { useCallback, useEffect, useState } from "react";
+import testComps from "../testComp";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 import skillsObject from "../Constraints/SkillsObject";
+import { COLOURS } from "Constraints/colours";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
-import { COLOURS } from "Constraints/colours";
 import SidePanel from "./SidePanel";
 
 const Home = () => {
+  // Constants
   const fetchedText = TestText.test;
 
+  // States
   const [highlightedWords, setHighlightedWords] = useState([]);
   const [presentingText, setPresentingText] = useState(fetchedText);
   const [selectedSkill, setSelectedSkill] = useState(0);
@@ -24,84 +26,74 @@ const Home = () => {
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [textComps, setTextComps] = useState([]);
-  const [missingComps, setMissingComps] = useState(TestComp);
-  const [currentComponent, setCurrentComponent] = useState(null);
+  const [missingComps, setMissingComps] = useState(testComps);
 
-  const [colours] = useState(COLOURS)
+  // Memoized values
+  const colours = useMemo(() => COLOURS, []);
+  const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
 
-  //So far it only adds marks to strings. We need to further develop this.
+  const handleSkillChange = useCallback((event) => {
+    setSelectedSkill(parseInt(event.target.value, 10));
+  }, []);
 
-  const skillData = testSkillsInfo[skillsObject[selectedSkill]]; //Use Interface to get Skills Level and Description
-
-  const handleSkillChange = (event) => {
-    var skill = parseInt(event.target.value);
-    setSelectedSkill(skill);
-  };
-
-  const countWords = (text) => {
-    const words = text.replace(/<[^>]*>/g, '')  // Remove HTML tags
-                      .replace(/[^a-zA-Z\s]/g, '')  // Remove special characters
+  const countWords = useCallback((text) => {
+    const words = text.replace(/<[^>]*>/g, '')
+                      .replace(/[^a-zA-Z\s]/g, '')
                       .trim()
                       .split(/\s+/);
     return words.filter(word => word !== '').length;
-  };
+  }, []);
 
-  const handleWordCount = (args) => {
-    const text = args.value;
-    const count = countWords(text);
+  const handleWordCount = useCallback((args) => {
+    const count = countWords(args.value);
     setWordCount(count);
-  }
+  }, [countWords]);
 
-  const highlightText = useCallback((highlights, component) => {
+  const highlightText = useCallback((highlights) => {
     if (highlights.length === 0) return;
-    let index = 0;
-    const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
-    const annotatedText = fetchedText.replace(regex, (match) => {
-      const color = colours[index % colours.length];
-      index++;
-      return `<mark class="highlight" id="${component?.title}" style="background-color: ${color}; cursor: pointer;" data-highlight">${match}</mark>`;
+    let annotatedText = fetchedText;
+
+    highlights.forEach((highlight, index) => {
+      const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlight.text})`, "gi");
+      annotatedText = annotatedText.replace(regex, (match) => {
+        const color = colours[index];
+        return `<mark class="highlight" id="${highlight.component}" style="background-color: ${color}; cursor: pointer;" data-highlight>${match}</mark>`;
+      });
     });
 
-    //Update the presenting text
     setPresentingText(annotatedText);
   }, [colours, fetchedText]);
 
-  const createHighlight = useCallback((component, text) => {
+  const updateHighlights = useCallback((component, text) => {
     if (text) {
       setHighlightedWords(prevWords => {
-        const updatedWords = [...prevWords, text];
+        const updatedWords = [...prevWords, {text: text, component: component.title}];
         return updatedWords;
       });
-      setCurrentComponent(component)
 
       if (!textComps.includes(component)) {
-        setTextComps(prevState => [...prevState, component])
-        setMissingComps(prevMissing => prevMissing.filter(comp => comp !== component))
+        setTextComps(prevState => [...prevState, component]);
+        setMissingComps(prevMissing => prevMissing.filter(comp => comp !== component));
       }
-
     }
   }, [textComps]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
-        if (isAddingMode) {
-          setIsAddingMode(false);
-        } else if (isDeleteMode) {
-          setIsDeleteMode(false);
-        }
+        setIsAddingMode(false);
+        setIsDeleteMode(false);
       }
     };
 
-    // Update the highlighted text
-    highlightText(highlightedWords, currentComponent);
+    highlightText(highlightedWords);
 
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [currentComponent, highlightText, highlightedWords, isAddingMode, isDeleteMode]);
+  }, [highlightText, highlightedWords, isAddingMode, isDeleteMode]);
 
   return (
     <StyledBodyContainer id="target">
@@ -125,7 +117,7 @@ const Home = () => {
         isAddingMode={isAddingMode}
         textComps={textComps}
         missingComps={missingComps}
-        createHighlight={createHighlight} 
+        createHighlight={updateHighlights} 
         setIsDeleteMode={setIsDeleteMode}
         setIsAddingMode={setIsAddingMode}
         setHighlightedWords={setHighlightedWords}

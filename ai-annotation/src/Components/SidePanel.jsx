@@ -17,8 +17,7 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
   const [selectedText, setSelectedText] = useState("");
 
   // Constants
-  const dialogBoxPosition = { X: 'right'};
-  let testString = "Microsoft ASP.NET is a set of technologies in the Microsoft .NET Framework for building Web applications and XML Web services.";
+  const DIALOG_BOX_POSITION = { X: 'right' };
 
   // useCallbacks
   const deleteHighlight = useCallback((element) => {
@@ -44,8 +43,8 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
   }, [])
 
   const handleDialogClick = useCallback(() => {
-    showDialog("ASP.NET", testString);
-  }, [showDialog, testString]);
+    showDialog("ASP.NET", "Actual content about ASP.NET");
+  }, [showDialog]);
 
   const handleAccordionClick = useCallback((comp) => {
 
@@ -59,8 +58,7 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
   // useEffects
   useEffect(() => {
     const handleSelectionChange = () => {
-      // Get highlighted text and save state
-      const selection = document.getSelection();
+      const selection = window.getSelection();
       const text = selection.toString().trim();
       if (text) {
         setSelectedText(text);
@@ -89,8 +87,6 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
     args.maxHeight = "80%";
   };
 
-  console.log(selectedText);
-
   return (
     <StyledSubBodyContainer2>
 
@@ -107,7 +103,7 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
           allowDragging={true}
           close={dialogClose}
           beforeOpen={onBeforeOpen}
-          position={dialogBoxPosition}
+          position={DIALOG_BOX_POSITION}
         />
 
       <StyledAccordionContainer>
@@ -123,6 +119,7 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
             const comp = textComps.find(c => c.title === e.item.header);
             if (comp) handleAccordionClick(comp);
           }}
+          components={textComps}
         >
           <AccordionItemsDirective>
             {textComps && textComps.map((comp) => (
@@ -142,6 +139,7 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
             const comp = missingComps.find(c => c.title === e.item.header);
             if (comp) handleAccordionClick(comp);
           }}
+          components={missingComps}
         >
           <AccordionItemsDirective>
             {missingComps && missingComps.map((comp) => (

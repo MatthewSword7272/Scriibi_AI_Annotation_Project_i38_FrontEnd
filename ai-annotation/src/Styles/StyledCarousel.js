@@ -71,14 +71,14 @@ const StyledCarouselDot = styled.div`
 `;
 
 const StyledCarouselDescription = styled.div`
-  flex-shrink: 1;
+  width: 75%;
+  padding: 0 2vw;
 
   ul {
     font-family: 'Segoe UI', sans-serif;
-    padding: 0 2vw;
     max-height: 200px;
     overflow-y: auto;
-    width: 75%;
+    padding-left: 20px;
   }
 `;
 

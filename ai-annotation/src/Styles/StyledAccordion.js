@@ -1,17 +1,6 @@
 import { AccordionComponent } from "@syncfusion/ej2-react-navigations";
 import styled from "styled-components";
 import {WHITE, BLACK} from '../Constraints/constants';
-import { COLOURS } from "Constraints/colours";
-
-const shuffleArray = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
-
-const shuffledColours = shuffleArray(COLOURS)
 
 const StyledAccordionComponent = styled(AccordionComponent)`
   border: transparent;
@@ -24,16 +13,16 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   row-gap: 10px;
   border-radius: 20px !important;
 
-  ${() => shuffledColours.map((color, index) => `
+  ${(props) => props.components.map((comp, index) => `
       .e-acrdn-item:nth-child(${index + 1}), .e-acrdn-item.e-selected:nth-child(${index + 1}) {
         border-radius: 20px !important;
         border: none;
         color: ${BLACK} !important;
-        background-color: ${color} !important;
+        background-color: ${comp.color} !important;
 
         .e-acrdn-header {
           border-radius: 20px !important;
-          background: ${color} !important;
+          background: ${comp.color} !important;
 
           .e-acrdn-header-content {
             color: ${BLACK} !important;
@@ -43,7 +32,7 @@ const StyledAccordionComponent = styled(AccordionComponent)`
 
         &.e-select .e-acrdn-panel .e-acrdn-content {
           background: ${WHITE};
-          border: 5px ${color} solid;
+          border: 5px ${comp.color} solid;
           border-radius: 20px;
         }
       }
