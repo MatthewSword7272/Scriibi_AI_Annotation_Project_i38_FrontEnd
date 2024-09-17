@@ -135,7 +135,7 @@ const SidePanel = ({
         <h2>Annotation</h2>
         <StyledAccordionComponent expandMode="Single"
           expanding={(e) => {
-            const comp = components.textComps.find(c => c.title === e.item.header);  // Change this line
+            const comp = components.textComps.find(c => c.title === e.item.header);
             if (comp) handleAccordionClick(comp);
           }}
         >
@@ -155,7 +155,7 @@ const SidePanel = ({
         <h2>Missing</h2>
         <StyledAccordionComponent expandMode="Single"
           expanding={(e) => {
-            const comp = components.missingComps.find(c => c.title === e.item.header);  // Change this line
+            const comp = components.missingComps.find(c => c.title === e.item.header);
             if (comp) handleAccordionClick(comp);
           }}
         >
