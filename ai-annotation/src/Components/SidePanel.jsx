@@ -8,7 +8,18 @@ import { StyledEditContainer, StyledEditInnerContainer, StyledEditButtonContaine
 import { StyledNotesButton } from 'Styles/StyledButton';
 import { StyledDialogBox } from 'Styles/StyledDialogBox';
 
-const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createHighlight, setIsAddingMode, setIsDeleteMode, setHighlightedWords, highlightText}) => {
+const SidePanel = ({
+  isDeleteMode,
+  isAddingMode,
+  textComps,
+  missingComps,
+  createHighlight,
+  setIsAddingMode,
+  setIsDeleteMode,
+  setHighlightedWords,
+  highlightText,
+  updateComponents
+}) => {
 
   // States
   const [visibility, setDialogVisibility] = useState(false);
@@ -24,17 +35,27 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
     if (element && element.parentNode) {
       const textContent = element.textContent;
       const compTitle = element.id;
-      element.parentNode.replaceChild(document.createTextNode(textContent),element);
+      element.parentNode.replaceChild(document.createTextNode(textContent), element);
 
       setHighlightedWords((prevHighlightedWords) => {
         const newArray = prevHighlightedWords.filter(
-          (word) => word !== textContent
+          (word) => word.text !== textContent || word.component !== compTitle
         );
         highlightText(newArray);
         return newArray;
       });
+
+      // Check if there are no other highlights with the same compTitle
+      const hasNoOtherHighlights = document.querySelectorAll(`[id="${compTitle}"]`).length === 0;
+
+      if (hasNoOtherHighlights) {
+        const compToMove = textComps.find(comp => comp.title === compTitle);
+        if (compToMove) {
+          updateComponents('REMOVE_FROM_TEXT', compToMove);
+        }
+      }
     }
-  }, [highlightText, setHighlightedWords]);
+  }, [highlightText, setHighlightedWords, textComps, updateComponents]);
 
   const showDialog = useCallback((title, text) => {
     setDialogTitle(title);
@@ -114,19 +135,19 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
       </StyledAccordionContainer>
       <StyledAccordionContainer>
         <h2>Annotation</h2>
-        <StyledAccordionComponent expandMode="Multiple"
+        <StyledAccordionComponent expandMode="Single"
           expanding={(e) => {
             const comp = textComps.find(c => c.title === e.item.header);
             if (comp) handleAccordionClick(comp);
           }}
-          components={textComps}
         >
           <AccordionItemsDirective>
-            {textComps && textComps.map((comp) => (
-            <AccordionItemDirective
-              expanded={false}
-              header={comp.title}
-              content={comp.description}
+            {textComps && textComps.map((comp, index) => (
+              <AccordionItemDirective
+                key={index}
+                expanded={false}
+                header={comp.title}
+                content={comp.description}
               />
             ))}
           </AccordionItemsDirective>
@@ -134,16 +155,16 @@ const SidePanel = ({isDeleteMode, isAddingMode, textComps, missingComps, createH
       </StyledAccordionContainer>
       <StyledAccordionMissingContainer>
         <h2>Missing</h2>
-        <StyledAccordionComponent expandMode="Multiple"
+        <StyledAccordionComponent expandMode="Single"
           expanding={(e) => {
             const comp = missingComps.find(c => c.title === e.item.header);
             if (comp) handleAccordionClick(comp);
           }}
-          components={missingComps}
         >
           <AccordionItemsDirective>
-            {missingComps && missingComps.map((comp) => (
+            {missingComps && missingComps.map((comp, index) => (
               <AccordionItemDirective
+                key={index}
                 expanded={false}
                 header={comp.title}
                 content={comp.description}

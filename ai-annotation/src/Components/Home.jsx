@@ -25,8 +25,10 @@ const Home = () => {
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
-  const [textComps, setTextComps] = useState([]);
-  const [missingComps, setMissingComps] = useState(testComps);
+  const [components, setComponents] = useState({
+    textComps: [],
+    missingComps: testComps
+  });
 
   // Memoized values
   const colours = useMemo(() => COLOURS, []);
@@ -64,6 +66,28 @@ const Home = () => {
     setPresentingText(annotatedText);
   }, [colours, fetchedText]);
 
+  const updateComponents = useCallback((action, component) => {
+    setComponents(prevState => {
+      switch(action) {
+        case 'ADD_TO_TEXT':
+          if (!prevState.textComps.some(comp => comp.title === component.title)) {
+            return {
+              textComps: [...prevState.textComps, component],
+              missingComps: prevState.missingComps.filter(comp => comp.title !== component.title)
+            };
+          }
+          return prevState;
+        case 'REMOVE_FROM_TEXT':
+          return {
+            textComps: prevState.textComps.filter(comp => comp.title !== component.title),
+            missingComps: [...prevState.missingComps, component]
+          };
+        default:
+          return prevState;
+      }
+    });
+  }, []);
+
   const updateHighlights = useCallback((component, text) => {
     if (text) {
       setHighlightedWords(prevWords => {
@@ -71,12 +95,9 @@ const Home = () => {
         return updatedWords;
       });
 
-      if (!textComps.includes(component)) {
-        setTextComps(prevState => [...prevState, component]);
-        setMissingComps(prevMissing => prevMissing.filter(comp => comp !== component));
-      }
+      updateComponents('ADD_TO_TEXT', component);
     }
-  }, [textComps]);
+  }, [updateComponents]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -110,19 +131,20 @@ const Home = () => {
           change={handleWordCount}>
           <Inject services={[Toolbar, HtmlEditor]} />
         </StyledRichTextEditor>
-        <div><b>Word Count: {wordCount}</b></div> {/* Word Count*/}
+        <div><b>Word Count: {wordCount}</b></div>
       </StyledSubBodyContainer1>
       <SidePanel
         isDeleteMode={isDeleteMode} 
         isAddingMode={isAddingMode}
-        textComps={textComps}
-        missingComps={missingComps}
+        textComps={components.textComps}
+        missingComps={components.missingComps}
         createHighlight={updateHighlights} 
         setIsDeleteMode={setIsDeleteMode}
         setIsAddingMode={setIsAddingMode}
         setHighlightedWords={setHighlightedWords}
         highlightText={highlightText}
-        />
+        updateComponents={updateComponents}
+      />
     </StyledBodyContainer>
   );
 };

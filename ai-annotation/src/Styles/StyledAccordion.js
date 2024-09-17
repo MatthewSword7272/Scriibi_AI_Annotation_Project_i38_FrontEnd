@@ -1,6 +1,7 @@
 import { AccordionComponent } from "@syncfusion/ej2-react-navigations";
 import styled from "styled-components";
 import {WHITE, BLACK} from '../Constraints/constants';
+import { COLOURS } from "Constraints/colours";
 
 const StyledAccordionComponent = styled(AccordionComponent)`
   border: transparent;
@@ -13,16 +14,16 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   row-gap: 10px;
   border-radius: 20px !important;
 
-  ${(props) => props.components.map((comp, index) => `
+  ${COLOURS.map((color, index) => `
       .e-acrdn-item:nth-child(${index + 1}), .e-acrdn-item.e-selected:nth-child(${index + 1}) {
         border-radius: 20px !important;
         border: none;
         color: ${BLACK} !important;
-        background-color: ${comp.color} !important;
+        background-color: ${color} !important;
 
         .e-acrdn-header {
           border-radius: 20px !important;
-          background: ${comp.color} !important;
+          background: ${color} !important;
 
           .e-acrdn-header-content {
             color: ${BLACK} !important;
@@ -32,11 +33,11 @@ const StyledAccordionComponent = styled(AccordionComponent)`
 
         &.e-select .e-acrdn-panel .e-acrdn-content {
           background: ${WHITE};
-          border: 5px ${comp.color} solid;
+          border: 5px ${color} solid;
           border-radius: 20px;
         }
       }
-    `)
+    `).join('\n')
   }
 
   .e-acrdn-item.e-item-focus.e-expand-state.e-select, 
