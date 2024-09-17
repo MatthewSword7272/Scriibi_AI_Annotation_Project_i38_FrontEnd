@@ -12,12 +12,7 @@ const StyledCarouselContainer = styled.div`
 `;
 
 const StyledCarouselInnerContainer = styled.div`
-  transition: transform 0.5s ease;
-  transform: translateX(${({gridCentre}) => -gridCentre * 150}px);
-  width: 95%;
-`;
-
-const StyledCarouselGrid = styled.div`
+  width: 99%;
   display: flex;
   flex-direction: column;
 `;
@@ -25,16 +20,16 @@ const StyledCarouselGrid = styled.div`
 const StyledCarouselRow = styled.div`
   display: flex;
   justify-content: space-evenly;
+  transform: translateX(${props => -props.gridCentre * 35}%);
   align-items: center;
   margin-bottom: 15px;
 
   &:nth-child(1) {
     margin-bottom: 20px;
-    column-gap: 5%;
+    column-gap: 4.5%;
   }
 
   &:nth-child(3) {
-    justify-content: space-between;
     align-items: flex-start;
   }
 `;
@@ -44,26 +39,32 @@ const StyledH4 = styled.h4`
   text-align: center;
   width: 20px;
   flex-shrink: 0;
+  font-weight: 600;
 `;
 
 const StyledDotContainer = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center; 
   width: 100%;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, .5);
   border-radius: 10px;
   padding: 3px 0;
-  column-gap: 3vw;
+  
 `;
+
+const StyledDotInnerContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center; 
+  column-gap: 3vw;
+  transform: translateX(${props => -props.gridCentre * 35}%);
+`
 
 const StyledCarouselDot = styled.div`
   width: 20px;
   height: 20px;
-  background-color: ${({ isActive }) => isActive ? GREEN : GREY};
+  background-color: ${props => props.isActive ? GREEN : GREY};
   border-radius: 50%;
   transition: transform 0.3s ease;
-  flex-shrink: 0;
+  /* flex-shrink: 0; */
 
   &:hover {
     cursor: pointer;
@@ -72,12 +73,11 @@ const StyledCarouselDot = styled.div`
 `;
 
 const StyledCarouselDescription = styled.div`
-  width: 300px;
-  flex-shrink: 0;
-  font-size: 15px;
+  flex-shrink: 1;
 
   ul {
-    padding: 0 20px;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 0 2vw;
     max-height: 200px;
     overflow-y: auto;
   }
@@ -112,8 +112,8 @@ export {
     StyledDotContainer,
     StyledH4,
     StyledCarouselInnerContainer,
-    StyledCarouselGrid,
     StyledCarouselDescription,
     StyledCarouselRow,
-    StyledArrowContainer
+    StyledArrowContainer,
+    StyledDotInnerContainer
 }

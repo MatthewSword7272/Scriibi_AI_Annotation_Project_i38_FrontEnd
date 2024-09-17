@@ -6,10 +6,10 @@ import {
   StyledCarouselContainer,
   StyledCarouselDescription,
   StyledCarouselDot,
-  StyledCarouselGrid,
   StyledCarouselInnerContainer,
   StyledCarouselRow,
   StyledDotContainer,
+  StyledDotInnerContainer,
   StyledH4,
 } from "../Styles/StyledCarousel";
 
@@ -20,13 +20,13 @@ const SkillCarousel = ({ skillData }) => {
 
   const moveLeft = () => {
     setGridCentre((prevIndex) => 
-      prevIndex < Math.round(levels.length / 2) ? prevIndex + 1 : prevIndex
+      prevIndex < Math.floor(levels.length / 2) ? prevIndex + 1 : prevIndex
     );
   };
 
   const moveRight = () => {
     setGridCentre((prevIndex) => 
-      prevIndex > -Math.round(levels.length / 2) ? prevIndex - 1 : prevIndex
+      prevIndex > -Math.floor(levels.length / 2) ? prevIndex - 1 : prevIndex
     );
   };
 
@@ -41,15 +41,15 @@ const SkillCarousel = ({ skillData }) => {
         <StyledArrowButtonLeft onClick={moveLeft} />
         <StyledArrowButtonRight onClick={moveRight} />
       </StyledArrowContainer>
-    <StyledCarouselInnerContainer gridCentre={gridCentre}>
-      <StyledCarouselGrid>
-        <StyledCarouselRow>
+    <StyledCarouselInnerContainer>
+        <StyledCarouselRow gridCentre={gridCentre}>
           {levels.map((levelKey, index) => (
             <StyledH4 key={index}>{skillData[levelKey].title}</StyledH4>
           ))}
         </StyledCarouselRow>
         <StyledCarouselRow>
           <StyledDotContainer>
+            <StyledDotInnerContainer gridCentre={gridCentre}>
             {levels.map((_, index) => (
               <StyledCarouselDot 
                 key={index}
@@ -57,9 +57,10 @@ const SkillCarousel = ({ skillData }) => {
                 onClick={() => chooseLevel(index)}
               />
             ))}
+            </StyledDotInnerContainer>
           </StyledDotContainer>
         </StyledCarouselRow>
-        <StyledCarouselRow>
+        <StyledCarouselRow gridCentre={gridCentre}>
           {levels.map((levelKey, index) => (
             index % 2 === 0 && (
               <StyledCarouselDescription key={index}>
@@ -72,7 +73,6 @@ const SkillCarousel = ({ skillData }) => {
             )
           ))}
         </StyledCarouselRow>
-      </StyledCarouselGrid>
     </StyledCarouselInnerContainer>
   </StyledCarouselContainer>
   );

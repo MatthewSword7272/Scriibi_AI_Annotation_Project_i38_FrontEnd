@@ -3,13 +3,13 @@ import styled from 'styled-components'
 const StyledBodyContainer = styled.div`
     border: 3px solid black;
     border-radius: 30px;
-    padding: 10px;
+    padding: 20px 10px;
     margin: 30px 20px;
     display: inline-flex;
     justify-content: space-evenly;
     width: 95vw;
     column-gap: 20px;
-    height: 110vh;
+    height: 100%;
     min-height: 63em;
 `
 
@@ -17,7 +17,7 @@ const StyledSubBodyContainer1 = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 60vw;
+    width: 65vw;
     overflow-y: hidden;
 `;
 

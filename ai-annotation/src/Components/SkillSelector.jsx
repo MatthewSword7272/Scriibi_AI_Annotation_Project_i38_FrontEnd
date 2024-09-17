@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import { StyledButtonComponent } from "Styles/StyledButton";
 import {
   StyledRadioButton,
@@ -7,7 +8,31 @@ import {
   StyledSkillContainer,
 } from "Styles/StyledRadioButton";
 
-const SkillSelector = ({ handleSkillChange, selectedSkill, skillData }) => {
+const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) => {
+
+  const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
+  const [isAnnotated, setIsAnnotated] = useState(false);
+
+  const sendText = async () => {
+    axios({
+      method: 'post',
+      url: pronounURL,
+      headers: {
+        "Content-Type": 'application/JSON'
+      },
+      data: {
+        text: text
+      },
+    }).then( res => {
+      console.log(res);
+    }).catch( err => {
+      console.log()
+    })
+  }
+
+  const annotate = () => {
+    setIsAnnotated(true); //This will annotate the text and switch between the Buttons between Annotate to Save
+  }
 
   return (
     <StyledSkillContainer>
@@ -24,10 +49,10 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData }) => {
     ))}
     </StyledRadioButtonContainer>
     <StyledSkillButtonContainer>
-      <StyledButtonComponent>Annotate</StyledButtonComponent>
-    </StyledSkillButtonContainer>
-    <StyledSkillButtonContainer>
-      <StyledButtonComponent>Save</StyledButtonComponent>
+      {isAnnotated 
+        ? <StyledButtonComponent onClick={sendText}>Save</StyledButtonComponent> 
+        : <StyledButtonComponent onClick={annotate}>Annotate</StyledButtonComponent>
+      }
     </StyledSkillButtonContainer>
   </StyledSkillContainer>
   );

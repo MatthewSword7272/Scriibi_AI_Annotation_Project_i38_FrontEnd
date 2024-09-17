@@ -10,7 +10,7 @@ const StyledAccordionContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: "Raleway", sans-serif;
+
 
     h2 {
         margin-top: 0;
@@ -18,19 +18,11 @@ const StyledAccordionContainer = styled.div`
 
 `
 
-const StyledAccordionMissingContainer = styled.div`
-    background-color: transparent;
-    margin: 10px;
-    border-radius: 10px;
-    padding: 10px;
+const StyledAccordionMissingContainer = styled(StyledAccordionContainer)`
     border: ${ORANGE} solid 2px;
-    max-width: 100%;
 
-    h3 {
+    h2 {
         color: ${ORANGE};
-        text-align: center;
-        margin: 0 0 10px 0;
-        font-weight: 500;
     }
 
 `

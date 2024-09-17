@@ -9,8 +9,7 @@ const StyledHeader = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 10px;
-    width: 99%;
+    width: 100%;
 `;
 
 const StyledHeaderSection = styled.div`
