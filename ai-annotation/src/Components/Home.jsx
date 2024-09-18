@@ -17,6 +17,7 @@ import SidePanel from "./SidePanel";
 const Home = () => {
   // Constants
   const fetchedText = TestText.test;
+  const highlightStyle = "";
 
   // States
   const [highlightedWords, setHighlightedWords] = useState([]);
@@ -59,7 +60,11 @@ const Home = () => {
       const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlight.text})`, "gi");
       annotatedText = annotatedText.replace(regex, (match) => {
         const color = colours[index];
-        return `<mark class="highlight" id="${highlight.component}" style="background-color: ${color}; cursor: pointer;" data-highlight>${match}</mark>`;
+        return `<mark class="highlight" id="${highlight.component}" 
+                      style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" 
+                      data-highlight>
+                        ${match}
+                      </mark>`;
       });
     });
 
