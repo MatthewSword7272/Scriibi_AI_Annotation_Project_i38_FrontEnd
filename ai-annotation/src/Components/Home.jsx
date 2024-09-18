@@ -1,189 +1,185 @@
-import { StyledBodyContainer, StyledSubBodyContainer2 } from "../Styles/StyledBody";
-import * as Constants from "../constants";
-import { AccordionItemDirective, AccordionItemsDirective,} from "@syncfusion/ej2-react-navigations";
-import { StyledAccordionComponent } from "../Styles/StyledAccordion";
-import { StyledEditButton, StyledEditButtonContainer,StyledEditContainer, StyledEditInnerContainer} from "../Styles/StyledEditContainer";
-import { StyledAccordionContainer, StyledAccordionMissingContainer,} from "../Styles/StyledAccordionContainer";
-import { StyledRadioButtonContainer, StyledRadioButton, StyledSkillButtonContainer, StyledSkillContainer} from "../Styles/StyledRadioButton";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
+import {
+  StyledBodyContainer,
+  StyledSubBodyContainer1,
+} from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
-import { StyledButtonComponent } from "../Styles/StyledButton";
-import TestText from "../testText.json"
-import React, { useEffect, useState } from "react";
+import TestText from "../testText.json";
+import testSkillsInfo from '../testSkillsInfo';
+import testComps from "../testComp";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
+import skillsObject from "../Constraints/SkillsObject";
+import { COLOURS } from "Constraints/colours";
+import SkillCarousel from "./SkillCarousel";
+import SkillSelector from "./SkillSelector";
+import SidePanel from "./SidePanel";
+import HighlightTooltip from "./HighlightTooltip";
+import { createRoot } from "react-dom/client";
 
-function Home() {
-
-  const colours  = [
-    "#B1E1B7",
-    "#E5F9B5",
-    "#F9ADF5",
-    "#B3EEFB",
-    "#B5D6D3"
-  ]
-
+const Home = () => {
+  // Constants
   const fetchedText = TestText.test;
-  // const parser = new DOMParser();
-  // const startingText =  parser.parseFromString(fetchedText, "text/html")
 
-  //So far it only adds marks to strings. We need to further develop this.
-
-  const [text, setText] = useState("");
+  // States
   const [highlightedWords, setHighlightedWords] = useState([]);
   const [presentingText, setPresentingText] = useState(fetchedText);
+  const [selectedSkill, setSelectedSkill] = useState(0);
+  const [isAddingMode, setIsAddingMode] = useState(false);
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [wordCount, setWordCount] = useState(0);
+  const [components, setComponents] = useState({
+    textComps: [],
+    missingComps: testComps
+  });
 
-  const saveHighlight = () => {
-    const updatedHighlights = [...highlightedWords, text];
-    setHighlightedWords(updatedHighlights);
-    
-    // Update the highlighted text
-    const highlightedText = highlightText(presentingText, updatedHighlights); //.body.innerHTML
-    //Update the presenting text
-    setPresentingText(highlightedText);
-    //Resets the getText back to default
-    setText("");
-  };
+  // Memoized values
+  const colours = useMemo(() => COLOURS, []);
+  const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
 
-  const highlightText = (text, highlights) => {
-    // Skip existing <mark> tags
-    const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
-    return text.replace(regex, (match) => 
-      match.startsWith('<mark') ? match : `<mark style="background-color: ${colours[generateRandomColour()]}">${match}</mark>`
-    );
-  };
-
-  const generateRandomColour = () => {
-    return Math.floor(Math.random() * colours.length);
-  }
-
-  const aspContent = () => {
-    return (
-      <div>
-        Microsoft ASP.NET is a set of technologies in the Microsoft .NET
-        Framework for building Web applications and XML Web services.
-      </div>
-    );
-  };
-
-  useEffect(() => {
-    const handleSelectionChange = (event) => {
-      //Get Highlighted text and save State
-      const activeSelection = document.getSelection();
-      const selectedText = activeSelection.toString();
-      setText(selectedText);
-    };
-
-    document.addEventListener('selectionchange', handleSelectionChange);
-    
-    return () => {
-      document.removeEventListener('selectionchange', handleSelectionChange);
-    };
+  // Callback Functions
+  const handleSkillChange = useCallback((event) => {
+    setSelectedSkill(parseInt(event.target.value, 10));
   }, []);
 
-  return (
-    <StyledBodyContainer>
-      <div>
-        <StyledSkillContainer>
-          <StyledRadioButtonContainer>
-            <StyledRadioButton label="Skill 1" name="skill" />
-            <StyledRadioButton label="Skill 2" name="skill" />
-            <StyledRadioButton label="Skill 3" name="skill" />
-            <StyledRadioButton label="Skill 4" name="skill" />
-            <StyledRadioButton label="Skill 5" name="skill" />
-          </StyledRadioButtonContainer>
-          <StyledSkillButtonContainer>
-            <StyledButtonComponent>Save</StyledButtonComponent>
-          </StyledSkillButtonContainer>
-        </StyledSkillContainer>
+  const countWords = useCallback((text) => {
+    const words = text.replace(/<[^>]*>/g, '')
+                      .replace(/[^a-zA-Z\s]/g, '')
+                      .trim()
+                      .split(/\s+/);
+    return words.filter(word => word !== '').length;
+  }, []);
 
-       
-          <StyledRichTextEditor value={presentingText}>
-          {/* .body.innerHTML */}
-            <Inject services={[Toolbar, HtmlEditor]}/>
-          </StyledRichTextEditor>
-        
-        
-      </div>
-      <StyledSubBodyContainer2>
-        <StyledAccordionContainer>
-          <h2>Notes</h2>
-          <StyledAccordionComponent expandMode="Multiple" color={Constants.CAM}>
-            <AccordionItemsDirective>
-              <AccordionItemDirective
-                expanded={false}
-                header="ASP.NET"
-                content={aspContent}
-              />
-              <AccordionItemDirective
-                expanded={false}
-                header="ASP.NET2"
-                content={aspContent}
-              />
-            </AccordionItemsDirective>
-          </StyledAccordionComponent>
-        </StyledAccordionContainer>
+  const handleWordCount = useCallback((args) => {
+    setWordCount(countWords(args.value));
+  }, [countWords]);
 
-        <StyledAccordionContainer>
-          <h2>Annotation</h2>
-          <StyledAccordionComponent expandMode="Multiple" color={Constants.CAM}>
-            <AccordionItemsDirective>
-              <AccordionItemDirective
-                expanded={false}
-                header="ASP.NET"
-                content={aspContent}
-              />
-              <AccordionItemDirective
-                expanded={false}
-                header="ASP.NET2"
-                content={aspContent}
-              />
-            </AccordionItemsDirective>
-          </StyledAccordionComponent>
-          <StyledAccordionMissingContainer>
-            <h3>Missing</h3>
+  const highlightText = useCallback((highlights) => {
+    if (highlights.length === 0) return;
+    let annotatedText = fetchedText;
 
-            <StyledAccordionComponent
-              expandMode="Multiple"
-              color={Constants.CAM}
+    highlights.forEach((highlight, index) => {
+      const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlight.text})`, "gi");
+      annotatedText = annotatedText.replace(regex, (match) => {
+        const color = colours[index];
+        return `<span class="highlight-wrapper" data-highlight-id="${highlight.component}" 
+                      data-color="${color}" data-highlight-text="${match}"></span>`;
+      });
+    });
+
+    setPresentingText(annotatedText);
+  }, [colours, fetchedText]);
+
+  const updateComponents = useCallback((action, component) => {
+    setComponents(prevState => {
+      switch(action) {
+        case 'ADD_TO_TEXT':
+          if (prevState.textComps.some(comp => comp.title === component.title)) {
+            return prevState;
+          }
+          return {
+            textComps: [...prevState.textComps, component],
+            missingComps: prevState.missingComps.filter(comp => comp.title !== component.title)
+          };
+
+        case 'REMOVE_FROM_TEXT':
+          const compToMove = prevState.textComps.find(comp => comp.title === component.title);
+          if (!compToMove) {
+            return prevState;
+          }
+          return {
+            textComps: prevState.textComps.filter(comp => comp.title !== component.title),
+            missingComps: [...prevState.missingComps, compToMove]
+          };
+
+        default:
+          return prevState;
+      }
+    });
+  }, []);
+
+  const updateHighlights = useCallback((component, text) => {
+    if (text) {
+      setHighlightedWords(prevWords => [...prevWords, {text: text, component: component.title}]);
+      updateComponents('ADD_TO_TEXT', component);
+    }
+  }, [updateComponents]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsAddingMode(false);
+        setIsDeleteMode(false);
+      }
+    };
+
+    highlightText(highlightedWords);
+    
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [highlightText, highlightedWords, isAddingMode, isDeleteMode]);
+
+  useEffect(() => {
+    const container = document.querySelector('.e-content');
+    if (container) {
+      const highlights = container.querySelectorAll('.highlight-wrapper');
+      highlights.forEach(highlight => {
+        const highlightId = highlight.getAttribute('data-highlight-id');
+        const color = highlight.getAttribute('data-color');
+        const text = highlight.getAttribute('data-highlight-text');
+        const root = createRoot(highlight);
+        root.render(
+          <HighlightTooltip
+            isDeleteMode={isDeleteMode}
+            isAddingMode={isAddingMode}
+            setIsDeleteMode={setIsDeleteMode}
+            setIsAddingMode={setIsAddingMode}
+          >
+            <mark 
+              className="highlight" 
+              style={{backgroundColor: color, cursor: 'pointer', padding: '3px 5px', borderRadius: '5px'}}
             >
-              <AccordionItemsDirective>
-                <AccordionItemDirective
-                  expanded={false}
-                  header="ASP.NET3"
-                  content={aspContent}
-                />
-                <AccordionItemDirective
-                  expanded={false}
-                  header="ASP.NET4"
-                  content={aspContent}
-                />
-              </AccordionItemsDirective>
-            </StyledAccordionComponent>
-          </StyledAccordionMissingContainer>
-        </StyledAccordionContainer>
+              {text}
+            </mark>
+          </HighlightTooltip>
+        );
+      });
+    }
+  }, [presentingText, isDeleteMode, isAddingMode, setIsDeleteMode, setIsAddingMode]);
 
-        <StyledEditContainer>
-          <h2>Edit</h2>
-          <StyledEditInnerContainer>
-            <StyledEditButtonContainer color={Constants.GREEN}>
-              <h6>Add</h6>
-              <StyledEditButton
-                onClick={() => text !== "" && saveHighlight()}
-                // isToggle={true}
-                iconCss="e-icons e-edit-2"
-              ></StyledEditButton>
-            </StyledEditButtonContainer>
-            <StyledEditButtonContainer color={Constants.RED}>
-              <h6>Delete</h6>
-              <StyledEditButton
-                // isToggle={true}
-                iconCss="e-icons e-delete-2"
-              ></StyledEditButton>
-            </StyledEditButtonContainer>
-          </StyledEditInnerContainer>
-        </StyledEditContainer>
-      </StyledSubBodyContainer2>
+  return (
+    <StyledBodyContainer id="target">
+      <StyledSubBodyContainer1>
+        <SkillSelector
+          handleSkillChange={handleSkillChange}
+          selectedSkill={selectedSkill}
+          skillData={testSkillsInfo}
+          text={presentingText}
+        />
+        <SkillCarousel skillData={skillData} />
+        <StyledRichTextEditor
+          value={presentingText}
+          change={handleWordCount}>
+          <Inject services={[Toolbar, HtmlEditor]} />
+        </StyledRichTextEditor>
+        <div><b>Word Count: {wordCount}</b></div>
+      </StyledSubBodyContainer1>
+      <SidePanel
+        key={JSON.stringify(components)}
+        isDeleteMode={isDeleteMode} 
+        isAddingMode={isAddingMode}
+        components={components}
+        createHighlight={updateHighlights} 
+        setIsDeleteMode={setIsDeleteMode}
+        setIsAddingMode={setIsAddingMode}
+        setHighlightedWords={setHighlightedWords}
+        highlightText={highlightText}
+        updateComponents={updateComponents}
+      />
     </StyledBodyContainer>
   );
-}
+};
 
 export default Home;
