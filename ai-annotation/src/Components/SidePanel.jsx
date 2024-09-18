@@ -81,7 +81,7 @@ const SidePanel = ({
     };
 
     const handleDeleteHighlight = (event) => {
-      if (isDeleteMode && (event.target.matches(".highlight") || event.target.matches("[data-highlight]"))) {
+      if (isDeleteMode && (event.target.matches(".highlight-wrapper") || event.target.matches("[data-highlight-id]"))) {
         deleteHighlight(event.target);
       }
     };

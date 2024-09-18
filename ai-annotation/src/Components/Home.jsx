@@ -139,7 +139,7 @@ const Home = () => {
           >
             <mark 
               className="highlight" 
-              style={{backgroundColor: color, cursor: 'pointer', padding: '3px 5px', borderRadius: '5px'}}
+              style={{backgroundColor: color, cursor: 'pointer', padding: '1px 2px', borderRadius: '5px'}}
             >
               {text}
             </mark>
