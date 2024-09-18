@@ -26,7 +26,7 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) =>
     }).then( res => {
       console.log(res);
     }).catch( err => {
-      console.log()
+      console.log(err)
     })
   }
 

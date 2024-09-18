@@ -38,7 +38,6 @@ const StyledH4 = styled.h4`
   margin: 0;
   text-align: center;
   width: 20px;
-  flex-shrink: 0;
   font-weight: 600;
 `;
 
@@ -64,7 +63,6 @@ const StyledCarouselDot = styled.div`
   background-color: ${props => props.isActive ? GREEN : GREY};
   border-radius: 50%;
   transition: transform 0.3s ease;
-  /* flex-shrink: 0; */
 
   &:hover {
     cursor: pointer;
@@ -73,13 +71,14 @@ const StyledCarouselDot = styled.div`
 `;
 
 const StyledCarouselDescription = styled.div`
-  flex-shrink: 1;
+  width: 75%;
+  padding: 0 2vw;
 
   ul {
     font-family: 'Segoe UI', sans-serif;
-    padding: 0 2vw;
     max-height: 200px;
     overflow-y: auto;
+    padding-left: 20px;
   }
 `;
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2-react-navigations";
 import * as Constants from "../Constraints/constants";
 import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
@@ -8,22 +8,50 @@ import { StyledEditContainer, StyledEditInnerContainer, StyledEditButtonContaine
 import { StyledNotesButton } from 'Styles/StyledButton';
 import { StyledDialogBox } from 'Styles/StyledDialogBox';
 
-const SidePanel = ({text, isDeleteMode, isAddingMode, createHighlight, setIsAddingMode, setIsDeleteMode, aspContent}) => {
+const SidePanel = ({
+  isDeleteMode,
+  isAddingMode,
+  components,
+  createHighlight,
+  setIsAddingMode,
+  setIsDeleteMode,
+  setHighlightedWords,
+  highlightText,
+  updateComponents
+}) => {
 
+  // States
   const [visibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogText, setDialogText] = useState("");
+  const [selectedText, setSelectedText] = useState("");
 
-  const dialogClose = () => setDialogVisibility(false);
-  // const dialogOpen = () => setDialogVisibility(true);
+  // Constants
+  const DIALOG_BOX_POSITION = { X: 'right' };
 
-  const position = { X: 'right'};
+  // useCallbacks
+  const deleteHighlight = useCallback((element) => {
+    if (element && element.parentNode) {
+      const textContent = element.textContent;
+      const compTitle = element.id;
+      element.parentNode.replaceChild(document.createTextNode(textContent), element);
 
-  const onBeforeOpen = (args) => {
-    args.maxHeight = "80%";
-  };
+      setHighlightedWords((prevHighlightedWords) => {
+        const newArray = prevHighlightedWords.filter(
+          (word) => word.text !== textContent || word.component !== compTitle
+        );
+        highlightText(newArray);
+        return newArray;
+      });
 
-  let testString = "Microsoft ASP.NET is a set of technologies in the Microsoft .NET Framework for building Web applications and XML Web services.";
+      // Check if there are no other highlights with the same compTitle
+      const hasNoOtherHighlights = document.querySelectorAll(`[id="${compTitle}"]`).length === 0;
+
+      if (hasNoOtherHighlights) {
+        updateComponents('REMOVE_FROM_TEXT', { title: compTitle });
+      }
+    }
+  }, [highlightText, setHighlightedWords, updateComponents]);
 
   const showDialog = useCallback((title, text) => {
     setDialogTitle(title);
@@ -32,29 +60,70 @@ const SidePanel = ({text, isDeleteMode, isAddingMode, createHighlight, setIsAddi
   }, [])
 
   const handleDialogClick = useCallback(() => {
-    showDialog("ASP.NET", testString);
-  }, [showDialog, testString]);
+    showDialog("ASP.NET", "Actual content about ASP.NET");
+  }, [showDialog]);
 
-  const testArray = [1, 2, 3];
+  const handleAccordionClick = useCallback((comp) => {
+
+    if (isAddingMode && selectedText !== "") {
+      createHighlight(comp, selectedText);
+      setSelectedText("");
+    }
+  }, [createHighlight, isAddingMode, selectedText]);
+
+  // useEffects
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      const selection = window.getSelection();
+      const text = selection.toString().trim();
+      if (text) setSelectedText(text);
+    };
+
+    const handleDeleteHighlight = (event) => {
+      if (isDeleteMode && (event.target.matches(".highlight") || event.target.matches("[data-highlight]"))) {
+        deleteHighlight(event.target);
+      }
+    };
+
+    document.addEventListener("selectionchange", handleSelectionChange);
+    document.addEventListener("click", handleDeleteHighlight);
+
+    return () => {
+      document.removeEventListener("selectionchange", handleSelectionChange);
+      document.removeEventListener("click", handleDeleteHighlight);
+    }
+  }, [deleteHighlight, isDeleteMode])
+  
+  useEffect(() => {
+    console.log('SidePanel received new components:', components);
+    console.log('textComps:', components.textComps);
+    console.log('missingComps:', components.missingComps);
+  }, [components]);
+
+  // Helper functions
+  const dialogClose = () => setDialogVisibility(false);
+
+  const onBeforeOpen = (args) => {
+    args.maxHeight = "80%";
+  };
 
   return (
     <StyledSubBodyContainer2>
-
-        <StyledDialogBox
-          header={dialogTitle}
-          content={dialogText}
-          showCloseIcon={true}
-          visible={visibility}
-          width="25vw"
-          height="90vh"
-          target="#target"
-          resizeHandles={["South"]}
-          enableResize={true}
-          allowDragging={true}
-          close={dialogClose}
-          beforeOpen={onBeforeOpen}
-          position={position}
-        />
+      <StyledDialogBox
+        header={dialogTitle}
+        content={dialogText}
+        showCloseIcon={true}
+        visible={visibility}
+        width="25vw"
+        height="90vh"
+        target="#target"
+        resizeHandles={["South"]}
+        enableResize={true}
+        allowDragging={true}
+        close={dialogClose}
+        beforeOpen={onBeforeOpen}
+        position={DIALOG_BOX_POSITION}
+      />
 
       <StyledAccordionContainer>
         <h2>Notes</h2>
@@ -64,13 +133,19 @@ const SidePanel = ({text, isDeleteMode, isAddingMode, createHighlight, setIsAddi
       </StyledAccordionContainer>
       <StyledAccordionContainer>
         <h2>Annotation</h2>
-        <StyledAccordionComponent expandMode="Multiple">
+        <StyledAccordionComponent expandMode="Single"
+          expanding={(e) => {
+            const comp = components.textComps.find(c => c.title === e.item.header);
+            if (comp) handleAccordionClick(comp);
+          }}
+        >
           <AccordionItemsDirective>
-            {testArray.map(() => (
+            {components.textComps && components.textComps.map((comp, index) => (
               <AccordionItemDirective
+                key={index}
                 expanded={false}
-                header="ASP.NET"
-                content={aspContent}
+                header={comp.title}
+                content={comp.description}
               />
             ))}
           </AccordionItemsDirective>
@@ -78,13 +153,19 @@ const SidePanel = ({text, isDeleteMode, isAddingMode, createHighlight, setIsAddi
       </StyledAccordionContainer>
       <StyledAccordionMissingContainer>
         <h2>Missing</h2>
-        <StyledAccordionComponent expandMode="Multiple">
+        <StyledAccordionComponent expandMode="Single"
+          expanding={(e) => {
+            const comp = components.missingComps.find(c => c.title === e.item.header);
+            if (comp) handleAccordionClick(comp);
+          }}
+        >
           <AccordionItemsDirective>
-            {testArray.map(() => (
+            {components.missingComps && components.missingComps.map((comp, index) => (
               <AccordionItemDirective
+                key={index}
                 expanded={false}
-                header="ASP.NET"
-                content={aspContent}
+                header={comp.title}
+                content={comp.description}
               />
             ))}
           </AccordionItemsDirective>
@@ -96,7 +177,11 @@ const SidePanel = ({text, isDeleteMode, isAddingMode, createHighlight, setIsAddi
           <StyledEditButtonContainer color={Constants.GREEN}>
             <h6>Add</h6>
             <StyledEditButton
-              onClick={() =>!isDeleteMode && setIsAddingMode((prevState) => !prevState)}
+              isToggle={true}
+              onClick={() => {
+                isDeleteMode && setIsDeleteMode(false)
+                setIsAddingMode((prevState) => !prevState)
+              }}
               iconCss="e-icons e-edit-2"
             ></StyledEditButton>
           </StyledEditButtonContainer>
@@ -105,10 +190,15 @@ const SidePanel = ({text, isDeleteMode, isAddingMode, createHighlight, setIsAddi
             <StyledEditButton
               isToggle={true}
               iconCss="e-icons e-delete-2"
-              onClick={() =>!isAddingMode && setIsDeleteMode((prevState) => !prevState)}
+              onClick={() => {
+                isAddingMode && setIsAddingMode(false)
+                setIsDeleteMode((prevState) => !prevState)
+              }}
             ></StyledEditButton>
           </StyledEditButtonContainer>
         </StyledEditInnerContainer>
+        {isAddingMode && "Adding Mode is ON"}
+        {isDeleteMode && "Delete Mode is ON"}
       </StyledEditContainer>
     </StyledSubBodyContainer2>
   );

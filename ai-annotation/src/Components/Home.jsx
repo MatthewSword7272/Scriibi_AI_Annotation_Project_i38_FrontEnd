@@ -1,145 +1,127 @@
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import {
   StyledBodyContainer,
   StyledSubBodyContainer1,
 } from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
-import TestText from "../testText.json"
-import testSkillsInfo from '../testSkilsInfo'
-import React, { useCallback, useEffect, useState } from "react";
+import TestText from "../testText.json";
+import testSkillsInfo from '../testSkillsInfo';
+import testComps from "../testComp";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
-import skillsInterface from "../Interfaces/SkillsInterface";
+import skillsObject from "../Constraints/SkillsObject";
+import { COLOURS } from "Constraints/colours";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
-import { COLOURS } from "Constraints/colours";
 import SidePanel from "./SidePanel";
 
 const Home = () => {
-  const fetchedText = TestText.pronouns2;
+  // Constants
+  const fetchedText = TestText.test;
+  const highlightStyle = "";
 
-  const [text, setText] = useState("");
+  // States
   const [highlightedWords, setHighlightedWords] = useState([]);
   const [presentingText, setPresentingText] = useState(fetchedText);
   const [selectedSkill, setSelectedSkill] = useState(0);
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
+  const [components, setComponents] = useState({
+    textComps: [],
+    missingComps: testComps
+  });
 
-  const [colours] = useState(COLOURS)
+  // Memoized values
+  const colours = useMemo(() => COLOURS, []);
+  const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
 
-  const aspContent = () => {
-    //Dummy Data
-    return (
-      <div>
-        Microsoft ASP.NET is a set of technologies in the Microsoft .NET
-        Framework for building Web applications and XML Web services.
-      </div>
-    );
-  };
+  // Callback Functions
+  const handleSkillChange = useCallback((event) => {
+    setSelectedSkill(parseInt(event.target.value, 10));
+  }, []);
 
-  // const parser = new DOMParser();
-  // const startingText =  parser.parseFromString(fetchedText, "text/html")
-
-  //So far it only adds marks to strings. We need to further develop this.
-
-  const skillData = testSkillsInfo[skillsInterface[selectedSkill]]; //Use Interface to get Skills Level and Description
-
-  const createHighlight = () => {
-    if (text) {
-      const updatedHighlights = [...highlightedWords, text];
-      setHighlightedWords(updatedHighlights);
-
-      // Update the highlighted text
-      highlightText(updatedHighlights); //.body.innerHTML
-      setText(""); //Resets the getText back to default
-    }
-  };
-
-  const handleSkillChange = (event) => {
-    var skill = parseInt(event.target.value);
-    setSelectedSkill(skill);
-  };
-
-  const highlightText = useCallback(
-    (highlights) => {
-      let index = 0;
-      const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlights.join("|")})`, "gi");
-      const annotatedText = fetchedText.replace(regex, (match) => {
-        const color = colours[index % colours.length];
-        index++;
-        return `<mark class="highlight" style="background-color: ${color}; cursor: pointer;" data-highlight">${match}</mark>`;
-      });
-
-      //Update the presenting text
-      setPresentingText(annotatedText);
-    },
-    [colours, fetchedText]
-  );
-
-  const deleteHighlight = useCallback(
-    (element) => {
-      if (element && element.parentNode) {
-        const textContent = element.textContent;
-        element.parentNode.replaceChild(document.createTextNode(textContent),element);
-
-        setHighlightedWords((prevHighlightedWords) => {
-          const newArray = prevHighlightedWords.filter(
-            (word) => word !== textContent
-          );
-          highlightText(newArray);
-          return newArray;
-        });
-      }
-    },
-    [highlightText]
-  );
-
-  const countWords = (text) => {
-    const words = text.replace(/<[^>]*>/g, '')  // Remove HTML tags
-                      .replace(/[^a-zA-Z\s]/g, '')  // Remove special characters
+  const countWords = useCallback((text) => {
+    const words = text.replace(/<[^>]*>/g, '')
+                      .replace(/[^a-zA-Z\s]/g, '')
                       .trim()
                       .split(/\s+/);
     return words.filter(word => word !== '').length;
-  };
+  }, []);
 
-  const handleWordCount = (args) => {
-    const text = args.value;
-    const count = countWords(text);
-    setWordCount(count);
-  }
+  const handleWordCount = useCallback((args) => {
+    setWordCount(countWords(args.value));
+  }, [countWords]);
+
+  const highlightText = useCallback((highlights) => {
+    if (highlights.length === 0) return;
+    let annotatedText = fetchedText;
+
+    highlights.forEach((highlight, index) => {
+      const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlight.text})`, "gi");
+      annotatedText = annotatedText.replace(regex, (match) => {
+        const color = colours[index];
+        return `<mark class="highlight" id="${highlight.component}" 
+                      style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" 
+                      data-highlight>
+                        ${match}
+                      </mark>`;
+      });
+    });
+
+    setPresentingText(annotatedText);
+  }, [colours, fetchedText]);
+
+  const updateComponents = useCallback((action, component) => {
+    setComponents(prevState => {
+      switch(action) {
+        case 'ADD_TO_TEXT':
+          if (prevState.textComps.some(comp => comp.title === component.title)) {
+            return prevState;
+          }
+          return {
+            textComps: [...prevState.textComps, component],
+            missingComps: prevState.missingComps.filter(comp => comp.title !== component.title)
+          };
+
+        case 'REMOVE_FROM_TEXT':
+          const compToMove = prevState.textComps.find(comp => comp.title === component.title);
+          if (!compToMove) {
+            return prevState;
+          }
+          return {
+            textComps: prevState.textComps.filter(comp => comp.title !== component.title),
+            missingComps: [...prevState.missingComps, compToMove]
+          };
+
+        default:
+          return prevState;
+      }
+    });
+  }, []);
+
+  const updateHighlights = useCallback((component, text) => {
+    if (text) {
+      setHighlightedWords(prevWords => [...prevWords, {text: text, component: component.title}]);
+      updateComponents('ADD_TO_TEXT', component);
+    }
+  }, [updateComponents]);
 
   useEffect(() => {
-    const handleSelectionChange = () => {
-      // Get highlighted text and save state
-      const selectedText = document.getSelection().toString();
-      setText(selectedText.trim());
-    };
-
-    const handleDeleteHighlight = (event) => {
-      if (isDeleteMode && (event.target.matches(".highlight") || event.target.matches("[data-highlight]"))) {
-        deleteHighlight(event.target);
-      }
-    };
-
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
-        if (isAddingMode) {
-          setIsAddingMode(false);
-        } else if (isDeleteMode) {
-          setIsDeleteMode(false);
-        }
+        setIsAddingMode(false);
+        setIsDeleteMode(false);
       }
     };
 
-    document.addEventListener("selectionchange", handleSelectionChange);
-    document.addEventListener("click", handleDeleteHighlight);
+    highlightText(highlightedWords);
+    
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("selectionchange", handleSelectionChange);
-      document.removeEventListener("click", handleDeleteHighlight);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [deleteHighlight, isAddingMode, isDeleteMode]);
+  }, [highlightText, highlightedWords, isAddingMode, isDeleteMode]);
 
   return (
     <StyledBodyContainer id="target">
@@ -156,16 +138,20 @@ const Home = () => {
           change={handleWordCount}>
           <Inject services={[Toolbar, HtmlEditor]} />
         </StyledRichTextEditor>
-        <div><b>Word Count: {wordCount}</b></div> {/* Word Count*/}
+        <div><b>Word Count: {wordCount}</b></div>
       </StyledSubBodyContainer1>
-      <SidePanel 
-        text={text}
+      <SidePanel
+        key={JSON.stringify(components)}
         isDeleteMode={isDeleteMode} 
-        isAddingMode={isAddingMode} 
-        createHighlight={createHighlight} 
+        isAddingMode={isAddingMode}
+        components={components}
+        createHighlight={updateHighlights} 
         setIsDeleteMode={setIsDeleteMode}
         setIsAddingMode={setIsAddingMode}
-        aspContent={aspContent}/>
+        setHighlightedWords={setHighlightedWords}
+        highlightText={highlightText}
+        updateComponents={updateComponents}
+      />
     </StyledBodyContainer>
   );
 };

@@ -1,4 +1,4 @@
-const skillsInterface = {
+const skillsObject = {
     0 : "Punctuation",
     1 : "Vocabulary",
     2 : "Cohesion",
@@ -6,4 +6,4 @@ const skillsInterface = {
     4 : "Developing & Elaborating Ideas",
 }
 
-export default skillsInterface
+export default skillsObject
