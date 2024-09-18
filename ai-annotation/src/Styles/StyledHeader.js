@@ -1,15 +1,15 @@
 import styled from 'styled-components'
-import * as Constants from "../constants";
+import {WHITE} from "../Constraints/constants";
 
 const StyledHeader = styled.header`
     text-align: center;
     font-size: 20px;
-    background-color: ${Constants.WHITE};
+    background-color: ${WHITE};
     border-bottom: 5px solid green;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 10px;
+    width: 100%;
 `;
 
 const StyledHeaderSection = styled.div`

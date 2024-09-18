@@ -1,21 +1,18 @@
 import styled from "styled-components";
 import { RadioButtonComponent } from "@syncfusion/ej2-react-buttons";
-import {GREEN} from '../constants';
+import { GREEN } from "Constraints/constants";
 
 const StyledSkillContainer = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center;
     column-gap: 20px;
     margin-bottom: 10px;
 `
 
 
 const StyledRadioButtonContainer = styled.div`
-
     display: flex;
-    justify-content: center;
-    column-gap: 10px;
+    column-gap: 15px;
 
     .e-radio:checked + label::after
     {
@@ -32,6 +29,14 @@ const StyledRadioButtonContainer = styled.div`
     {
         font-family: "Raleway", "sans-serif";
         font-weight: 500;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        text-align: center;
+
+        @media only screen and (max-width: 1780px){
+            width: 5vw;
+        }
     }
 `
 

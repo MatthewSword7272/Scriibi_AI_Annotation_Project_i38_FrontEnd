@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import * as Constants from "../constants";
+import {ORANGE, WHITE} from "../Constraints/constants";
 
 const StyledAccordionContainer = styled.div`
-    background-color: ${Constants.WHITE};
+    background-color: ${WHITE};
     margin: 20px 0;
     box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .5);
     border-radius: 10px;
@@ -10,7 +10,7 @@ const StyledAccordionContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: "Raleway", sans-serif;
+
 
     h2 {
         margin-top: 0;
@@ -18,19 +18,11 @@ const StyledAccordionContainer = styled.div`
 
 `
 
-const StyledAccordionMissingContainer = styled.div`
-    background-color: transparent;
-    margin: 10px;
-    border-radius: 10px;
-    padding: 10px;
-    border: #D86918 solid 2px;
-    max-width: 27em;
+const StyledAccordionMissingContainer = styled(StyledAccordionContainer)`
+    border: ${ORANGE} solid 2px;
 
-    h3 {
-        color: #D86918;
-        text-align: center;
-        margin: 0 0 10px 0;
-        font-weight: 500;
+    h2 {
+        color: ${ORANGE};
     }
 
 `

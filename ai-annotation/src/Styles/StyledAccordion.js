@@ -8,16 +8,14 @@ import testComps from "testComp";
 const colours = testComps.map(comp => comp.color)
 
 const StyledAccordionComponent = styled(AccordionComponent)`
-  background-color: transparent;
   border: transparent;
-  font-family: "Raleway", sans-serif;
   text-align: center;
   font-weight: 500;
-  width: 35em !important;
-  max-width: 25em;
+  width: 35vw !important;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
-  row-gap: 25px;
+  row-gap: 10px;
   border-radius: 20px !important;
 
   ${colours.map((color, index) => `
@@ -51,6 +49,7 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   .e-acrdn-item.e-select.e-item-focus {
     border: unset;
   }
+
 `;
 
 export { StyledAccordionComponent };
