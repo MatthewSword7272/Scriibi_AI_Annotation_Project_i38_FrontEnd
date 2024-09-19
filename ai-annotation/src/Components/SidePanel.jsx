@@ -3,7 +3,13 @@ import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2
 import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
 import { StyledAccordionComponent } from 'Styles/StyledAccordion';
 import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
-import { StyledEditContainer, StyledEditInnerContainer, StyledEditButtonContainer, StyledEditButton } from 'Styles/StyledEditContainer';
+import { 
+  StyledEditContainer, 
+  StyledEditInnerContainer, 
+  StyledEditButtonContainer, 
+  StyledAddButton, 
+  StyledDeleteButton 
+} from 'Styles/StyledEditButtons';
 import { StyledNotesButton } from 'Styles/StyledButton';
 import { StyledDialogBox } from 'Styles/StyledDialogBox';
 import { CAM, GREEN, ORANGE } from 'Constraints/constants';
@@ -185,29 +191,27 @@ const SidePanel = ({
         <StyledEditInnerContainer>
           <StyledEditButtonContainer color={GREEN}>
             <h6>Add</h6>
-            <StyledEditButton
-              isToggle={true}
+            <StyledAddButton
+              isAddingMode={isAddingMode}
               onClick={() => {
                 isDeleteMode && setIsDeleteMode(false)
                 setIsAddingMode((prevState) => !prevState)
               }}
               iconCss="e-icons e-edit-2"
-            ></StyledEditButton>
+            ></StyledAddButton>
           </StyledEditButtonContainer>
           <StyledEditButtonContainer color={ORANGE}>
             <h6>Delete</h6>
-            <StyledEditButton
-              isToggle={true}
+            <StyledDeleteButton
+              isDeleteMode={isDeleteMode}
               iconCss="e-icons e-delete-2"
               onClick={() => {
                 isAddingMode && setIsAddingMode(false)
                 setIsDeleteMode((prevState) => !prevState)
               }}
-            ></StyledEditButton>
+            ></StyledDeleteButton>
           </StyledEditButtonContainer>
         </StyledEditInnerContainer>
-        {isAddingMode && "Adding Mode is ON"}
-        {isDeleteMode && "Delete Mode is ON"}
       </StyledEditContainer>
     </StyledSubBodyContainer2>
   );
