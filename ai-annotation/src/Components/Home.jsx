@@ -158,6 +158,7 @@ const Home = () => {
         />
         <SkillCarousel skillData={skillData} />
         <StyledRichTextEditor
+          id="rte-target"
           value={presentingText}
           change={handleWordCount}>
           <Inject services={[Toolbar, HtmlEditor]} />

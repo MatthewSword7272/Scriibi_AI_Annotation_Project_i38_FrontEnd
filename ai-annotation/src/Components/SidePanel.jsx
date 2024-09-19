@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2-react-navigations";
+import { AccordionItemDirective, AccordionItemsDirective, ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
 import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
 import { StyledAccordionComponent } from 'Styles/StyledAccordion';
 import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
@@ -25,6 +25,22 @@ const SidePanel = ({
   updateComponents,
   setPresentingText
 }) => {
+
+  //Menu Items
+  const contextMenuItems = [
+    {
+      text: 'Add',
+      iconCss: 'e-icons e-edit-2',
+      id: 'add',
+      color: GREEN
+    },
+    {
+      text: 'Delete',
+      iconCss: 'e-icons e-delete-2',
+      id: 'delete',
+      color: ORANGE
+    }
+  ];
 
   // States
   const [visibility, setDialogVisibility] = useState(false);
@@ -77,6 +93,16 @@ const SidePanel = ({
       setSelectedText("");
     }
   }, [createHighlight, isAddingMode, selectedText]);
+
+  const handleContextMenuSelect = (args) => {
+    if (args.item.id === 'add') {
+      isDeleteMode && setIsDeleteMode(false);
+      setIsAddingMode((prevState) => !prevState);
+    } else if (args.item.id === 'delete') {
+      isAddingMode && setIsAddingMode(false);
+      setIsDeleteMode((prevState) => !prevState);
+    }
+  };
   
   // useEffects
   useEffect(() => {
@@ -124,6 +150,13 @@ const SidePanel = ({
 
   return (
     <StyledSubBodyContainer2>
+
+      <ContextMenuComponent
+        items={contextMenuItems}
+        select={handleContextMenuSelect}
+        target='#rte-target' // Replace with the actual ID of your Rich Text Editor
+      />
+
       <StyledDialogBox
         header={dialogTitle}
         content={dialogText}
