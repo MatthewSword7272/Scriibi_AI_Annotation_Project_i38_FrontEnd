@@ -1,18 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AccordionItemDirective, AccordionItemsDirective, ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
+import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
 import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
-import { StyledAccordionComponent } from 'Styles/StyledAccordion';
-import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
-import { 
-  StyledEditContainer, 
-  StyledEditInnerContainer, 
-  StyledEditButtonContainer, 
-  StyledAddButton, 
-  StyledDeleteButton 
-} from 'Styles/StyledEditButtons';
-import { StyledNotesButton } from 'Styles/StyledButton';
 import { StyledDialogBox } from 'Styles/StyledDialogBox';
-import { CAM, GREEN, ORANGE } from 'Constraints/constants';
+import { GREEN, ORANGE } from 'Constraints/constants';
+import NotesSection from './NotesSection';
+import AnnotationSection from './AnnotationSection';
+import MissingSection from './MissingSection';
+import EditSection from './EditSection';
 
 const SidePanel = ({
   isDeleteMode,
@@ -49,7 +43,7 @@ const SidePanel = ({
   const [selectedText, setSelectedText] = useState("");
 
   // Constants
-  const DIALOG_BOX_POSITION = { X: 'right' };
+  const DIALOG_BOX_POSITION = { X: 'right', Y: 'top' };
 
   const deleteHighlight = useCallback((target) => {
     if (!target || !target.matches('.highlight, [data-highlight]')) return;
@@ -173,79 +167,15 @@ const SidePanel = ({
         position={DIALOG_BOX_POSITION}
       />
 
-      <StyledAccordionContainer>
-        <h2>Notes</h2>
-        <StyledNotesButton color={CAM} onClick={handleDialogClick}>
-          ASP.NET
-        </StyledNotesButton>
-      </StyledAccordionContainer>
-      <StyledAccordionContainer>
-        <h2>Annotation</h2>
-        <StyledAccordionComponent expandMode="Single"
-          expanding={(e) => {
-            const comp = components.textComps.find(c => c.title === e.item.header);
-            if (comp) handleAccordionClick(comp);
-          }}
-        >
-          <AccordionItemsDirective>
-            {components.textComps && components.textComps.map((comp, index) => (
-              <AccordionItemDirective
-                key={index}
-                expanded={false}
-                header={comp.title}
-                content={comp.description}
-              />
-            ))}
-          </AccordionItemsDirective>
-        </StyledAccordionComponent>
-      </StyledAccordionContainer>
-      <StyledAccordionMissingContainer>
-        <h2>Missing</h2>
-        <StyledAccordionComponent expandMode="Single"
-          expanding={(e) => {
-            const comp = components.missingComps.find(c => c.title === e.item.header);
-            if (comp) handleAccordionClick(comp);
-          }}
-        >
-          <AccordionItemsDirective>
-            {components.missingComps && components.missingComps.map((comp, index) => (
-              <AccordionItemDirective
-                key={index}
-                expanded={false}
-                header={comp.title}
-                content={comp.description}
-              />
-            ))}
-          </AccordionItemsDirective>
-        </StyledAccordionComponent>
-      </StyledAccordionMissingContainer>
-      <StyledEditContainer>
-        <h2>Edit</h2>
-        <StyledEditInnerContainer>
-          <StyledEditButtonContainer color={GREEN}>
-            <h6>Add</h6>
-            <StyledAddButton
-              isAddingMode={isAddingMode}
-              onClick={() => {
-                isDeleteMode && setIsDeleteMode(false)
-                setIsAddingMode((prevState) => !prevState)
-              }}
-              iconCss="e-icons e-edit-2"
-            ></StyledAddButton>
-          </StyledEditButtonContainer>
-          <StyledEditButtonContainer color={ORANGE}>
-            <h6>Delete</h6>
-            <StyledDeleteButton
-              isDeleteMode={isDeleteMode}
-              iconCss="e-icons e-delete-2"
-              onClick={() => {
-                isAddingMode && setIsAddingMode(false)
-                setIsDeleteMode((prevState) => !prevState)
-              }}
-            ></StyledDeleteButton>
-          </StyledEditButtonContainer>
-        </StyledEditInnerContainer>
-      </StyledEditContainer>
+      <NotesSection handleDialogClick={handleDialogClick} />
+      <AnnotationSection components={components} handleAccordionClick={handleAccordionClick} />
+      <MissingSection components={components} handleAccordionClick={handleAccordionClick} />
+      <EditSection 
+        isAddingMode={isAddingMode}
+        isDeleteMode={isDeleteMode}
+        setIsAddingMode={setIsAddingMode}
+        setIsDeleteMode={setIsDeleteMode}
+      />
     </StyledSubBodyContainer2>
   );
 };
