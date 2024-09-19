@@ -34,7 +34,6 @@ const HighlightTooltip = ({ children, isDeleteMode, isAddingMode, setIsDeleteMod
 
   return (
     <StyledTooltipComponent
-      isSticky={true}
       content={() => EditButtons()}
     >
       {children}
