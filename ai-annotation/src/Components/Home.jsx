@@ -40,56 +40,16 @@ const Home = () => {
   }, []);
 
   const countWords = useCallback((text) => {
-    const words = text.replace(/<[^>]*>/g, '')
+    return text.replace(/<[^>]*>/g, '')
                       .replace(/[^a-zA-Z\s]/g, '')
                       .trim()
-                      .split(/\s+/);
-    return words.filter(word => word !== '').length;
+                      .split(/\s+/)
+                      .filter(word => word !== '').length;
   }, []);
 
   const handleWordCount = useCallback((args) => {
     setWordCount(countWords(args.value));
   }, [countWords]);
-
-  
-
-  const highlightText = useCallback((highlights) => {
-    console.log(highlights);
-    if (highlights.length === 0) return;
-    let annotatedText = presentingText;
-    let offset = 0;
-
-    highlights.forEach((highlight, index) => {
-      const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlight.text})`, "gi");
-      let match;
-      while ((match = regex.exec(annotatedText)) !== null) {
-        const originalStart = match.index - offset;
-        const originalEnd = originalStart + highlight.text.length;
-
-        console.log(`Highlight: "${highlight.text}", Start: ${originalStart}, End: ${originalEnd}`);
-
-        if (match[0].startsWith('<mark') && match[0].includes(`id="${highlight.component}"`)) {
-          continue; // Skip this match, it's already highlighted
-        }
-
-        const color = colours[index];
-        const newMark = `<mark class="highlight" id="${highlight.component}" 
-                      style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" 
-                      data-highlight>
-                        ${highlight.text}
-                      </mark>`;
-      
-        const before = annotatedText.slice(0, match.index);
-        const after = annotatedText.slice(match.index + highlight.text.length);
-        annotatedText = before + newMark + after;
-
-        offset += newMark.length - highlight.text.length;
-        regex.lastIndex += newMark.length - highlight.text.length;
-      }
-    });
-
-    setPresentingText(annotatedText);
-  }, [colours, presentingText]);
 
   const updateComponents = useCallback((action, component) => {
     setComponents(prevState => {
@@ -129,6 +89,7 @@ const Home = () => {
   
     sortedHighlights.forEach((highlight, index) => {
       const startIndex = result.indexOf(highlight.text, offset);
+
       if (startIndex === -1) return; // Text not found, skip this highlight
   
       const endIndex = startIndex + highlight.text.length;
@@ -184,7 +145,7 @@ const Home = () => {
   useEffect(() => {
     const updatedText = addHighlight(highlightedWords, presentingText);
     setPresentingText(updatedText);
-  }, [addHighlight, highlightedWords]);
+  }, [addHighlight, highlightedWords, presentingText]);
 
   return (
     <StyledBodyContainer id="target">
@@ -212,7 +173,6 @@ const Home = () => {
         setIsDeleteMode={setIsDeleteMode}
         setIsAddingMode={setIsAddingMode}
         setHighlightedWords={setHighlightedWords}
-        highlightText={highlightText}
         updateComponents={updateComponents}
         setPresentingText={setPresentingText}
       />

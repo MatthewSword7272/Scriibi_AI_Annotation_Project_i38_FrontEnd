@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2-react-navigations";
-import * as Constants from "../Constraints/constants";
 import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
 import { StyledAccordionComponent } from 'Styles/StyledAccordion';
 import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
 import { StyledEditContainer, StyledEditInnerContainer, StyledEditButtonContainer, StyledEditButton } from 'Styles/StyledEditContainer';
 import { StyledNotesButton } from 'Styles/StyledButton';
 import { StyledDialogBox } from 'Styles/StyledDialogBox';
+import { CAM, GREEN, ORANGE } from 'Constraints/constants';
 
 const SidePanel = ({
   isDeleteMode,
@@ -16,7 +16,6 @@ const SidePanel = ({
   setIsAddingMode,
   setIsDeleteMode,
   setHighlightedWords,
-  highlightText,
   updateComponents,
   setPresentingText
 }) => {
@@ -30,58 +29,30 @@ const SidePanel = ({
   // Constants
   const DIALOG_BOX_POSITION = { X: 'right' };
 
-  // useCallbacks
-  // const deleteHighlight = useCallback((element) => {
-  //   if (element && element.parentNode) {
-  //     const textContent = element.textContent.trim();
-  //     const compID = element.id;
-      
-  //     element.outerHTML = textContent;
+  const deleteHighlight = useCallback((target) => {
+    if (!target || !target.matches('.highlight, [data-highlight]')) return;
 
-  //     setHighlightedWords((prevHighlightedWords) => {
-  //       const newArray = prevHighlightedWords.filter((word) => {
-  //         return word.text !== textContent || word.component !== compID
-  //       }
-  //       );
-  //       highlightText(newArray);
-  //       return newArray;
-  //     });
+    const highlightText = target.textContent;
+    const componentId = target.id;
 
-  //     // Check if there are no other highlights with the same compTitle
-  //     const hasNoOtherHighlights = document.querySelectorAll(`[id="${compID}"]`).length === 0;
+    setPresentingText((prevText) => {
+      const regex = new RegExp(`<mark[^>]*id="${componentId}"[^>]*>${highlightText}</mark>`, 'g');
+      return prevText.replace(regex, highlightText);
+    });
 
-  //     if (hasNoOtherHighlights) {
-  //       updateComponents('REMOVE_FROM_TEXT', { title: compID });
-  //     }
+    setHighlightedWords((prevHighlights) => 
+      prevHighlights.filter(highlight => 
+        !(highlight.text === highlightText && highlight.component === componentId)
+      )
+    );
 
-  //     // Update presentingText
-  //     setPresentingText((prevText) => prevText.replace(element.outerHTML, textContent));
-  //   }
-  // }, [highlightText, setHighlightedWords, updateComponents, setPresentingText]);
-
-  
-const deleteHighlight = useCallback((target) => {
-  if (!target || !target.matches('.highlight, [data-highlight]')) return;
-
-  const highlightText = target.textContent;
-  const componentId = target.id;
-
-  setPresentingText((prevText) => {
-    const regex = new RegExp(`<mark[^>]*id="${componentId}"[^>]*>${highlightText}</mark>`, 'g');
-    return prevText.replace(regex, highlightText);
-  });
-
-  setHighlightedWords((prevHighlights) => 
-    prevHighlights.filter(highlight => 
-      !(highlight.text === highlightText && highlight.component === componentId)
-    )
-  );
-
-  // Check if there are no other highlights with the same componentId
-  if (!document.querySelectorAll(`[id="${componentId}"]`).length) {
-    updateComponents('REMOVE_FROM_TEXT', { title: componentId });
-  }
-}, [updateComponents]);
+    setTimeout(() => {
+      const remainingHighlights = document.querySelectorAll(`[id="${componentId}"]`);
+      if (remainingHighlights.length === 0) {
+        updateComponents('REMOVE_FROM_TEXT', { title: componentId });
+      }
+    }, 0);
+  }, [updateComponents, setHighlightedWords, setPresentingText]);
 
   const showDialog = useCallback((title, text) => {
     setDialogTitle(title);
@@ -165,7 +136,7 @@ const deleteHighlight = useCallback((target) => {
 
       <StyledAccordionContainer>
         <h2>Notes</h2>
-        <StyledNotesButton color={Constants.CAM} onClick={handleDialogClick}>
+        <StyledNotesButton color={CAM} onClick={handleDialogClick}>
           ASP.NET
         </StyledNotesButton>
       </StyledAccordionContainer>
@@ -212,7 +183,7 @@ const deleteHighlight = useCallback((target) => {
       <StyledEditContainer>
         <h2>Edit</h2>
         <StyledEditInnerContainer>
-          <StyledEditButtonContainer color={Constants.GREEN}>
+          <StyledEditButtonContainer color={GREEN}>
             <h6>Add</h6>
             <StyledEditButton
               isToggle={true}
@@ -223,7 +194,7 @@ const deleteHighlight = useCallback((target) => {
               iconCss="e-icons e-edit-2"
             ></StyledEditButton>
           </StyledEditButtonContainer>
-          <StyledEditButtonContainer color={Constants.ORANGE}>
+          <StyledEditButtonContainer color={ORANGE}>
             <h6>Delete</h6>
             <StyledEditButton
               isToggle={true}
