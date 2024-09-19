@@ -31,32 +31,57 @@ const SidePanel = ({
   const DIALOG_BOX_POSITION = { X: 'right' };
 
   // useCallbacks
-  const deleteHighlight = useCallback((element) => {
-    if (element && element.parentNode) {
-      const textContent = element.textContent.trim();
-      const compID = element.id;
-      element.parentNode.replaceChild(document.createTextNode(textContent), element);
+  // const deleteHighlight = useCallback((element) => {
+  //   if (element && element.parentNode) {
+  //     const textContent = element.textContent.trim();
+  //     const compID = element.id;
+      
+  //     element.outerHTML = textContent;
 
-      setHighlightedWords((prevHighlightedWords) => {
-        const newArray = prevHighlightedWords.filter((word) => {
-          return word.text !== textContent || word.component !== compID
-        }
-        );
-        highlightText(newArray);
-        return newArray;
-      });
+  //     setHighlightedWords((prevHighlightedWords) => {
+  //       const newArray = prevHighlightedWords.filter((word) => {
+  //         return word.text !== textContent || word.component !== compID
+  //       }
+  //       );
+  //       highlightText(newArray);
+  //       return newArray;
+  //     });
 
-      // Check if there are no other highlights with the same compTitle
-      const hasNoOtherHighlights = document.querySelectorAll(`[id="${compID}"]`).length === 0;
+  //     // Check if there are no other highlights with the same compTitle
+  //     const hasNoOtherHighlights = document.querySelectorAll(`[id="${compID}"]`).length === 0;
 
-      if (hasNoOtherHighlights) {
-        updateComponents('REMOVE_FROM_TEXT', { title: compID });
-      }
+  //     if (hasNoOtherHighlights) {
+  //       updateComponents('REMOVE_FROM_TEXT', { title: compID });
+  //     }
 
-      // Update presentingText
-      setPresentingText((prevText) => prevText.replace(element.outerHTML, textContent));
-    }
-  }, [highlightText, setHighlightedWords, updateComponents, setPresentingText]);
+  //     // Update presentingText
+  //     setPresentingText((prevText) => prevText.replace(element.outerHTML, textContent));
+  //   }
+  // }, [highlightText, setHighlightedWords, updateComponents, setPresentingText]);
+
+  
+const deleteHighlight = useCallback((target) => {
+  if (!target || !target.matches('.highlight, [data-highlight]')) return;
+
+  const highlightText = target.textContent;
+  const componentId = target.id;
+
+  setPresentingText((prevText) => {
+    const regex = new RegExp(`<mark[^>]*id="${componentId}"[^>]*>${highlightText}</mark>`, 'g');
+    return prevText.replace(regex, highlightText);
+  });
+
+  setHighlightedWords((prevHighlights) => 
+    prevHighlights.filter(highlight => 
+      !(highlight.text === highlightText && highlight.component === componentId)
+    )
+  );
+
+  // Check if there are no other highlights with the same componentId
+  if (!document.querySelectorAll(`[id="${componentId}"]`).length) {
+    updateComponents('REMOVE_FROM_TEXT', { title: componentId });
+  }
+}, [updateComponents]);
 
   const showDialog = useCallback((title, text) => {
     setDialogTitle(title);

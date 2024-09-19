@@ -135,13 +135,25 @@ const Home = () => {
       const color = colours[index % colours.length]; // Cycle through colors
 
       console.log(`Highlight: "${highlight.text}", Start: ${startIndex}, End: ${endIndex}`);
+
+      // Check if the text is already wrapped in a mark element
+      const beforeText = result.slice(0, startIndex);
+      const afterText = result.slice(endIndex, result.length - endIndex);
+      const isAlreadyHighlighted = 
+        beforeText.includes('<mark class="highlight"') &&
+        afterText.includes('</mark>') &&
+        beforeText.lastIndexOf('<mark') > beforeText.lastIndexOf('</mark');
   
-      const newMark = `<mark class="highlight" id="${highlight.component}" 
-        style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" 
-        data-highlight>${highlight.text}</mark>`;
+      if (!isAlreadyHighlighted) {
+        const newMark = `<mark class="highlight" id="${highlight.component}" 
+          style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" 
+          data-highlight>${highlight.text}</mark>`;
   
-      result = result.slice(0, startIndex) + newMark + result.slice(endIndex);
-      offset = startIndex + newMark.length;
+        result = result.slice(0, startIndex) + newMark + result.slice(endIndex);
+        offset = startIndex + newMark.length;
+      } else {
+        offset = endIndex;
+      }
     });
   
     return result;
