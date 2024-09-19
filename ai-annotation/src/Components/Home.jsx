@@ -17,7 +17,6 @@ import SidePanel from "./SidePanel";
 const Home = () => {
   // Constants
   const fetchedText = TestText.test;
-  const highlightStyle = "";
 
   // States
   const [highlightedWords, setHighlightedWords] = useState([]);
@@ -53,23 +52,42 @@ const Home = () => {
   }, [countWords]);
 
   const highlightText = useCallback((highlights) => {
+    console.log(highlights);
     if (highlights.length === 0) return;
-    let annotatedText = fetchedText;
+    let annotatedText = presentingText;
+    let offset = 0;
 
     highlights.forEach((highlight, index) => {
       const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlight.text})`, "gi");
-      annotatedText = annotatedText.replace(regex, (match) => {
+      let match;
+      while ((match = regex.exec(annotatedText)) !== null) {
+        const originalStart = match.index - offset;
+        const originalEnd = originalStart + highlight.text.length;
+
+        console.log(`Highlight: "${highlight.text}", Start: ${originalStart}, End: ${originalEnd}`);
+
+        if (match[0].startsWith('<mark') && match[0].includes(`id="${highlight.component}"`)) {
+          continue; // Skip this match, it's already highlighted
+        }
+
         const color = colours[index];
-        return `<mark class="highlight" id="${highlight.component}" 
+        const newMark = `<mark class="highlight" id="${highlight.component}" 
                       style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" 
                       data-highlight>
-                        ${match}
+                        ${highlight.text}
                       </mark>`;
-      });
+      
+        const before = annotatedText.slice(0, match.index);
+        const after = annotatedText.slice(match.index + highlight.text.length);
+        annotatedText = before + newMark + after;
+
+        offset += newMark.length - highlight.text.length;
+        regex.lastIndex += newMark.length - highlight.text.length;
+      }
     });
 
     setPresentingText(annotatedText);
-  }, [colours, fetchedText]);
+  }, [colours, presentingText]);
 
   const updateComponents = useCallback((action, component) => {
     setComponents(prevState => {
@@ -151,6 +169,7 @@ const Home = () => {
         setHighlightedWords={setHighlightedWords}
         highlightText={highlightText}
         updateComponents={updateComponents}
+        setPresentingText={setPresentingText}
       />
     </StyledBodyContainer>
   );

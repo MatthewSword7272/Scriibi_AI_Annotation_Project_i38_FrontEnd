@@ -17,7 +17,8 @@ const SidePanel = ({
   setIsDeleteMode,
   setHighlightedWords,
   highlightText,
-  updateComponents
+  updateComponents,
+  setPresentingText
 }) => {
 
   // States
@@ -32,26 +33,30 @@ const SidePanel = ({
   // useCallbacks
   const deleteHighlight = useCallback((element) => {
     if (element && element.parentNode) {
-      const textContent = element.textContent;
-      const compTitle = element.id;
+      const textContent = element.textContent.trim();
+      const compID = element.id;
       element.parentNode.replaceChild(document.createTextNode(textContent), element);
 
       setHighlightedWords((prevHighlightedWords) => {
-        const newArray = prevHighlightedWords.filter(
-          (word) => word.text !== textContent || word.component !== compTitle
+        const newArray = prevHighlightedWords.filter((word) => {
+          return word.text !== textContent || word.component !== compID
+        }
         );
         highlightText(newArray);
         return newArray;
       });
 
       // Check if there are no other highlights with the same compTitle
-      const hasNoOtherHighlights = document.querySelectorAll(`[id="${compTitle}"]`).length === 0;
+      const hasNoOtherHighlights = document.querySelectorAll(`[id="${compID}"]`).length === 0;
 
       if (hasNoOtherHighlights) {
-        updateComponents('REMOVE_FROM_TEXT', { title: compTitle });
+        updateComponents('REMOVE_FROM_TEXT', { title: compID });
       }
+
+      // Update presentingText
+      setPresentingText((prevText) => prevText.replace(element.outerHTML, textContent));
     }
-  }, [highlightText, setHighlightedWords, updateComponents]);
+  }, [highlightText, setHighlightedWords, updateComponents, setPresentingText]);
 
   const showDialog = useCallback((title, text) => {
     setDialogTitle(title);
@@ -70,29 +75,37 @@ const SidePanel = ({
       setSelectedText("");
     }
   }, [createHighlight, isAddingMode, selectedText]);
-
+  
   // useEffects
   useEffect(() => {
     const handleSelectionChange = () => {
       const selection = window.getSelection();
       const text = selection.toString().trim();
-      if (text) setSelectedText(text);
+      if (text !== "") {
+        setSelectedText(text);
+      } 
     };
 
+    document.addEventListener("selectionchange", handleSelectionChange);
+
+    return () => {
+      document.removeEventListener("selectionchange", handleSelectionChange);
+    }
+  }, []);
+
+  useEffect(() => {
     const handleDeleteHighlight = (event) => {
       if (isDeleteMode && (event.target.matches(".highlight") || event.target.matches("[data-highlight]"))) {
         deleteHighlight(event.target);
       }
     };
 
-    document.addEventListener("selectionchange", handleSelectionChange);
     document.addEventListener("click", handleDeleteHighlight);
 
     return () => {
-      document.removeEventListener("selectionchange", handleSelectionChange);
       document.removeEventListener("click", handleDeleteHighlight);
     }
-  }, [deleteHighlight, isDeleteMode])
+  }, [deleteHighlight, isDeleteMode]);
   
   useEffect(() => {
     console.log('SidePanel received new components:', components);
