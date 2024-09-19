@@ -48,8 +48,8 @@ const Home = () => {
   }, []);
 
   const handleWordCount = useCallback((args) => {
-    setWordCount(countWords(args.value));
-  }, [countWords]);
+    setPresentingText(args.value);
+  }, []);
 
   const updateComponents = useCallback((action, component) => {
     setComponents(prevState => {
@@ -146,6 +146,10 @@ const Home = () => {
     const updatedText = addHighlight(highlightedWords, presentingText);
     setPresentingText(updatedText);
   }, [addHighlight, highlightedWords, presentingText]);
+
+  useEffect(() => {
+    setWordCount(countWords(presentingText));
+  }, [presentingText, countWords]);
 
   return (
     <StyledBodyContainer id="target">
