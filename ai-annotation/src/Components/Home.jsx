@@ -126,9 +126,10 @@ const Home = () => {
     if (container) {
       const highlights = container.querySelectorAll('.highlight-wrapper');
       highlights.forEach(highlight => {
-        const highlightId = highlight.getAttribute('data-highlight-id');
+        // const highlightId = highlight.getAttribute('data-highlight-id');
         const color = highlight.getAttribute('data-color');
         const text = highlight.getAttribute('data-highlight-text');
+
         const root = createRoot(highlight);
         root.render(
           <HighlightTooltip
@@ -178,6 +179,12 @@ const Home = () => {
         highlightText={highlightText}
         updateComponents={updateComponents}
       />
+      <span>A green home is a type of house designed to be
+          <HighlightTooltip isDeleteMode={isDeleteMode} isAddingMode={isAddingMode} setIsDeleteMode={setIsDeleteMode} setIsAddingMode={setIsAddingMode}>
+          <mark style={{backgroundColor: "yellow", cursor: 'pointer', padding: '1px 2px', borderRadius: '5px'}}>environmentally friendly</mark>
+          </HighlightTooltip> and sustainable. And also focuses on the efficient use of "energy, water, and building materials." As green homes
+          have become more prevalent we have also seen the emergence of green affordable housing.
+      </span>)
     </StyledBodyContainer>
   );
 };
