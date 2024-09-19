@@ -51,6 +51,8 @@ const Home = () => {
     setWordCount(countWords(args.value));
   }, [countWords]);
 
+  
+
   const highlightText = useCallback((highlights) => {
     console.log(highlights);
     if (highlights.length === 0) return;
@@ -117,6 +119,34 @@ const Home = () => {
     });
   }, []);
 
+  
+  const addHighlight = useCallback((highlightedWords, text) => {
+    let result = text;
+    let offset = 0;
+  
+    // Sort highlightedWords by their start position in the text
+    const sortedHighlights = [...highlightedWords].sort((a, b) => text.indexOf(a.text) - text.indexOf(b.text));
+  
+    sortedHighlights.forEach((highlight, index) => {
+      const startIndex = result.indexOf(highlight.text, offset);
+      if (startIndex === -1) return; // Text not found, skip this highlight
+  
+      const endIndex = startIndex + highlight.text.length;
+      const color = colours[index % colours.length]; // Cycle through colors
+
+      console.log(`Highlight: "${highlight.text}", Start: ${startIndex}, End: ${endIndex}`);
+  
+      const newMark = `<mark class="highlight" id="${highlight.component}" 
+        style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" 
+        data-highlight>${highlight.text}</mark>`;
+  
+      result = result.slice(0, startIndex) + newMark + result.slice(endIndex);
+      offset = startIndex + newMark.length;
+    });
+  
+    return result;
+  }, [colours]);
+
   const updateHighlights = useCallback((component, text) => {
     if (text) {
       setHighlightedWords(prevWords => [...prevWords, {text: text, component: component.title}]);
@@ -131,15 +161,18 @@ const Home = () => {
         setIsDeleteMode(false);
       }
     };
-
-    highlightText(highlightedWords);
     
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [highlightText, highlightedWords, isAddingMode, isDeleteMode]);
+  }, []);
+
+  useEffect(() => {
+    const updatedText = addHighlight(highlightedWords, presentingText);
+    setPresentingText(updatedText);
+  }, [addHighlight, highlightedWords]);
 
   return (
     <StyledBodyContainer id="target">
