@@ -93,7 +93,7 @@ const Home = () => {
       if (startIndex === -1) return; // Text not found, skip this highlight
   
       const endIndex = startIndex + highlight.text.length;
-      const color = colours[index % colours.length]; // Cycle through colors
+      const color = testComps.find(component => component.title === highlight.component).color;
 
       console.log(`Highlight: "${highlight.text}", Start: ${startIndex}, End: ${endIndex}`);
 
