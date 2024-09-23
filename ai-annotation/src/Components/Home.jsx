@@ -9,7 +9,6 @@ import testSkillsInfo from '../testSkillsInfo';
 import testComps from "../testComp";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 import skillsObject from "../Constraints/SkillsObject";
-import { COLOURS } from "Constraints/colours";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
@@ -31,7 +30,6 @@ const Home = () => {
   });
 
   // Memoized values
-  const colours = useMemo(() => COLOURS, []);
   const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
 
   // Callback Functions
@@ -118,7 +116,7 @@ const Home = () => {
     });
   
     return result;
-  }, [colours]);
+  }, []);
 
   const updateHighlights = useCallback((component, text) => {
     if (text) {
