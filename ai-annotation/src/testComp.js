@@ -1,21 +1,91 @@
 const { COLOURS } = require("Constraints/colours");
 
 const testComps = [
-    {
-        "title": "Capitalise Proper Noun",
-        "description": "Capitalise names for  moments of remembrance, gratitude, and connection with historical events",
-        "color": COLOURS[0]
-    },
-    {
-        "title": "capitalise key event",
-        "description": "Text",
-        "color": COLOURS[1]
-    },
-    {
-        "title": "commas - lists",
-        "description": "Text",
-        "color": COLOURS[2]
-    }
+    [
+        {
+            "title": "Capitalise Proper Noun",
+            "description": "Capitalise names for  moments of remembrance, gratitude, and connection with historical events",
+            "color": COLOURS[0]
+        },
+        {
+            "title": "5555",
+            "description": "Text",
+            "color": COLOURS[1]
+        },
+        {
+            "title": "commas - lists",
+            "description": "Text",
+            "color": COLOURS[2]
+        }
+    ],
+    [
+        {
+            "title": "Capitalis343434n",
+            "description": "Capitalise names for  moments of remembrance, gratitude, and connection with historical events",
+            "color": COLOURS[0]
+        },
+        {
+            "title": "capitalise key event",
+            "description": "Text",
+            "color": COLOURS[1]
+        },
+        {
+            "title": "commas - lists",
+            "description": "Text",
+            "color": COLOURS[2]
+        }
+    ],
+    [
+        {
+            "title": "Capital3434un",
+            "description": "Capitalise names for  moments of remembrance, gratitude, and connection with historical events",
+            "color": COLOURS[0]
+        },
+        {
+            "title": "cap3434y event",
+            "description": "Text",
+            "color": COLOURS[1]
+        },
+        {
+            "title": "commas - lists",
+            "description": "Text",
+            "color": COLOURS[2]
+        }
+    ],
+    [
+        {
+            "title": "Ca555oper Noun",
+            "description": "Capitalise names for  moments of remembrance, gratitude, and connection with historical events",
+            "color": COLOURS[0]
+        },
+        {
+            "title": "capitalise key event",
+            "description": "Text",
+            "color": COLOURS[1]
+        },
+        {
+            "title": "commas - lists",
+            "description": "Text",
+            "color": COLOURS[2]
+        }
+    ],
+    [
+        {
+            "title": "Cap555er Noun",
+            "description": "Capitalise names for  moments of remembrance, gratitude, and connection with historical events",
+            "color": COLOURS[0]
+        },
+        {
+            "title": "capitalise key event",
+            "description": "Text",
+            "color": COLOURS[1]
+        },
+        {
+            "title": "commas - lists",
+            "description": "Text",
+            "color": COLOURS[2]
+        }
+    ],
 ]
 
 export default testComps;
