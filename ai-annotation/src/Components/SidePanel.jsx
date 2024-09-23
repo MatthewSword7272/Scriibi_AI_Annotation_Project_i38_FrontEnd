@@ -4,9 +4,8 @@ import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
 import { StyledDialogBox } from 'Styles/StyledDialogBox';
 import { GREEN, ORANGE } from 'Constraints/constants';
 import NotesSection from './NotesSection';
-import AnnotationSection from './AnnotationSection';
-import MissingSection from './MissingSection';
 import EditSection from './EditSection';
+import AccordionSection from './AccordionSection';
 
 const SidePanel = ({
   isDeleteMode,
@@ -174,8 +173,8 @@ const SidePanel = ({
       />
 
       <NotesSection handleDialogClick={handleDialogClick} />
-      <AnnotationSection components={components} handleAccordionClick={handleAccordionClick} />
-      <MissingSection components={components} handleAccordionClick={handleAccordionClick} />
+      <AccordionSection title="Annotation" components={components.textComps} handleAccordionClick={handleAccordionClick} />
+      <AccordionSection title="Missing" components={components.missingComps} handleAccordionClick={handleAccordionClick} isMissing={true} />
       <EditSection 
         isAddingMode={isAddingMode}
         isDeleteMode={isDeleteMode}

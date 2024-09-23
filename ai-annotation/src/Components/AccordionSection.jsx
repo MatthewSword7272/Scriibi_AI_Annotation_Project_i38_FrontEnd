@@ -1,21 +1,23 @@
 import React from 'react';
 import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2-react-navigations";
 import { StyledAccordionComponent } from 'Styles/StyledAccordion';
-import { StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
+import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
 
-const MissingSection = ({ components, handleAccordionClick }) => {
+const AccordionSection = ({ title, components, handleAccordionClick, isMissing = false }) => {
+  const Container = isMissing ? StyledAccordionMissingContainer : StyledAccordionContainer;
+
   return (
-    <StyledAccordionMissingContainer>
-      <h2>Missing</h2>
+    <Container>
+      <h2>{title}</h2>
       <StyledAccordionComponent 
         expandMode="Single"
         expanding={(e) => {
-          const comp = components.missingComps.find(c => c.title === e.item.header);
+          const comp = components.find(c => c.title === e.item.header);
           if (comp) handleAccordionClick(comp);
         }}
       >
         <AccordionItemsDirective>
-          {components.missingComps && components.missingComps.map((comp, index) => (
+          {components && components.map((comp, index) => (
             <AccordionItemDirective
               key={index}
               expanded={false}
@@ -25,8 +27,8 @@ const MissingSection = ({ components, handleAccordionClick }) => {
           ))}
         </AccordionItemsDirective>
       </StyledAccordionComponent>
-    </StyledAccordionMissingContainer>
+    </Container>
   );
 };
 
-export default MissingSection;
+export default AccordionSection;
