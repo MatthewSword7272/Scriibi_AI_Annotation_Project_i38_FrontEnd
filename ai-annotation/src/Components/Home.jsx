@@ -9,7 +9,6 @@ import testSkillsInfo from '../testSkillsInfo';
 import testComps from "../testComp";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 import skillsObject from "../Constraints/SkillsObject";
-import { COLOURS } from "Constraints/colours";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
@@ -31,7 +30,6 @@ const Home = () => {
   });
 
   // Memoized values
-  const colours = useMemo(() => COLOURS, []);
   const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
 
   // Callback Functions
@@ -80,49 +78,43 @@ const Home = () => {
   }, []);
 
   
+  // Function to add highlights to the text
   const addHighlight = useCallback((highlightedWords, text) => {
     let result = text;
-    let offset = 0;
-  
-    // Sort highlightedWords by their start position in the text
-    const sortedHighlights = [...highlightedWords].sort((a, b) => text.indexOf(a.text) - text.indexOf(b.text));
-  
-    sortedHighlights.forEach((highlight, index) => {
-      const startIndex = result.indexOf(highlight.text, offset);
+    const highlightMap = new Map();
 
-      if (startIndex === -1) return; // Text not found, skip this highlight
-  
-      const endIndex = startIndex + highlight.text.length;
-      const color = colours[index % colours.length]; // Cycle through colors
-
-      console.log(`Highlight: "${highlight.text}", Start: ${startIndex}, End: ${endIndex}`);
-
-      // Check if the text is already wrapped in a mark element
-      const beforeText = result.slice(0, startIndex);
-      const afterText = result.slice(endIndex, result.length - endIndex);
-      const isAlreadyHighlighted = 
-        beforeText.includes('<mark class="highlight"') &&
-        afterText.includes('</mark>') &&
-        beforeText.lastIndexOf('<mark') > beforeText.lastIndexOf('</mark');
-  
-      if (!isAlreadyHighlighted) {
-        const newMark = `<mark class="highlight" id="${highlight.component}" 
-          style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" 
-          data-highlight>${highlight.text}</mark>`;
-  
-        result = result.slice(0, startIndex) + newMark + result.slice(endIndex);
-        offset = startIndex + newMark.length;
-      } else {
-        offset = endIndex;
+    // Group highlights by their index
+    highlightedWords.forEach((highlight) => {
+      if (!highlightMap.has(highlight.index)) {
+        highlightMap.set(highlight.index, []);
       }
+      highlightMap.get(highlight.index).push(highlight);
     });
-  
-    return result;
-  }, [colours]);
 
-  const updateHighlights = useCallback((component, text) => {
+    // Sort indices in descending order to avoid offsetting subsequent highlights
+    const sortedIndices = Array.from(highlightMap.keys()).sort((a, b) => b - a);
+
+    // Apply highlights to the text
+    sortedIndices.forEach((index) => {
+      const highlights = highlightMap.get(index);
+      highlights.forEach((highlight) => {
+        // Find the color for the current component
+        const color = testComps.find(component => component.title === highlight.component).color;
+        
+        // Create the HTML markup for the highlight
+        const newMark = `<mark class="highlight" id="${highlight.component}" style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" data-highlight>${highlight.text}</mark>`;
+        
+        // Insert the highlight into the text
+        result = result.slice(0, index) + newMark + result.slice(index + highlight.text.length);
+      });
+    });
+
+    return result;
+  }, []);
+
+  const updateHighlights = useCallback((component, text, index) => {
     if (text) {
-      setHighlightedWords(prevWords => [...prevWords, {text: text, component: component.title}]);
+      setHighlightedWords(prevWords => [...prevWords, {text: text, component: component.title, index: index}]);
       updateComponents('ADD_TO_TEXT', component);
     }
   }, [updateComponents]);
@@ -143,9 +135,9 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const updatedText = addHighlight(highlightedWords, presentingText);
+    const updatedText = addHighlight(highlightedWords, fetchedText);
     setPresentingText(updatedText);
-  }, [addHighlight, highlightedWords, presentingText]);
+  }, [addHighlight, fetchedText, highlightedWords]);
 
   useEffect(() => {
     setWordCount(countWords(presentingText));
@@ -174,7 +166,7 @@ const Home = () => {
         isDeleteMode={isDeleteMode} 
         isAddingMode={isAddingMode}
         components={components}
-        createHighlight={updateHighlights} 
+        updateHighlights={updateHighlights} 
         setIsDeleteMode={setIsDeleteMode}
         setIsAddingMode={setIsAddingMode}
         setHighlightedWords={setHighlightedWords}

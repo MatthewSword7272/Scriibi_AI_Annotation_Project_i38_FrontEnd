@@ -12,7 +12,7 @@ const SidePanel = ({
   isDeleteMode,
   isAddingMode,
   components,
-  createHighlight,
+  updateHighlights,
   setIsAddingMode,
   setIsDeleteMode,
   setHighlightedWords,
@@ -40,7 +40,7 @@ const SidePanel = ({
   const [visibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogText, setDialogText] = useState("");
-  const [selectedText, setSelectedText] = useState("");
+  const [selectedText, setSelectedText] = useState({text: "", index: -1});
 
   // Constants
   const DIALOG_BOX_POSITION = { X: 'right', Y: 'top' };
@@ -82,11 +82,11 @@ const SidePanel = ({
 
   const handleAccordionClick = useCallback((comp) => {
 
-    if (isAddingMode && selectedText !== "") {
-      createHighlight(comp, selectedText);
-      setSelectedText("");
+    if (isAddingMode && selectedText.text !== "") {
+      updateHighlights(comp, selectedText.text, selectedText.index);
+      setSelectedText({ text: "", index: -1 });
     }
-  }, [createHighlight, isAddingMode, selectedText]);
+  }, [updateHighlights, isAddingMode, selectedText]);
 
   const handleContextMenuSelect = (args) => {
     if (args.item.id === 'add') {
@@ -104,8 +104,14 @@ const SidePanel = ({
       const selection = window.getSelection();
       const text = selection.toString().trim();
       if (text !== "") {
-        setSelectedText(text);
-      } 
+        const range = selection.getRangeAt(0);
+        const preSelectionRange = range.cloneRange();
+        preSelectionRange.selectNodeContents(document.querySelector('.e-content'));
+        preSelectionRange.setEnd(range.startContainer, range.startOffset);
+        const index = preSelectionRange.toString().length;
+  
+        setSelectedText({ text, index });
+      }
     };
 
     document.addEventListener("selectionchange", handleSelectionChange);
