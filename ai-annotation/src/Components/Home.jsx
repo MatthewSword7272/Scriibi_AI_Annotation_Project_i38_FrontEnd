@@ -18,7 +18,7 @@ const Home = () => {
   const fetchedText = TestText.test;
 
   // States
-  const [highlightedWords, setHighlightedWords] = useState([]);
+  const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: []});
   const [presentingText, setPresentingText] = useState(fetchedText);
   const [selectedSkill, setSelectedSkill] = useState(0);
   const [isAddingMode, setIsAddingMode] = useState(false);
@@ -99,7 +99,7 @@ const Home = () => {
     const highlightMap = new Map();
 
     // Group highlights by their index
-    highlightedWords.forEach((highlight) => {
+    highlightedWords[selectedSkill].forEach((highlight) => {
       if (!highlightMap.has(highlight.index)) {
         highlightMap.set(highlight.index, []);
       }
@@ -125,28 +125,41 @@ const Home = () => {
     });
 
     return result;
-  }, []);
+  }, [selectedSkill]);
 
   const updateHighlights = useCallback((component, text, index) => {
     if (text) {
-      setHighlightedWords(prevWords => [...prevWords, {text: text, component: component.title, index: index}]);
+      setHighlightedWords(prevWords => ({
+        ...prevWords,
+        [selectedSkill]: [
+          ...(prevWords[selectedSkill] || []),
+          {text: text, component: component.title, index: index}
+        ]
+      }));
       updateComponents('ADD_TO_TEXT', component);
     }
-  }, [updateComponents]);
+  }, [updateComponents, selectedSkill]);
 
   // useEffects
 
   useEffect(() => {
-    setComponents(prevComponents => ({
-      textComps: {
-        ...prevComponents.textComps,
-        [selectedSkill]: prevComponents.textComps[selectedSkill] || []
-      },
-      missingComps: {
-        ...prevComponents.missingComps,
-        [selectedSkill]: testComps[selectedSkill]
-      }
-    }));
+    setComponents(prevComponents => {
+      const currentTextComps = prevComponents.textComps[selectedSkill] || [];
+      const currentMissingComps = testComps[selectedSkill].filter(comp => 
+        !currentTextComps.some(textComp => textComp.title === comp.title)
+      );
+
+      return {
+        textComps: {
+          ...prevComponents.textComps,
+          [selectedSkill]: currentTextComps
+        },
+        missingComps: {
+          ...prevComponents.missingComps,
+          [selectedSkill]: currentMissingComps
+        }
+      };
+    });
   }, [selectedSkill]);
 
   useEffect(() => {
