@@ -9,7 +9,6 @@ import testSkillsInfo from '../testSkillsInfo';
 import testComps from "../testComp";
 import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
 import skillsObject from "../Constraints/SkillsObject";
-import { COLOURS } from "Constraints/colours";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
@@ -17,7 +16,6 @@ import SidePanel from "./SidePanel";
 const Home = () => {
   // Constants
   const fetchedText = TestText.test;
-  const highlightStyle = "";
 
   // States
   const [highlightedWords, setHighlightedWords] = useState([]);
@@ -32,7 +30,6 @@ const Home = () => {
   });
 
   // Memoized values
-  const colours = useMemo(() => COLOURS, []);
   const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
 
   // Callback Functions
@@ -41,35 +38,16 @@ const Home = () => {
   }, []);
 
   const countWords = useCallback((text) => {
-    const words = text.replace(/<[^>]*>/g, '')
+    return text.replace(/<[^>]*>/g, '')
                       .replace(/[^a-zA-Z\s]/g, '')
                       .trim()
-                      .split(/\s+/);
-    return words.filter(word => word !== '').length;
+                      .split(/\s+/)
+                      .filter(word => word !== '').length;
   }, []);
 
   const handleWordCount = useCallback((args) => {
     setWordCount(countWords(args.value));
   }, [countWords]);
-
-  const highlightText = useCallback((highlights) => {
-    if (highlights.length === 0) return;
-    let annotatedText = fetchedText;
-
-    highlights.forEach((highlight, index) => {
-      const regex = new RegExp(`(<mark[^>]*>[^<]*</mark>|${highlight.text})`, "gi");
-      annotatedText = annotatedText.replace(regex, (match) => {
-        const color = colours[index];
-        return `<mark class="highlight" id="${highlight.component}" 
-                      style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" 
-                      data-highlight>
-                        ${match}
-                      </mark>`;
-      });
-    });
-
-    setPresentingText(annotatedText);
-  }, [colours, fetchedText]);
 
   const updateComponents = useCallback((action, component) => {
     setComponents(prevState => {
@@ -99,9 +77,44 @@ const Home = () => {
     });
   }, []);
 
-  const updateHighlights = useCallback((component, text) => {
+  
+  // Function to add highlights to the text
+  const addHighlight = useCallback((highlightedWords, text) => {
+    let result = text;
+    const highlightMap = new Map();
+
+    // Group highlights by their index
+    highlightedWords.forEach((highlight) => {
+      if (!highlightMap.has(highlight.index)) {
+        highlightMap.set(highlight.index, []);
+      }
+      highlightMap.get(highlight.index).push(highlight);
+    });
+
+    // Sort indices in descending order to avoid offsetting subsequent highlights
+    const sortedIndices = Array.from(highlightMap.keys()).sort((a, b) => b - a);
+
+    // Apply highlights to the text
+    sortedIndices.forEach((index) => {
+      const highlights = highlightMap.get(index);
+      highlights.forEach((highlight) => {
+        // Find the color for the current component
+        const color = testComps.find(component => component.title === highlight.component).color;
+        
+        // Create the HTML markup for the highlight
+        const newMark = `<mark class="highlight" id="${highlight.component}" style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" data-highlight>${highlight.text}</mark>`;
+        
+        // Insert the highlight into the text
+        result = result.slice(0, index) + newMark + result.slice(index + highlight.text.length);
+      });
+    });
+
+    return result;
+  }, []);
+
+  const updateHighlights = useCallback((component, text, index) => {
     if (text) {
-      setHighlightedWords(prevWords => [...prevWords, {text: text, component: component.title}]);
+      setHighlightedWords(prevWords => [...prevWords, {text: text, component: component.title, index: index}]);
       updateComponents('ADD_TO_TEXT', component);
     }
   }, [updateComponents]);
@@ -113,15 +126,18 @@ const Home = () => {
         setIsDeleteMode(false);
       }
     };
-
-    highlightText(highlightedWords);
     
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [highlightText, highlightedWords, isAddingMode, isDeleteMode]);
+  }, []);
+
+  useEffect(() => {
+    const updatedText = addHighlight(highlightedWords, fetchedText);
+    setPresentingText(updatedText);
+  }, [addHighlight, fetchedText, highlightedWords]);
 
   return (
     <StyledBodyContainer id="target">
@@ -145,12 +161,12 @@ const Home = () => {
         isDeleteMode={isDeleteMode} 
         isAddingMode={isAddingMode}
         components={components}
-        createHighlight={updateHighlights} 
+        updateHighlights={updateHighlights} 
         setIsDeleteMode={setIsDeleteMode}
         setIsAddingMode={setIsAddingMode}
         setHighlightedWords={setHighlightedWords}
-        highlightText={highlightText}
         updateComponents={updateComponents}
+        setPresentingText={setPresentingText}
       />
     </StyledBodyContainer>
   );

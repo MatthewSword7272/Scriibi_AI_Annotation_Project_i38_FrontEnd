@@ -16,6 +16,7 @@ const StyledHeaderSection = styled.div`
     display: flex;
     align-items: center;
     column-gap: 50px;
+    margin-left: 20px;
 `
 
 const StyledHeaderLogo = styled.img`
@@ -34,6 +35,7 @@ const StyledHeaderLinks = styled.div`
 const StyledHeaderProfile = styled.div`
     display: flex;
     column-gap: 20px;
+    margin-right: 20px;
 `
 
 export {StyledHeader, StyledHeaderLogo, StyledHeaderLinks, StyledHeaderProfile, StyledHeaderSection};
