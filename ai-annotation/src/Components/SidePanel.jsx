@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2-react-navigations";
+import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
 import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
-import { StyledAccordionComponent } from 'Styles/StyledAccordion';
-import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
-import { StyledEditContainer, StyledEditInnerContainer, StyledEditButtonContainer, StyledEditButton } from 'Styles/StyledEditContainer';
-import { StyledNotesButton } from 'Styles/StyledButton';
 import { StyledDialogBox } from 'Styles/StyledDialogBox';
-import { CAM, GREEN, ORANGE } from 'Constraints/constants';
+import { GREEN, ORANGE } from 'Constraints/constants';
+import NotesSection from './NotesSection';
+import EditSection from './EditSection';
+import AccordionSection from './AccordionSection';
 
 const SidePanel = ({
   isDeleteMode,
@@ -20,6 +19,22 @@ const SidePanel = ({
   setPresentingText
 }) => {
 
+  //Menu Items
+  const contextMenuItems = [
+    {
+      text: 'Add',
+      iconCss: 'e-icons e-edit-2',
+      id: 'add',
+      color: GREEN
+    },
+    {
+      text: 'Delete',
+      iconCss: 'e-icons e-delete-2',
+      id: 'delete',
+      color: ORANGE
+    }
+  ];
+
   // States
   const [visibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
@@ -27,7 +42,7 @@ const SidePanel = ({
   const [selectedText, setSelectedText] = useState({text: "", index: -1});
 
   // Constants
-  const DIALOG_BOX_POSITION = { X: 'right' };
+  const DIALOG_BOX_POSITION = { X: 'right', Y: 'top' };
 
   const deleteHighlight = useCallback((target) => {
     if (!target || !target.matches('.highlight, [data-highlight]')) return;
@@ -71,6 +86,16 @@ const SidePanel = ({
       setSelectedText({ text: "", index: -1 });
     }
   }, [updateHighlights, isAddingMode, selectedText]);
+
+  const handleContextMenuSelect = (args) => {
+    if (args.item.id === 'add') {
+      isDeleteMode && setIsDeleteMode(false);
+      setIsAddingMode((prevState) => !prevState);
+    } else if (args.item.id === 'delete') {
+      isAddingMode && setIsAddingMode(false);
+      setIsDeleteMode((prevState) => !prevState);
+    }
+  };
   
   // useEffects
   useEffect(() => {
@@ -124,6 +149,13 @@ const SidePanel = ({
 
   return (
     <StyledSubBodyContainer2>
+
+      <ContextMenuComponent
+        items={contextMenuItems}
+        select={handleContextMenuSelect}
+        target='#rte-target' // Replace with the actual ID of your Rich Text Editor
+      />
+
       <StyledDialogBox
         header={dialogTitle}
         content={dialogText}
@@ -140,81 +172,15 @@ const SidePanel = ({
         position={DIALOG_BOX_POSITION}
       />
 
-      <StyledAccordionContainer>
-        <h2>Notes</h2>
-        <StyledNotesButton color={CAM} onClick={handleDialogClick}>
-          ASP.NET
-        </StyledNotesButton>
-      </StyledAccordionContainer>
-      <StyledAccordionContainer>
-        <h2>Annotation</h2>
-        <StyledAccordionComponent expandMode="Single"
-          expanding={(e) => {
-            const comp = components.textComps.find(c => c.title === e.item.header);
-            if (comp) handleAccordionClick(comp);
-          }}
-        >
-          <AccordionItemsDirective>
-            {components.textComps && components.textComps.map((comp, index) => (
-              <AccordionItemDirective
-                key={index}
-                expanded={false}
-                header={comp.title}
-                content={comp.description}
-              />
-            ))}
-          </AccordionItemsDirective>
-        </StyledAccordionComponent>
-      </StyledAccordionContainer>
-      <StyledAccordionMissingContainer>
-        <h2>Missing</h2>
-        <StyledAccordionComponent expandMode="Single"
-          expanding={(e) => {
-            const comp = components.missingComps.find(c => c.title === e.item.header);
-            if (comp) handleAccordionClick(comp);
-          }}
-        >
-          <AccordionItemsDirective>
-            {components.missingComps && components.missingComps.map((comp, index) => (
-              <AccordionItemDirective
-                key={index}
-                expanded={false}
-                header={comp.title}
-                content={comp.description}
-              />
-            ))}
-          </AccordionItemsDirective>
-        </StyledAccordionComponent>
-      </StyledAccordionMissingContainer>
-      <StyledEditContainer>
-        <h2>Edit</h2>
-        <StyledEditInnerContainer>
-          <StyledEditButtonContainer color={GREEN}>
-            <h6>Add</h6>
-            <StyledEditButton
-              isToggle={true}
-              onClick={() => {
-                isDeleteMode && setIsDeleteMode(false)
-                setIsAddingMode((prevState) => !prevState)
-              }}
-              iconCss="e-icons e-edit-2"
-            ></StyledEditButton>
-          </StyledEditButtonContainer>
-          <StyledEditButtonContainer color={ORANGE}>
-            <h6>Delete</h6>
-            <StyledEditButton
-              isToggle={true}
-              iconCss="e-icons e-delete-2"
-              onClick={() => {
-                isAddingMode && setIsAddingMode(false)
-                setIsDeleteMode((prevState) => !prevState)
-              }}
-            ></StyledEditButton>
-          </StyledEditButtonContainer>
-        </StyledEditInnerContainer>
-        {isAddingMode && "Adding Mode is ON"}
-        {isDeleteMode && "Delete Mode is ON"}
-      </StyledEditContainer>
+      <NotesSection handleDialogClick={handleDialogClick} />
+      <AccordionSection title="Annotation" components={components.textComps} handleAccordionClick={handleAccordionClick} />
+      <AccordionSection title="Missing" components={components.missingComps} handleAccordionClick={handleAccordionClick} isMissing={true} />
+      <EditSection 
+        isAddingMode={isAddingMode}
+        isDeleteMode={isDeleteMode}
+        setIsAddingMode={setIsAddingMode}
+        setIsDeleteMode={setIsDeleteMode}
+      />
     </StyledSubBodyContainer2>
   );
 };

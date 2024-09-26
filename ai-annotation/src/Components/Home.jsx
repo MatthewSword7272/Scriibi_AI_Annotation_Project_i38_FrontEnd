@@ -18,15 +18,15 @@ const Home = () => {
   const fetchedText = TestText.test;
 
   // States
-  const [highlightedWords, setHighlightedWords] = useState([]);
+  const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: []});
   const [presentingText, setPresentingText] = useState(fetchedText);
   const [selectedSkill, setSelectedSkill] = useState(0);
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [components, setComponents] = useState({
-    textComps: [],
-    missingComps: testComps
+    textComps: {},
+    missingComps: {}
   });
 
   // Memoized values
@@ -46,36 +46,51 @@ const Home = () => {
   }, []);
 
   const handleWordCount = useCallback((args) => {
-    setWordCount(countWords(args.value));
-  }, [countWords]);
+    setPresentingText(args.value);
+  }, []);
 
   const updateComponents = useCallback((action, component) => {
     setComponents(prevState => {
+      const currentTextComps = prevState.textComps[selectedSkill] || [];
+      const currentMissingComps = prevState.missingComps[selectedSkill] || [];
+
       switch(action) {
         case 'ADD_TO_TEXT':
-          if (prevState.textComps.some(comp => comp.title === component.title)) {
+          if (currentTextComps.some(comp => comp.title === component.title)) {
             return prevState;
           }
           return {
-            textComps: [...prevState.textComps, component],
-            missingComps: prevState.missingComps.filter(comp => comp.title !== component.title)
+            textComps: {
+              ...prevState.textComps,
+              [selectedSkill]: [...currentTextComps, component]
+            },
+            missingComps: {
+              ...prevState.missingComps,
+              [selectedSkill]: currentMissingComps.filter(comp => comp.title !== component.title)
+            }
           };
 
         case 'REMOVE_FROM_TEXT':
-          const compToMove = prevState.textComps.find(comp => comp.title === component.title);
+          const compToMove = currentTextComps.find(comp => comp.title === component.title);
           if (!compToMove) {
             return prevState;
           }
           return {
-            textComps: prevState.textComps.filter(comp => comp.title !== component.title),
-            missingComps: [...prevState.missingComps, compToMove]
+            textComps: {
+              ...prevState.textComps,
+              [selectedSkill]: currentTextComps.filter(comp => comp.title !== component.title)
+            },
+            missingComps: {
+              ...prevState.missingComps,
+              [selectedSkill]: [...currentMissingComps, compToMove]
+            }
           };
 
         default:
           return prevState;
       }
     });
-  }, []);
+  }, [selectedSkill]);
 
   
   // Function to add highlights to the text
@@ -84,7 +99,7 @@ const Home = () => {
     const highlightMap = new Map();
 
     // Group highlights by their index
-    highlightedWords.forEach((highlight) => {
+    highlightedWords[selectedSkill].forEach((highlight) => {
       if (!highlightMap.has(highlight.index)) {
         highlightMap.set(highlight.index, []);
       }
@@ -99,7 +114,7 @@ const Home = () => {
       const highlights = highlightMap.get(index);
       highlights.forEach((highlight) => {
         // Find the color for the current component
-        const color = testComps.find(component => component.title === highlight.component).color;
+        const color = testComps[selectedSkill].find(component => component.title === highlight.component).color;
         
         // Create the HTML markup for the highlight
         const newMark = `<mark class="highlight" id="${highlight.component}" style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" data-highlight>${highlight.text}</mark>`;
@@ -110,14 +125,42 @@ const Home = () => {
     });
 
     return result;
-  }, []);
+  }, [selectedSkill]);
 
   const updateHighlights = useCallback((component, text, index) => {
     if (text) {
-      setHighlightedWords(prevWords => [...prevWords, {text: text, component: component.title, index: index}]);
+      setHighlightedWords(prevWords => ({
+        ...prevWords,
+        [selectedSkill]: [
+          ...(prevWords[selectedSkill] || []),
+          {text: text, component: component.title, index: index}
+        ]
+      }));
       updateComponents('ADD_TO_TEXT', component);
     }
-  }, [updateComponents]);
+  }, [updateComponents, selectedSkill]);
+
+  // useEffects
+
+  useEffect(() => {
+    setComponents(prevComponents => {
+      const currentTextComps = prevComponents.textComps[selectedSkill] || [];
+      const currentMissingComps = testComps[selectedSkill].filter(comp => 
+        !currentTextComps.some(textComp => textComp.title === comp.title)
+      );
+
+      return {
+        textComps: {
+          ...prevComponents.textComps,
+          [selectedSkill]: currentTextComps
+        },
+        missingComps: {
+          ...prevComponents.missingComps,
+          [selectedSkill]: currentMissingComps
+        }
+      };
+    });
+  }, [selectedSkill]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -139,6 +182,10 @@ const Home = () => {
     setPresentingText(updatedText);
   }, [addHighlight, fetchedText, highlightedWords]);
 
+  useEffect(() => {
+    setWordCount(countWords(presentingText));
+  }, [presentingText, countWords]);
+
   return (
     <StyledBodyContainer id="target">
       <StyledSubBodyContainer1>
@@ -150,6 +197,7 @@ const Home = () => {
         />
         <SkillCarousel skillData={skillData} />
         <StyledRichTextEditor
+          id="rte-target"
           value={presentingText}
           change={handleWordCount}>
           <Inject services={[Toolbar, HtmlEditor]} />
@@ -160,7 +208,10 @@ const Home = () => {
         key={JSON.stringify(components)}
         isDeleteMode={isDeleteMode} 
         isAddingMode={isAddingMode}
-        components={components}
+        components={{
+          textComps: components.textComps[selectedSkill] || [],
+          missingComps: components.missingComps[selectedSkill] || []
+        }}
         updateHighlights={updateHighlights} 
         setIsDeleteMode={setIsDeleteMode}
         setIsAddingMode={setIsAddingMode}
