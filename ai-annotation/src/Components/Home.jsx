@@ -218,6 +218,7 @@ const Home = () => {
         setHighlightedWords={setHighlightedWords}
         updateComponents={updateComponents}
         setPresentingText={setPresentingText}
+        selectedSkill={selectedSkill}
       />
     </StyledBodyContainer>
   );

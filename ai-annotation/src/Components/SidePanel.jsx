@@ -16,7 +16,8 @@ const SidePanel = ({
   setIsDeleteMode,
   setHighlightedWords,
   updateComponents,
-  setPresentingText
+  setPresentingText,
+  selectedSkill
 }) => {
 
   //Menu Items
@@ -55,11 +56,12 @@ const SidePanel = ({
       return prevText.replace(regex, highlightText);
     });
 
-    setHighlightedWords((prevHighlights) => 
-      prevHighlights.filter(highlight => 
+    setHighlightedWords((prevHighlights) => ({
+      ...prevHighlights,
+      [selectedSkill]: prevHighlights[selectedSkill].filter(highlight => 
         !(highlight.text === highlightText && highlight.component === componentId)
       )
-    );
+    }));
 
     setTimeout(() => {
       const remainingHighlights = document.querySelectorAll(`[id="${componentId}"]`);
@@ -67,7 +69,7 @@ const SidePanel = ({
         updateComponents('REMOVE_FROM_TEXT', { title: componentId });
       }
     }, 0);
-  }, [updateComponents, setHighlightedWords, setPresentingText]);
+  }, [setPresentingText, setHighlightedWords, selectedSkill, updateComponents]);
 
   const showDialog = useCallback((title, text) => {
     setDialogTitle(title);
