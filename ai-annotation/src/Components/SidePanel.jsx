@@ -104,14 +104,27 @@ const SidePanel = ({
     const handleSelectionChange = () => {
       const selection = window.getSelection();
       const text = selection.toString().trim();
-      if (text !== "") {
-        const range = selection.getRangeAt(0);
+      const range = selection.getRangeAt(0);
+      const editViewContainer = range.commonAncestorContainer.parentElement.parentElement
+
+      if (text !== "" && editViewContainer.id.startsWith('rte-target')) {
         const preSelectionRange = range.cloneRange();
         preSelectionRange.selectNodeContents(document.querySelector('.e-content'));
         preSelectionRange.setEnd(range.startContainer, range.startOffset);
         const index = preSelectionRange.toString().length;
-  
-        setSelectedText({ text, index });
+
+        // Create a temporary element to hold the selection
+        const tempContainer = document.createElement('div');
+        tempContainer.appendChild(range.cloneContents());
+
+        // Check if the temporary container contains any <mark> nodes
+        const markNodes = tempContainer.querySelectorAll('mark');
+        let containsMark = markNodes.length > 0;
+
+        // if no overlapping highlights
+        if (!containsMark) {
+            setSelectedText({ text, index });
+        }
       }
     };
 
