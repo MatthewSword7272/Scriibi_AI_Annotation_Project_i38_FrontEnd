@@ -225,7 +225,7 @@ const Home = () => {
           id="rte-target"
           value={presentingText}
           change={handleWordCount}>
-          <Inject services={[Toolbar, HtmlEditor]} />
+          <Inject services={[HtmlEditor]} />
         </StyledRichTextEditor>
         <div><b>Word Count: {wordCount}</b></div>
       </StyledSubBodyContainer1>
