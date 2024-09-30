@@ -137,10 +137,13 @@ const Home = () => {
           id="${data.id}"
           data-highlight-content="${data.content}" 
           data-component-name="${data.componentData.name}"
-          data-subcomponent-name="${data.componentData.subComponent.text || '  '}"
+          ${data.componentData.subComponent ? `
+            data-subcomponent-name="${data.componentData.subComponent.text}"` : 
+          ""}
           style="background: ${data.componentData.background};
-          ${data.componentData.subComponent.background && `
-            --subcomponent-background: ${data.componentData.subComponent.background};`}">
+          ${data.componentData.subComponent ? `
+            --subcomponent-background: ${data.componentData.subComponent.background};` : 
+          ""}">
           ${data.content}
         </mark>`.replace(/\n/g, '').replace(/\s{2,}/g, ' ').replace(/>\s+</g, '><').replace(/>\s+/g, '>').replace(/\s+</g, '<'); // clean white spaces and new line characters
       
