@@ -15,6 +15,7 @@ const StyledCarouselInnerContainer = styled.div`
   width: 99%;
   display: flex;
   flex-direction: column;
+  
 `;
 
 const StyledCarouselRow = styled.div`
@@ -23,6 +24,7 @@ const StyledCarouselRow = styled.div`
   transform: translateX(${props => -props.gridCentre * 35}%);
   align-items: center;
   margin-bottom: 15px;
+  transition: transform 0.5s ease-in-out;
 
   &:nth-child(1) {
     margin-bottom: 20px;
@@ -55,6 +57,7 @@ const StyledDotInnerContainer = styled.div`
   align-items: center; 
   column-gap: 3vw;
   transform: translateX(${props => -props.gridCentre * 35}%);
+  transition: transform 0.5s ease-in-out;
 `
 
 const StyledCarouselDot = styled.div`
