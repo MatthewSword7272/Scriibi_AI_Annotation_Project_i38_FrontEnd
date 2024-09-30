@@ -32,11 +32,11 @@ const Home = () => {
   // Memoized values
   const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
 
-  // Callback Functions
-  const handleSkillChange = useCallback((event) => {
+  const handleSkillChange = (event) => {
     setSelectedSkill(parseInt(event.target.value, 10));
-  }, []);
+  };
 
+  // Callback Functions
   const countWords = useCallback((text) => {
     return text.replace(/<[^>]*>/g, '')
                       .replace(/[^a-zA-Z\s]/g, '')
@@ -143,6 +143,7 @@ const Home = () => {
   // useEffects
 
   useEffect(() => {
+
     setComponents(prevComponents => {
       const currentTextComps = prevComponents.textComps[selectedSkill] || [];
       const currentMissingComps = testComps[selectedSkill].filter(comp => 
@@ -160,6 +161,7 @@ const Home = () => {
         }
       };
     });
+
   }, [selectedSkill]);
 
   useEffect(() => {
@@ -205,7 +207,7 @@ const Home = () => {
         <div><b>Word Count: {wordCount}</b></div>
       </StyledSubBodyContainer1>
       <SidePanel
-        key={JSON.stringify(components)}
+        key={selectedSkill}
         isDeleteMode={isDeleteMode} 
         isAddingMode={isAddingMode}
         components={{

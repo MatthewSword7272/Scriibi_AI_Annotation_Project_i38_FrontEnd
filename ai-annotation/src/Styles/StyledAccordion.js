@@ -1,7 +1,6 @@
 import { AccordionComponent } from "@syncfusion/ej2-react-navigations";
 import styled from "styled-components";
 import {WHITE, BLACK} from '../Constraints/constants';
-import { COLOURS } from "Constraints/colours";
 
 const StyledAccordionComponent = styled(AccordionComponent)`
   border: transparent;
@@ -14,38 +13,36 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   row-gap: 10px;
   border-radius: 20px !important;
 
-  ${COLOURS.map((color, index) => `
-      .e-acrdn-item:nth-child(${index + 1}), .e-acrdn-item.e-selected:nth-child(${index + 1}) {
+  ${props => props.components && props.components.map((comp, index) => `
+    .e-acrdn-item:nth-child(${index + 1}), .e-acrdn-item.e-selected:nth-child(${index + 1}) {
+      border-radius: 20px !important;
+      border: none;
+      color: ${BLACK} !important;
+      background-color: ${comp.color} !important;
+
+      .e-acrdn-header {
         border-radius: 20px !important;
-        border: none;
-        color: ${BLACK} !important;
-        background-color: ${color} !important;
+        background: ${comp.color} !important;
 
-        .e-acrdn-header {
-          border-radius: 20px !important;
-          background: ${color} !important;
-
-          .e-acrdn-header-content {
-            color: ${BLACK} !important;
-            font-weight: bold;
-          }
-        }
-
-        &.e-select .e-acrdn-panel .e-acrdn-content {
-          background: ${WHITE};
-          border: 5px ${color} solid;
-          border-radius: 20px;
+        .e-acrdn-header-content {
+          color: ${BLACK} !important;
+          font-weight: bold;
         }
       }
-    `).join('\n')
-  }
 
-  .e-acrdn-item.e-item-focus.e-expand-state.e-select, 
-  .e-acrdn-item.e-item-focus.e-select.e-selected.e-expand-state,
-  .e-acrdn-item.e-select.e-item-focus {
-    border: unset;
-  }
+      &.e-select .e-acrdn-panel .e-acrdn-content {
+        background: ${WHITE};
+        border: 5px ${comp.color} solid;
+        border-radius: 20px;
+      }
+    }
 
+    .e-acrdn-item.e-item-focus.e-expand-state.e-select, 
+    .e-acrdn-item.e-item-focus.e-select.e-selected.e-expand-state,
+    .e-acrdn-item.e-select.e-item-focus {
+      border: unset;
+    }
+  `)}
 `;
 
 export { StyledAccordionComponent };

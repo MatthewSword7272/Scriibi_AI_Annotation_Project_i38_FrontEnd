@@ -183,7 +183,7 @@ const SidePanel = ({
   const onToastBeforeOpen = (e) => {
     if (toastInstance.current.element.childElementCount === 1) {
       e.cancel = true;
-    }else {
+    } else {
       e.cancel = false;
     }
   }
