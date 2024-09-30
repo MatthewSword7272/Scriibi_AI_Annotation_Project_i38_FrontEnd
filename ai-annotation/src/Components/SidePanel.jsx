@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
-import { ToastComponent } from '@syncfusion/ej2-react-notifications';
+import { StyledToast } from 'Styles/StyledToast';
 import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
 import { StyledDialogBox } from 'Styles/StyledDialogBox';
 import { GREEN, ORANGE } from 'Constraints/constants';
@@ -165,7 +165,7 @@ const SidePanel = ({
         target='#rte-target'
       />
 
-      <ToastComponent
+      <StyledToast
         cssClass="e-toast-warning"
         ref={toastInstance}
         title="Warning"
