@@ -115,12 +115,40 @@ const Home = () => {
       highlights.forEach((highlight) => {
         // Find the color for the current component
         const color = testComps[selectedSkill].find(component => component.title === highlight.component).color;
-        
+
+        // Hihglight data
+        const data = {
+          id: index,
+          content: highlight.text,
+          componentData: {
+            name: highlight.component,
+            background: color,
+            // subComponent: {
+            //   text: "CC",
+            //   background: "black"
+            // }
+          }
+        }
+
         // Create the HTML markup for the highlight
-        const newMark = `<mark class="highlight" id="${highlight.component}" style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" data-highlight>${highlight.text}</mark>`;
-        
+        const newMarkHtml = 
+        `<mark 
+          class="highlight"
+          id="${data.id}"
+          data-highlight-content="${data.content}" 
+          data-component-name="${data.componentData.name}"
+          ${data.componentData.subComponent ? `
+            data-subcomponent-name="${data.componentData.subComponent.text}"` : 
+          ""}
+          style="background: ${data.componentData.background};
+          ${data.componentData.subComponent ? `
+            --subcomponent-background: ${data.componentData.subComponent.background};` : 
+          ""}">
+          ${data.content}
+        </mark>`.replace(/\n/g, '').replace(/\s{2,}/g, ' ').replace(/>\s+</g, '><').replace(/>\s+/g, '>').replace(/\s+</g, '<'); // clean white spaces and new line characters
+      
         // Insert the highlight into the text
-        result = result.slice(0, index) + newMark + result.slice(index + highlight.text.length);
+        result = result.slice(0, index) + newMarkHtml + result.slice(index + highlight.text.length);
       });
     });
 
