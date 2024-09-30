@@ -171,6 +171,7 @@ const SidePanel = ({
         title="Warning"
         content="Text has already been highlighted"
         position={TOAST_POSITION}
+        icon='e-warning toast-icons'
         beforeOpen={onToastBeforeOpen}
       />
 
