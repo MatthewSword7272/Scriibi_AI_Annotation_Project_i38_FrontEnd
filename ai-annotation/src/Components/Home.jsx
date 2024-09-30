@@ -32,24 +32,23 @@ const Home = () => {
   // Memoized values
   const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
 
-  // Functions
-  const handleSkillChange = (event) => {
+  // Callback Functions
+  const handleSkillChange = useCallback((event) => {
     setSelectedSkill(parseInt(event.target.value, 10));
-  };
+  }, []);
 
   const countWords = useCallback((text) => {
     return text.replace(/<[^>]*>/g, '')
-               .replace(/[^a-zA-Z\s]/g, '')
-               .trim()
-               .split(/\s+/)
-               .filter(word => word !== '').length;
+                      .replace(/[^a-zA-Z\s]/g, '')
+                      .trim()
+                      .split(/\s+/)
+                      .filter(word => word !== '').length;
   }, []);
 
-  const handleWordCount = (args) => {
+  const handleWordCount = useCallback((args) => {
     setPresentingText(args.value);
-  };
+  }, []);
 
-  // useCallbacks
   const updateComponents = useCallback((action, component) => {
     setComponents(prevState => {
       const currentTextComps = prevState.textComps[selectedSkill] || [];
@@ -93,6 +92,7 @@ const Home = () => {
     });
   }, [selectedSkill]);
 
+  
   // Function to add highlights to the text
   const addHighlight = useCallback((highlightedWords, text) => {
     let result = text;
@@ -141,6 +141,7 @@ const Home = () => {
   }, [updateComponents, selectedSkill]);
 
   // useEffects
+
   useEffect(() => {
     setComponents(prevComponents => {
       const currentTextComps = prevComponents.textComps[selectedSkill] || [];
@@ -168,7 +169,9 @@ const Home = () => {
         setIsDeleteMode(false);
       }
     };
+    
     document.addEventListener("keydown", handleKeyDown);
+
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
@@ -202,7 +205,7 @@ const Home = () => {
         <div><b>Word Count: {wordCount}</b></div>
       </StyledSubBodyContainer1>
       <SidePanel
-        key={`${selectedSkill}-${JSON.stringify(components)}`}
+        key={JSON.stringify(components)}
         isDeleteMode={isDeleteMode} 
         isAddingMode={isAddingMode}
         components={{

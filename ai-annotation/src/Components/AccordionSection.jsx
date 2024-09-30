@@ -9,13 +9,12 @@ const AccordionSection = ({ title, components, handleAccordionClick, isMissing =
   return (
     <Container>
       <h2>{title}</h2>
-      <StyledAccordionComponent
+      <StyledAccordionComponent 
         expandMode="Single"
         expanding={(e) => {
           const comp = components.find(c => c.title === e.item.header);
           if (comp) handleAccordionClick(comp);
         }}
-        components={components}
       >
         <AccordionItemsDirective>
           {components && components.map((comp, index) => (
