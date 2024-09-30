@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
+import { ToastComponent } from '@syncfusion/ej2-react-notifications';
 import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
 import { StyledDialogBox } from 'Styles/StyledDialogBox';
 import { GREEN, ORANGE } from 'Constraints/constants';
@@ -19,31 +20,35 @@ const SidePanel = ({
   setPresentingText,
   selectedSkill
 }) => {
-
-  //Menu Items
-  const contextMenuItems = [
-    {
-      text: 'Add',
-      iconCss: 'e-icons e-edit-2',
-      id: 'add',
-      color: GREEN
-    },
-    {
-      text: 'Delete',
-      iconCss: 'e-icons e-delete-2',
-      id: 'delete',
-      color: ORANGE
-    }
-  ];
-
   // States
-  const [visibility, setDialogVisibility] = useState(false);
+  const [dialogVisibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogText, setDialogText] = useState("");
-  const [selectedText, setSelectedText] = useState({text: "", index: -1});
+  const [selectedText, setSelectedText] = useState({ text: "", index: -1 });
+
+  // Refs
+  const toastInstance = useRef(null);
 
   // Constants
   const DIALOG_BOX_POSITION = { X: 'right', Y: 'top' };
+  const TOAST_POSITION = { X: 'center', Y: 'top' };
+  const contextMenuItems = [
+    { text: 'Add', iconCss: 'e-icons e-edit-2', id: 'add', color: GREEN },
+    { text: 'Delete', iconCss: 'e-icons e-delete-2', id: 'delete', color: ORANGE }
+  ];
+
+  // Helper functions
+  const showDialog = (title, text) => {
+    setDialogTitle(title);
+    setDialogText(text);
+    setDialogVisibility(true);
+  };
+
+  const showToast = useCallback(() => {
+    if (toastInstance.current) {
+      toastInstance.current.show();
+    }
+  }, []);
 
   const deleteHighlight = useCallback((target) => {
     if (!target || !target.matches('.highlight, [data-highlight]')) return;
@@ -71,18 +76,10 @@ const SidePanel = ({
     }, 0);
   }, [setPresentingText, setHighlightedWords, selectedSkill, updateComponents]);
 
-  const showDialog = useCallback((title, text) => {
-    setDialogTitle(title);
-    setDialogText(text);
-    setDialogVisibility(true);
-  }, [])
-
-  const handleDialogClick = useCallback(() => {
-    showDialog("ASP.NET", "Actual content about ASP.NET");
-  }, [showDialog]);
+  // Event handlers
+  const handleDialogClick = () => showDialog("ASP.NET", "Actual content about ASP.NET");
 
   const handleAccordionClick = useCallback((comp) => {
-
     if (isAddingMode && selectedText.text !== "") {
       updateHighlights(comp, selectedText.text, selectedText.index);
       setSelectedText({ text: "", index: -1 });
@@ -98,29 +95,50 @@ const SidePanel = ({
       setIsDeleteMode((prevState) => !prevState);
     }
   };
-  
-  // useEffects
+
+  const dialogClose = () => setDialogVisibility(false);
+
+  const onDialogBeforeOpen = (args) => {
+    args.maxHeight = "80%";
+  };
+
+  const onToastBeforeOpen = (e) => {
+    e.cancel = toastInstance.current.element.childElementCount === 1;
+  };
+
+  // Effects
   useEffect(() => {
     const handleSelectionChange = () => {
       const selection = window.getSelection();
+      if (selection.rangeCount === 0) return; //Check if there is a selection
       const text = selection.toString().trim();
-      if (text !== "") {
-        const range = selection.getRangeAt(0);
-        const preSelectionRange = range.cloneRange();
-        preSelectionRange.selectNodeContents(document.querySelector('.e-content'));
+      const range = selection.getRangeAt(0);
+      const editViewContainer = range.commonAncestorContainer.parentElement.parentElement;
+
+      if (text !== "" && editViewContainer.id.startsWith('rte-target')) {
+        const preSelectionRange = range.cloneRange(); // Create a new range that's a copy of the current selection range
+        preSelectionRange.selectNodeContents(document.querySelector('.e-content')); // Create a new range that's a copy of the current selection range
         preSelectionRange.setEnd(range.startContainer, range.startOffset);
         const index = preSelectionRange.toString().length;
-  
-        setSelectedText({ text, index });
+
+        // Create a temporary element to hold the selection
+        const tempContainer = document.createElement('div');
+        tempContainer.appendChild(range.cloneContents());
+        const containsMark = tempContainer.querySelectorAll('mark').length > 0; // Check if the temporary container contains any <mark> nodes
+
+        // if no overlapping highlights
+        if (!containsMark) {
+          setSelectedText({ text, index });
+        } else {
+          showToast();
+        }
       }
     };
 
     document.addEventListener("selectionchange", handleSelectionChange);
-
-    return () => {
-      document.removeEventListener("selectionchange", handleSelectionChange);
-    }
-  }, []);
+    
+    return () => document.removeEventListener("selectionchange", handleSelectionChange);
+  }, [showToast]);
 
   useEffect(() => {
     const handleDeleteHighlight = (event) => {
@@ -130,39 +148,38 @@ const SidePanel = ({
     };
 
     document.addEventListener("click", handleDeleteHighlight);
-
-    return () => {
-      document.removeEventListener("click", handleDeleteHighlight);
-    }
+    return () => document.removeEventListener("click", handleDeleteHighlight);
   }, [deleteHighlight, isDeleteMode]);
-  
+
   useEffect(() => {
     console.log('SidePanel received new components:', components);
     console.log('textComps:', components.textComps);
     console.log('missingComps:', components.missingComps);
   }, [components]);
 
-  // Helper functions
-  const dialogClose = () => setDialogVisibility(false);
-
-  const onBeforeOpen = (args) => {
-    args.maxHeight = "80%";
-  };
-
   return (
     <StyledSubBodyContainer2>
-
       <ContextMenuComponent
         items={contextMenuItems}
         select={handleContextMenuSelect}
-        target='#rte-target' // Replace with the actual ID of your Rich Text Editor
+        target='#rte-target'
+      />
+
+      <ToastComponent
+        cssClass="e-toast-warning"
+        ref={toastInstance}
+        title="Warning"
+        content="Text has already been highlighted"
+        position={TOAST_POSITION}
+        icon='e-warning toast-icons'
+        beforeOpen={onToastBeforeOpen}
       />
 
       <StyledDialogBox
         header={dialogTitle}
         content={dialogText}
         showCloseIcon={true}
-        visible={visibility}
+        visible={dialogVisibility}
         width="25vw"
         height="90vh"
         target="#target"
@@ -170,7 +187,7 @@ const SidePanel = ({
         enableResize={true}
         allowDragging={true}
         close={dialogClose}
-        beforeOpen={onBeforeOpen}
+        beforeOpen={onDialogBeforeOpen}
         position={DIALOG_BOX_POSITION}
       />
 

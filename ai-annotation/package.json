@@ -14,6 +14,7 @@
     "@syncfusion/ej2-react-buttons": "26.2.7",
     "@syncfusion/ej2-react-inputs": "^26.2.5",
     "@syncfusion/ej2-react-navigations": "26.2.7",
+    "@syncfusion/ej2-react-notifications": "^27.1.50",
     "@syncfusion/ej2-react-popups": "26.2.5",
     "@syncfusion/ej2-react-richtexteditor": "^26.2.8",
     "@syncfusion/ej2-splitbuttons": "26.2.5",
