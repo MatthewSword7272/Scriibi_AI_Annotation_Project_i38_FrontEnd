@@ -140,7 +140,7 @@ const Home = () => {
           id="${data.id}"
           data-highlight-content="${data.content}" 
           data-component-name="${data.componentData.name}"
-          ${data.componentData.subComponent ? `git
+          ${data.componentData.subComponent ? `
             data-subcomponent-text="${data.componentData.subComponent.text || '\u2003'}"` : 
           ""}
           style="background: ${data.componentData.background};
