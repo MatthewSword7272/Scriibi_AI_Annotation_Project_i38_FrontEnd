@@ -51,27 +51,28 @@ const SidePanel = ({
   }, []);
 
   const deleteHighlight = useCallback((target) => {
-    if (!target || !target.matches('.highlight, [data-highlight]')) return;
 
+    if (!target || !target.matches('.highlight, [data-highlight]')) return;
     const highlightText = target.textContent;
     const componentId = target.id;
+    const componentName = target.dataset.componentName
 
     setPresentingText((prevText) => {
-      const regex = new RegExp(`<mark[^>]*id="${componentId}"[^>]*>${highlightText}</mark>`, 'g');
+      const regex = new RegExp(`<mark[^>]*id="${componentId}"[^>]*>?.*</mark>`, 'g');
       return prevText.replace(regex, highlightText);
     });
 
     setHighlightedWords((prevHighlights) => ({
       ...prevHighlights,
       [selectedSkill]: prevHighlights[selectedSkill].filter(highlight => 
-        !(highlight.text === highlightText && highlight.component === componentId)
+        !(highlight.text === highlightText && highlight.component === componentName)
       )
     }));
 
     setTimeout(() => {
       const remainingHighlights = document.querySelectorAll(`[id="${componentId}"]`);
       if (remainingHighlights.length === 0) {
-        updateComponents('REMOVE_FROM_TEXT', { title: componentId });
+        updateComponents('REMOVE_FROM_TEXT', { title: componentName });
       }
     }, 0);
   }, [setPresentingText, setHighlightedWords, selectedSkill, updateComponents]);
@@ -122,9 +123,9 @@ const SidePanel = ({
         const index = preSelectionRange.toString().length;
 
         // Create a temporary element to hold the selection
-        const tempContainer = document.createElement('div');
+        const tempContainer = document.createElement('span');
         tempContainer.appendChild(range.cloneContents());
-        const containsMark = tempContainer.querySelectorAll('mark').length > 0; // Check if the temporary container contains any <mark> nodes
+        const containsMark = tempContainer.querySelectorAll('mark.highlight').length > 0; // Check if the temporary container contains any <mark> nodes
 
         // if no overlapping highlights
         if (!containsMark) {

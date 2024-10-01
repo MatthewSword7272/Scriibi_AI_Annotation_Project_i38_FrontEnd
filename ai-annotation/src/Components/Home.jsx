@@ -7,11 +7,12 @@ import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import TestText from "../testText.json";
 import testSkillsInfo from '../testSkillsInfo';
 import testComps from "../testComp";
-import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
+import { HtmlEditor, Inject } from '@syncfusion/ej2-react-richtexteditor';
 import skillsObject from "../Constraints/SkillsObject";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
+import { BLACK } from "Constraints/constants";
 
 const Home = () => {
   // Constants
@@ -115,12 +116,39 @@ const Home = () => {
       highlights.forEach((highlight) => {
         // Find the color for the current component
         const color = testComps[selectedSkill].find(component => component.title === highlight.component).color;
-        
+
+        // Highlight data
+        const data = {
+          id: index,
+          content: highlight.text,
+          componentData: {
+            name: highlight.component,
+            background: color,
+            // subComponent: { // all properties of subComponent are non-nullable
+            //   text: "",
+            //   background: ""
+            // }
+          }
+        }
+
         // Create the HTML markup for the highlight
-        const newMark = `<mark class="highlight" id="${highlight.component}" style="background-color: ${color}; cursor: pointer; padding: 3px 5px; border-radius: 5px;" data-highlight>${highlight.text}</mark>`;
-        
+        const newMarkHtml = 
+        `<mark 
+          class="highlight${data.componentData.subComponent && ' flag'}"
+          id="${data.id}"
+          data-highlight-content="${data.content}" 
+          data-component-name="${data.componentData.name}"
+          ${data.componentData.subComponent ? `
+            data-subcomponent-text="${data.componentData.subComponent.text || '\u2003'}"` : 
+          ""}
+          style="background: ${data.componentData.background};
+          ${data.componentData.subComponent && 
+          `--subcomponent-background: ${data.componentData.subComponent.background || `${BLACK}`};`}">
+          ${data.content}
+        </mark>`.replace(/\n/g, '').replace(/\s{2,}/g, ' ').replace(/>\s+</g, '><').replace(/>\s+/g, '>').replace(/\s+</g, '<'); // clean white spaces and new line characters
+      
         // Insert the highlight into the text
-        result = result.slice(0, index) + newMark + result.slice(index + highlight.text.length);
+        result = result.slice(0, index) + newMarkHtml + result.slice(index + highlight.text.length);
       });
     });
 
@@ -196,8 +224,9 @@ const Home = () => {
         <StyledRichTextEditor
           id="rte-target"
           value={presentingText}
-          change={handleWordCount}>
-          <Inject services={[Toolbar, HtmlEditor]} />
+          change={handleWordCount}
+          toolbarSettings={{enable: false}}>
+          <Inject services={[HtmlEditor]} />
         </StyledRichTextEditor>
         <div><b>Word Count: {wordCount}</b></div>
       </StyledSubBodyContainer1>
