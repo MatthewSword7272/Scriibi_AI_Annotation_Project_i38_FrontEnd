@@ -4,6 +4,7 @@ import {
   StyledSubBodyContainer1,
 } from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
+import { Toolbar } from "@syncfusion/ej2-react-richtexteditor";
 import TestText from "../testText.json";
 import testSkillsInfo from '../testSkillsInfo';
 import testComps from "../testComp";
@@ -135,16 +136,16 @@ const Home = () => {
         // Create the HTML markup for the highlight
         const newMarkHtml = 
         `<mark 
-          class="highlight${data.componentData.subComponent && ' flag'}"
+          class="highlight${data.componentData.subComponent ? ' flag' : ''}"
           id="${data.id}"
           data-highlight-content="${data.content}" 
           data-component-name="${data.componentData.name}"
-          ${data.componentData.subComponent ? `
+          ${data.componentData.subComponent ? `git
             data-subcomponent-text="${data.componentData.subComponent.text || '\u2003'}"` : 
           ""}
           style="background: ${data.componentData.background};
-          ${data.componentData.subComponent && 
-          `--subcomponent-background: ${data.componentData.subComponent.background || `${BLACK}`};`}">
+          ${data.componentData.subComponent ? 
+          `--subcomponent-background: ${data.componentData.subComponent.background || `${BLACK}`};` : ''}">
           ${data.content}
         </mark>`.replace(/\n/g, '').replace(/\s{2,}/g, ' ').replace(/>\s+</g, '><').replace(/>\s+/g, '>').replace(/\s+</g, '<'); // clean white spaces and new line characters
       
@@ -224,14 +225,17 @@ const Home = () => {
           setSkillAnnotated={setSkillAnnotated}
         />
         <SkillCarousel skillData={skillData} />
-        <StyledRichTextEditor
-          id="rte-target"
-          value={presentingText}
-          change={handleWordCount}
-          toolbarSettings={{enable: false}}>
-          <Inject services={[HtmlEditor]} />
-        </StyledRichTextEditor>
-        <div><b>Word Count: {wordCount}</b></div>
+        <div className="rte-container">
+          <label className="floating-label" htmlFor="rte-target">Student Writing Text</label>
+          <StyledRichTextEditor
+            id="rte-target"
+            value={presentingText}
+            change={handleWordCount}
+            toolbarSettings={{enable: false}}>
+            <Inject services={[HtmlEditor, Toolbar]} />
+          </StyledRichTextEditor>
+          <div><b>Word Count: {wordCount}</b></div>
+        </div>
       </StyledSubBodyContainer1>
       <SidePanel
         key={`${selectedSkill}-${JSON.stringify(components)}`}

@@ -131,7 +131,10 @@ const SidePanel = ({
         // if no overlapping highlights
         if (!containsMark) {
           setSelectedText({ text, index });
-        } else {
+        } else { 
+          // unselect text, reset selectedText state, then alert user
+          selection.removeAllRanges()
+          setSelectedText({ text: "", index: -1 });
           showToast();
         }
       }
