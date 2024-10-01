@@ -123,9 +123,9 @@ const Home = () => {
           componentData: {
             name: highlight.component,
             background: color,
-            // subComponent: {
-            //   text: "CC",
-            //   background: "black"
+            // subComponent: { // all properties of subComponent are non-nullable
+            //   text: "",
+            //   background: ""
             // }
           }
         }
@@ -133,16 +133,16 @@ const Home = () => {
         // Create the HTML markup for the highlight
         const newMarkHtml = 
         `<mark 
-          class="highlight"
+          class="highlight${data.componentData.subComponent ? ' flag' : ''}"
           id="${data.id}"
           data-highlight-content="${data.content}" 
           data-component-name="${data.componentData.name}"
           ${data.componentData.subComponent ? `
-            data-subcomponent-name="${data.componentData.subComponent.text}"` : 
+            data-subcomponent-text="${data.componentData.subComponent.text || '\u2003'}"` : 
           ""}
           style="background: ${data.componentData.background};
           ${data.componentData.subComponent ? `
-            --subcomponent-background: ${data.componentData.subComponent.background};` : 
+            --subcomponent-background: ${data.componentData.subComponent.background || 'black'};` : 
           ""}">
           ${data.content}
         </mark>`.replace(/\n/g, '').replace(/\s{2,}/g, ' ').replace(/>\s+</g, '><').replace(/>\s+/g, '>').replace(/\s+</g, '<'); // clean white spaces and new line characters
@@ -224,7 +224,8 @@ const Home = () => {
         <StyledRichTextEditor
           id="rte-target"
           value={presentingText}
-          change={handleWordCount}>
+          change={handleWordCount}
+          toolbarSettings={{enable: false}}>
           <Inject services={[HtmlEditor, Toolbar]} />
         </StyledRichTextEditor>
         <div><b>Word Count: {wordCount}</b></div>

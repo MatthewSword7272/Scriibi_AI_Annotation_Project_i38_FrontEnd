@@ -31,17 +31,14 @@
   position: relative;
 }
 
-.highlight::after {
+.flag::after {
+  content: attr(data-subcomponent-text);
   line-height: normal;
-  background: var(--subcomponent-background, black);
+  background: var(--subcomponent-background);
   color: white;
   border-radius: 5px;
   padding: 0 4px;
-  font-size: 10px;
+  font-size: 11px;
   position: absolute;
   transform: translate(-105%, -3px);
-}
-
-.highlight::after {
-  content: attr(data-subcomponent-name);
 }
