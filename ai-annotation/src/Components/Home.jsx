@@ -221,14 +221,17 @@ const Home = () => {
           text={presentingText}
         />
         <SkillCarousel skillData={skillData} />
-        <StyledRichTextEditor
-          id="rte-target"
-          value={presentingText}
-          change={handleWordCount}
-          toolbarSettings={{enable: false}}>
-          <Inject services={[HtmlEditor, Toolbar]} />
-        </StyledRichTextEditor>
-        <div><b>Word Count: {wordCount}</b></div>
+        <div className="rte-container">
+          <label className="floating-label" htmlFor="rte-target">Student Writing Text</label>
+          <StyledRichTextEditor
+            id="rte-target"
+            value={presentingText}
+            change={handleWordCount}
+            toolbarSettings={{enable: false}}>
+            <Inject services={[HtmlEditor, Toolbar]} />
+          </StyledRichTextEditor>
+          <div><b>Word Count: {wordCount}</b></div>
+        </div>
       </StyledSubBodyContainer1>
       <SidePanel
         key={`${selectedSkill}-${JSON.stringify(components)}`}

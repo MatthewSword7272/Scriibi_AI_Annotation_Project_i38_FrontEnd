@@ -24,6 +24,23 @@
   line-height: 2.4;
 }
 
+.rte-container {
+  position: relative;
+  width: 100%; /* Adjust as needed */
+}
+
+.floating-label {
+  position: absolute;
+  z-index: 2;
+  top: -10px; /* Adjust to position above the editor */
+  left: 10px; /* Adjust to position to the left of the editor */
+  background-color: white; /* cover any part of the editor */
+  padding: 0 5px; /* add some padding around the label */
+  font-size: 14px; 
+  color: #333;
+}
+
+
 .highlight {
   cursor: pointer; 
   padding: 1px 3px;
@@ -42,3 +59,4 @@
   position: absolute;
   transform: translate(-105%, -3px);
 }
+
