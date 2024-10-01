@@ -17,17 +17,16 @@ const SkillCarousel = ({ skillData }) => {
   const levels = Object.keys(skillData).filter((key) => key.startsWith("Level"));
   const [selectedLevel, setSelectedLevel] = useState(null); 
   const [gridCentre, setGridCentre] = useState(0); //Start at the Middle Carousel Item
-  const MOVE_LIMIT = 1
 
   const moveLeft = () => {
     setGridCentre((prevIndex) => 
-      prevIndex < MOVE_LIMIT ? prevIndex + 1 : prevIndex
+      prevIndex < Math.floor(levels.length / 2) ? prevIndex + 1 : prevIndex
     );
   };
 
   const moveRight = () => {
     setGridCentre((prevIndex) => 
-      prevIndex > -MOVE_LIMIT ? prevIndex - 1 : prevIndex
+      prevIndex > -Math.floor(levels.length / 2) ? prevIndex - 1 : prevIndex
     );
   };
 

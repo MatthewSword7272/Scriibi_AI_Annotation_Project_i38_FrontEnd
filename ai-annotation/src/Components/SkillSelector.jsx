@@ -1,6 +1,5 @@
-import { ToastComponent } from "@syncfusion/ej2-react-notifications";
 import axios from "axios";
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import { StyledButtonComponent } from "Styles/StyledButton";
 import {
   StyledRadioButton,
@@ -9,11 +8,10 @@ import {
   StyledSkillContainer,
 } from "Styles/StyledRadioButton";
 
-const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated }) => {
+const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) => {
 
   const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
-  const toastInstance = useRef(null);
-  const TOAST_POSITION = { X: 'center', Y: 'top' };
+  const [isAnnotated, setIsAnnotated] = useState(false);
 
   const sendText = async () => {
     axios({
@@ -27,32 +25,17 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
       },
     }).then( res => {
       console.log(res);
-      showToast('Text has been saved', 'Success', 'success', 'e-check');
     }).catch( err => {
-      console.log(err);
-      showToast('Text was not saved', 'Error', 'danger', 'e-circle-close');
-      
+      console.log(err)
     })
   }
 
   const annotate = () => {
-    setSkillAnnotated(prevState => ({ ...prevState, [selectedSkill]: true })) //This will annotate the text and switch between the Buttons between Annotate to Save
+    setIsAnnotated(true); //This will annotate the text and switch between the Buttons between Annotate to Save
   }
-
-  const showToast = (message, title, toastClass, icon) => {
-    if (toastInstance.current) {
-      toastInstance.current.show({ title: title, content: message, cssClass: `e-toast-${toastClass}`, icon: `e-icons ${icon}` });
-    }
-  };
 
   return (
     <StyledSkillContainer>
-
-    <ToastComponent
-      ref={toastInstance}
-      position={TOAST_POSITION}
-    />
-
     <StyledRadioButtonContainer>
     {Object.keys(skillData).map((skillName, index) => (
        <StyledRadioButton
@@ -66,7 +49,7 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     ))}
     </StyledRadioButtonContainer>
     <StyledSkillButtonContainer>
-      {skillAnnotated[selectedSkill]
+      {isAnnotated 
         ? <StyledButtonComponent onClick={sendText}>Save</StyledButtonComponent> 
         : <StyledButtonComponent onClick={annotate}>Annotate</StyledButtonComponent>
       }
