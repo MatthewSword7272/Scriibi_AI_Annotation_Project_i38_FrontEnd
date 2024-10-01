@@ -48,11 +48,6 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
   return (
     <StyledSkillContainer>
 
-    <ToastComponent
-      ref={toastInstance}
-      position={TOAST_POSITION}
-    />
-
     <StyledRadioButtonContainer>
     {Object.keys(skillData).map((skillName, index) => (
        <StyledRadioButton
@@ -71,6 +66,11 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
         : <StyledButtonComponent onClick={annotate}>Annotate</StyledButtonComponent>
       }
     </StyledSkillButtonContainer>
+
+    <ToastComponent
+      ref={toastInstance}
+      position={TOAST_POSITION}
+    />
   </StyledSkillContainer>
   );
 };
