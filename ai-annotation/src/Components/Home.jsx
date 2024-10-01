@@ -12,6 +12,7 @@ import skillsObject from "../Constraints/SkillsObject";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
+import { BLACK } from "Constraints/constants";
 
 const Home = () => {
   // Constants
@@ -133,7 +134,7 @@ const Home = () => {
         // Create the HTML markup for the highlight
         const newMarkHtml = 
         `<mark 
-          class="highlight${data.componentData.subComponent ? ' flag' : ''}"
+          class="highlight${data.componentData.subComponent && ' flag'}"
           id="${data.id}"
           data-highlight-content="${data.content}" 
           data-component-name="${data.componentData.name}"
@@ -141,9 +142,8 @@ const Home = () => {
             data-subcomponent-text="${data.componentData.subComponent.text || '\u2003'}"` : 
           ""}
           style="background: ${data.componentData.background};
-          ${data.componentData.subComponent ? `
-            --subcomponent-background: ${data.componentData.subComponent.background || 'black'};` : 
-          ""}">
+          ${data.componentData.subComponent && 
+          `--subcomponent-background: ${data.componentData.subComponent.background || `${BLACK}`};`}">
           ${data.content}
         </mark>`.replace(/\n/g, '').replace(/\s{2,}/g, ' ').replace(/>\s+</g, '><').replace(/>\s+/g, '>').replace(/\s+</g, '<'); // clean white spaces and new line characters
       
