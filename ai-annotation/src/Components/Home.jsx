@@ -7,7 +7,7 @@ import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import TestText from "../testText.json";
 import testSkillsInfo from '../testSkillsInfo';
 import testComps from "../testComp";
-import { HtmlEditor, Inject, Toolbar } from '@syncfusion/ej2-react-richtexteditor';
+import { HtmlEditor, Inject } from '@syncfusion/ej2-react-richtexteditor';
 import skillsObject from "../Constraints/SkillsObject";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
@@ -116,7 +116,7 @@ const Home = () => {
         // Find the color for the current component
         const color = testComps[selectedSkill].find(component => component.title === highlight.component).color;
 
-        // Hihglight data
+        // Highlight data
         const data = {
           id: index,
           content: highlight.text,
@@ -226,7 +226,7 @@ const Home = () => {
           value={presentingText}
           change={handleWordCount}
           toolbarSettings={{enable: false}}>
-          <Inject services={[HtmlEditor, Toolbar]} />
+          <Inject services={[HtmlEditor]} />
         </StyledRichTextEditor>
         <div><b>Word Count: {wordCount}</b></div>
       </StyledSubBodyContainer1>
