@@ -18,7 +18,8 @@ const SidePanel = ({
   setHighlightedWords,
   updateComponents,
   setPresentingText,
-  selectedSkill
+  selectedSkill,
+  isAnnotated
 }) => {
   // States
   const [dialogVisibility, setDialogVisibility] = useState(false);
@@ -195,12 +196,14 @@ const SidePanel = ({
       <NotesSection handleDialogClick={handleDialogClick} />
       <AccordionSection title="Annotation" components={components.textComps} handleAccordionClick={handleAccordionClick} />
       <AccordionSection title="Missing" components={components.missingComps} handleAccordionClick={handleAccordionClick} isMissing={true} />
-      <EditSection 
-        isAddingMode={isAddingMode}
-        isDeleteMode={isDeleteMode}
-        setIsAddingMode={setIsAddingMode}
-        setIsDeleteMode={setIsDeleteMode}
-      />
+      {isAnnotated &&
+        <EditSection 
+          isAddingMode={isAddingMode}
+          isDeleteMode={isDeleteMode}
+          setIsAddingMode={setIsAddingMode}
+          setIsDeleteMode={setIsDeleteMode}
+        />
+      }
     </StyledSubBodyContainer2>
   );
 };

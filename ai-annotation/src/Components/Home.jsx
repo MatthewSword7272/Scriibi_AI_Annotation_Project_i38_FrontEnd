@@ -22,6 +22,7 @@ const Home = () => {
   const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: []});
   const [presentingText, setPresentingText] = useState(fetchedText);
   const [selectedSkill, setSelectedSkill] = useState(0);
+  const [skillAnnotated, setSkillAnnotated] = useState({ 0: false, 1: false, 2: false, 3: false, 4: false})
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
@@ -219,6 +220,8 @@ const Home = () => {
           selectedSkill={selectedSkill}
           skillData={testSkillsInfo}
           text={presentingText}
+          skillAnnotated={skillAnnotated}
+          setSkillAnnotated={setSkillAnnotated}
         />
         <SkillCarousel skillData={skillData} />
         <StyledRichTextEditor
@@ -245,6 +248,7 @@ const Home = () => {
         updateComponents={updateComponents}
         setPresentingText={setPresentingText}
         selectedSkill={selectedSkill}
+        isAnnotated={skillAnnotated[selectedSkill]}
       />
     </StyledBodyContainer>
   );
