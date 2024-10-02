@@ -44,7 +44,7 @@ const SkillCarousel = ({ skillData }) => {
     <StyledCarouselInnerContainer>
         <StyledCarouselRow gridCentre={gridCentre}>
           {levels.map((levelKey, index) => (
-            <StyledH4 key={index}>{skillData[levelKey].title}</StyledH4>
+            <StyledH4 key={index}>{skillData[levelKey].skill_id/2 - 0.5}</StyledH4>
           ))}
         </StyledCarouselRow>
         <StyledCarouselRow>
@@ -65,8 +65,8 @@ const SkillCarousel = ({ skillData }) => {
             index % 2 === 0 && (
               <StyledCarouselDescription key={index}>
                 <ul>
-                  {skillData[levelKey].description.map((desc, descIndex) => (
-                    <li key={descIndex}>{desc}</li>
+                  {skillData[levelKey].criteria.map((criteria, descIndex) => (
+                    <li key={descIndex}>{criteria}</li>
                   ))}
                 </ul>
               </StyledCarouselDescription>

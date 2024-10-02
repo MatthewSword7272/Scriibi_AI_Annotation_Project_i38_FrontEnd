@@ -5,7 +5,6 @@ import {
 } from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import TestText from "../testText.json";
-import testSkillsInfo from '../testSkillsInfo';
 import testComps from "../testComp";
 import { HtmlEditor, Inject } from '@syncfusion/ej2-react-richtexteditor';
 import skillsObject from "../Constraints/SkillsObject";
@@ -13,15 +12,19 @@ import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
 import { BLACK } from "Constraints/constants";
+import getCriteriaForASkill from "api/getCriteriaForASkill";
+
+const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
+const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 
 const Home = () => {
   // Constants
   const fetchedText = TestText.test;
 
   // States
-  const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: []});
+  const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: []}); // Saving the annotation
   const [presentingText, setPresentingText] = useState(fetchedText);
-  const [selectedSkill, setSelectedSkill] = useState(0);
+  const [selectedSkill, setSelectedSkill] = useState(1);
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
@@ -29,9 +32,22 @@ const Home = () => {
     textComps: {},
     missingComps: {}
   });
+  const [criteria, setCriteria] = useState([]);
 
   // Memoized values
-  const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
+  // const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
+  useEffect(() => {
+    console.log('Running');
+    getCriteriaForASkill(API_URL, selectedSkill, API_KEY)
+    .then((res) => res.data)
+    .then((data) => {
+      setCriteria(data);
+      console.log(data);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }, [selectedSkill])
 
   // Functions
   const handleSkillChange = (event) => {
@@ -168,7 +184,7 @@ const Home = () => {
     }
   }, [updateComponents, selectedSkill]);
 
-  // useEffects
+  // useEffects - Accordion
   useEffect(() => {
     setComponents(prevComponents => {
       const currentTextComps = prevComponents.textComps[selectedSkill] || [];
@@ -217,10 +233,10 @@ const Home = () => {
         <SkillSelector
           handleSkillChange={handleSkillChange}
           selectedSkill={selectedSkill}
-          skillData={testSkillsInfo}
+          skillData={criteria}
           text={presentingText}
         />
-        <SkillCarousel skillData={skillData} />
+        <SkillCarousel skillData={criteria} />
         <StyledRichTextEditor
           id="rte-target"
           value={presentingText}
@@ -234,6 +250,7 @@ const Home = () => {
         key={`${selectedSkill}-${JSON.stringify(components)}`}
         isDeleteMode={isDeleteMode} 
         isAddingMode={isAddingMode}
+        // Accordion
         components={{
           textComps: components.textComps[selectedSkill] || [],
           missingComps: components.missingComps[selectedSkill] || []
