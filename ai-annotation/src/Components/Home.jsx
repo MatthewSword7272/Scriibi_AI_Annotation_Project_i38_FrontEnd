@@ -117,7 +117,8 @@ const Home = () => {
       const highlights = highlightMap.get(index);
       highlights.forEach((highlight) => {
         // Find the color for the current component
-        const color = testComps[selectedSkill].find(component => component.title === highlight.component).color;
+        const componentID = testComps[selectedSkill].find(component => component.title === highlight.component).id;
+        const color = `var(--c${componentID}-background)`;
 
         // Highlight data
         const data = {

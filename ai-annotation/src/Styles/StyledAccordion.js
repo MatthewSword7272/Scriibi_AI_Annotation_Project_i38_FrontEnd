@@ -18,11 +18,11 @@ const StyledAccordionComponent = styled(AccordionComponent)`
       border-radius: 20px !important;
       border: none;
       color: ${BLACK} !important;
-      background-color: ${comp.color} !important;
+      background-color: var(--c${comp.id}-background) !important;
 
       .e-acrdn-header {
         border-radius: 20px !important;
-        background: ${comp.color} !important;
+        background: var(--c${comp.id}-background) !important;
 
         .e-acrdn-header-content {
           color: ${BLACK} !important;
@@ -32,7 +32,7 @@ const StyledAccordionComponent = styled(AccordionComponent)`
 
       &.e-select .e-acrdn-panel .e-acrdn-content {
         background: ${WHITE};
-        border: 5px ${comp.color} solid;
+        border: 5px var(--c${comp.id}-background) solid;
         border-radius: 20px;
       }
     }
