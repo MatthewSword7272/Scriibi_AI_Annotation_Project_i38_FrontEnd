@@ -1,84 +1,83 @@
-const { COLOURS } = require("Constraints/colours");
 
 const testComps = [
     [//Punctuation
         {
+            "id": 1,
             "title": "Capitalise Proper Noun",
-            "description": "Capitalise names for  moments of remembrance, gratitude, and connection with historical events",
-            "color": COLOURS[0]
+            "description": "Capitalise names for moments of remembrance, gratitude, and connection with historical events",
         },
         {
+            "id": 2,
             "title": "capitalise key event",
             "description": "Text",
-            "color": COLOURS[1]
         },
         {
+            "id": 3,
             "title": "commas - lists",
             "description": "Text",
-            "color": COLOURS[2]
         }
     ],
     [//Vocabulary
         {
+            "id": 1,
             "title": "word - expressive adjective",
             "description": "Text",
-            "color": COLOURS[0]
         },
         {
+            "id": 2,
             "title": "word - express feelings",
             "description": "Text",
-            "color": COLOURS[1]
         },
         {
+            "id": 3,
             "title": "word - opinion",
-            "description": "Text",
-            "color": COLOURS[2]
+            "description": "Text"
         }
     ],
     [//Cohesion
         {
+            "id": 1,
             "title": "connectives - sophisticated",
             "description": "Text",
-            "color": COLOURS[0]
         },
         {
+            "id": 2,
             "title": "connectives - common",
             "description": "Text",
-            "color": COLOURS[1]
         },
         {
+            "id": 3,
             "title": "connective - phrase",
             "description": "Text",
-            "color": COLOURS[2]
         }
     ],
     [//Sentence Type and Structure
         {
+            "id": 1,
             "title": "simple sentence",
             "description": "Text",
-            "color": COLOURS[0]
         },
         {
+            "id": 2,
             "title": "compound sentence",
             "description": "Text",
-            "color": COLOURS[1]
         },
         {
+            "id": 3,
             "title": "complex sentence",
             "description": "Text",
-            "color": COLOURS[2]
         }
     ],
     [//Developing & Elaborating Ideas
         {
+            "id": 1,
             "title": "ideas relate coherently",
             "description": "Text",
-            "color": COLOURS[0]
         },
         {
+            "id": 2,
             "title": "ideas support theme",
             "description": "Text",
-            "color": COLOURS[1]
         },
     ],
 ]
