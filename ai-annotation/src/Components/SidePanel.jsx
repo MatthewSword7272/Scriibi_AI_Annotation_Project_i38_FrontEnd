@@ -9,18 +9,18 @@ import EditSection from './EditSection';
 import AccordionSection from './AccordionSection';
 
 const SidePanel = ({
-  isDeleteMode,
-  isAddingMode,
-  components,
+  modeProps,
+  componentProps,
   updateHighlights,
-  setIsAddingMode,
-  setIsDeleteMode,
   setHighlightedWords,
-  updateComponents,
   setPresentingText,
   selectedSkill,
   isAnnotated
 }) => {
+  
+  const { isDeleteMode, isAddingMode, setIsAddingMode, setIsDeleteMode } = modeProps;
+  const { components, updateComponents } = componentProps;
+
   // States
   const [dialogVisibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");

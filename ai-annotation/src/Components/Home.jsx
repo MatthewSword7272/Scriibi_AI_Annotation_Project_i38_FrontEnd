@@ -214,17 +214,35 @@ const Home = () => {
     setWordCount(countWords(presentingText));
   }, [presentingText, countWords]);
 
+  //Props
+  const skillProps = {
+    handleSkillChange,
+    selectedSkill,
+    skillData: testSkillsInfo,
+    text: presentingText,
+    skillAnnotated,
+    setSkillAnnotated
+  };
+
+  const modeProps = {
+    isDeleteMode,
+    isAddingMode,
+    setIsAddingMode,
+    setIsDeleteMode
+  };
+
+  const componentProps = {
+    components: {
+      textComps: components.textComps[selectedSkill] || [],
+      missingComps: components.missingComps[selectedSkill] || []
+    },
+    updateComponents
+  };
+
   return (
     <StyledBodyContainer id="target">
       <StyledSubBodyContainer1>
-        <SkillSelector
-          handleSkillChange={handleSkillChange}
-          selectedSkill={selectedSkill}
-          skillData={testSkillsInfo}
-          text={presentingText}
-          skillAnnotated={skillAnnotated}
-          setSkillAnnotated={setSkillAnnotated}
-        />
+        <SkillSelector {...skillProps}/>
         <SkillCarousel skillData={skillData} />
         <div className="rte-container">
           <label className="floating-label" htmlFor="rte-target">Student Writing Text</label>
@@ -240,17 +258,10 @@ const Home = () => {
       </StyledSubBodyContainer1>
       <SidePanel
         key={`${selectedSkill}-${JSON.stringify(components)}`}
-        isDeleteMode={isDeleteMode} 
-        isAddingMode={isAddingMode}
-        components={{
-          textComps: components.textComps[selectedSkill] || [],
-          missingComps: components.missingComps[selectedSkill] || []
-        }}
-        updateHighlights={updateHighlights} 
-        setIsDeleteMode={setIsDeleteMode}
-        setIsAddingMode={setIsAddingMode}
+        modeProps={modeProps}
+        componentProps={componentProps}
+        updateHighlights={updateHighlights}
         setHighlightedWords={setHighlightedWords}
-        updateComponents={updateComponents}
         setPresentingText={setPresentingText}
         selectedSkill={selectedSkill}
         isAnnotated={skillAnnotated[selectedSkill]}
