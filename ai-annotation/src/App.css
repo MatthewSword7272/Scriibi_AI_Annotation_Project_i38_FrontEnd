@@ -60,6 +60,10 @@
   transform: translate(-105%, -3px);
 }
 
+.e-acrdn-header {
+  overflow: visible !important;
+}
+
 :root {
   --c1-background: #999999;
   --c2-background: #DDDDDD;

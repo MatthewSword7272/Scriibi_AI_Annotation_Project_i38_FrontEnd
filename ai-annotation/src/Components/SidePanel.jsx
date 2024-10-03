@@ -81,9 +81,9 @@ const SidePanel = ({
   // Event handlers
   const handleDialogClick = () => showDialog("ASP.NET", "Actual content about ASP.NET");
 
-  const handleAccordionClick = useCallback((comp) => {
+  const handleAccordionClick = useCallback((comp, subBackground = undefined, subText = undefined) => {
     if (isAddingMode && selectedText.text !== "") {
-      updateHighlights(comp, selectedText.text, selectedText.index);
+      updateHighlights(comp, selectedText.text, selectedText.index, subBackground, subText);
       setSelectedText({ text: "", index: -1 });
     }
   }, [updateHighlights, isAddingMode, selectedText]);

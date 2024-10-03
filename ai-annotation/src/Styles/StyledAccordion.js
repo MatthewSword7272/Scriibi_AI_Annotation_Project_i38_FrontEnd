@@ -12,6 +12,7 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   flex-direction: column;
   row-gap: 10px;
   border-radius: 20px !important;
+  margin: 5px 0;
 
   ${props => props.components && props.components.map((comp, index) => `
     .e-acrdn-item:nth-child(${index + 1}), .e-acrdn-item.e-selected:nth-child(${index + 1}) {
