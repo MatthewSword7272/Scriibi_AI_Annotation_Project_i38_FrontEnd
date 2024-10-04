@@ -15,11 +15,13 @@ const SidePanel = ({
   setHighlightedWords,
   setPresentingText,
   selectedSkill,
+  flagProps,
   isAnnotated
 }) => {
   
   const { isDeleteMode, isAddingMode, setIsAddingMode, setIsDeleteMode } = modeProps;
   const { components, updateComponents } = componentProps;
+  const { flagCounts, setFlagCounts } = flagProps;
 
   // States
   const [dialogVisibility, setDialogVisibility] = useState(false);
@@ -57,6 +59,7 @@ const SidePanel = ({
     const highlightText = target.textContent;
     const componentId = target.id;
     const componentName = target.dataset.componentName
+    const subBackground = target.style.getPropertyValue('--subcomponent-background');
 
     setPresentingText((prevText) => {
       const regex = new RegExp(`<mark[^>]*id="${componentId}"[^>]*>?.*</mark>`, 'g');
@@ -69,6 +72,18 @@ const SidePanel = ({
         !(highlight.text === highlightText && highlight.component === componentName)
       )
     }));
+
+    setFlagCounts(prevCounts => {
+      const componentCounts = prevCounts[componentName];
+      const flagType = subBackground === GREEN ? 'correct' : 'incorrect';
+      return {
+        ...prevCounts,
+        [componentName]: {
+          ...componentCounts,
+          [flagType]: Math.max(0, componentCounts[flagType] - 1)
+        }
+      };
+    });
 
     setTimeout(() => {
       const remainingHighlights = document.querySelectorAll(`[id="${componentId}"]`);
@@ -197,8 +212,8 @@ const SidePanel = ({
       />
 
       <NotesSection handleDialogClick={handleDialogClick} />
-      <AccordionSection title="Annotation" components={components.textComps} handleAccordionClick={handleAccordionClick} />
-      <AccordionSection title="Missing" components={components.missingComps} handleAccordionClick={handleAccordionClick} isMissing={true} />
+      <AccordionSection title="Annotation" components={components.textComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts}/>
+      <AccordionSection title="Missing" components={components.missingComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts} isMissing={true} />
       {isAnnotated &&
         <EditSection 
           isAddingMode={isAddingMode}

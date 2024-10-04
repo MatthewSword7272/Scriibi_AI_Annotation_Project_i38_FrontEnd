@@ -13,6 +13,7 @@ import skillsObject from "../Constraints/SkillsObject";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
+import { GREEN } from "Constraints/constants";
 
 const Home = () => {
   // Constants
@@ -30,6 +31,7 @@ const Home = () => {
     textComps: {},
     missingComps: {}
   });
+  const [flagCounts, setFlagCounts] = useState({});
 
   // Memoized values
   const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
@@ -101,10 +103,22 @@ const Home = () => {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = text;
 
-    // Process highlights in reverse order (to maintain correct indices)
-    highlightedWords[selectedSkill]
-      .sort((a, b) => b.index - a.index)
-      .forEach(highlight => {
+    const highlightMap = new Map();
+
+    // Group highlights by their index
+    highlightedWords[selectedSkill].forEach((highlight) => {
+      if (!highlightMap.has(highlight.index)) {
+        highlightMap.set(highlight.index, []);
+      }
+      highlightMap.get(highlight.index).push(highlight);
+    });
+
+    // Sort indices in descending order to avoid offsetting subsequent highlights
+    const sortedIndices = Array.from(highlightMap.keys()).sort((a, b) => b - a);
+
+    sortedIndices.forEach((index) => {
+      const highlights = highlightMap.get(index);
+      highlights.forEach((highlight) => {
         // Create a TreeWalker to iterate through text nodes
         const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_TEXT, null);
         let currentOffset = 0, node;
@@ -145,6 +159,7 @@ const Home = () => {
           currentOffset += node.length;
         }
       });
+    });
 
     return tempDiv.innerHTML;
   }, [selectedSkill]);
@@ -157,7 +172,7 @@ const Home = () => {
           ...(prevWords[selectedSkill] || []),
           {
             text: text, 
-            component: component.title, 
+            component: component.title,
             index: index, 
             subComponent: {
               subText: subText !== undefined ? subText : "",
@@ -167,6 +182,18 @@ const Home = () => {
         ]
       }));
       updateComponents('ADD_TO_TEXT', component);
+
+      // Update flag counts
+      setFlagCounts(prevCounts => {
+        const componentCounts = prevCounts[component.title] || { correct: 0, incorrect: 0 };
+        return {
+          ...prevCounts,
+          [component.title]: {
+            ...componentCounts,
+            [subBackground === GREEN ? 'correct' : 'incorrect']: componentCounts[subBackground === GREEN ? 'correct' : 'incorrect'] + 1
+          }
+        };
+      });
     }
   }, [updateComponents, selectedSkill]);
 
@@ -238,6 +265,11 @@ const Home = () => {
     updateComponents
   };
 
+  const flagProps = {
+    flagCounts,
+    setFlagCounts
+  }
+
   return (
     <StyledBodyContainer id="target">
       <StyledSubBodyContainer1>
@@ -263,7 +295,8 @@ const Home = () => {
         setHighlightedWords={setHighlightedWords}
         setPresentingText={setPresentingText}
         selectedSkill={selectedSkill}
-        isAnnotated={skillAnnotated[selectedSkill]}
+        isAnnotated={skillAnnotated[selectedSkill]} 
+        flagProps={flagProps}
       />
     </StyledBodyContainer>
   );

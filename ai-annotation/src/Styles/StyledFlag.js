@@ -7,11 +7,11 @@ const StyledFlag = styled.span`
   position: absolute;
   border-radius: 5px;
   padding: 3px 8px;
-  line-height: normal;
+  line-height: initial;
   cursor: pointer;
   transform: ${(props) => props.translate};
-  height: 15px;
-  width: 15px;
+  height: 1em;
+  width: 1em;
   color: white;
 `;
 

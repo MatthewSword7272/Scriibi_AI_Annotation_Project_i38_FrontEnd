@@ -5,10 +5,10 @@ import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Style
 import StyledFlag from 'Styles/StyledFlag';
 import { BLACK, GREEN, RED } from 'Constraints/constants';
 
-const AccordionSection = ({ title, components, handleAccordionClick, isMissing = false }) => {
+const AccordionSection = ({ title, components, handleAccordionClick, flagCounts, isMissing = false }) => {
   const Container = isMissing ? StyledAccordionMissingContainer : StyledAccordionContainer;
 
-  const renderBadge = (color, translate, onClick, text = '') => (
+  const renderBadge = (color, translate, onClick, text) => (
     <StyledFlag color={color} translate={translate} onClick={onClick}>
       {text}
     </StyledFlag>
@@ -22,7 +22,7 @@ const AccordionSection = ({ title, components, handleAccordionClick, isMissing =
         expanding={(e) => {
           const headerContent = e.item.properties.header()
           const comp = components.find(c => c.title === headerContent.props.children[0]);
-          if (comp) handleAccordionClick(comp);
+          if (comp && !comp.subComponent) handleAccordionClick(comp);
         }}
         components={components}
       >
@@ -36,8 +36,8 @@ const AccordionSection = ({ title, components, handleAccordionClick, isMissing =
                   {comp.title}
                   {comp.subComponent === 2 && (
                     <>
-                      {renderBadge(GREEN, 'translate(5px, -12px)', () => handleAccordionClick(comp, GREEN, ''))}
-                      {renderBadge(RED, 'translate(40px, -12px)', () => handleAccordionClick(comp, RED, ''))}
+                      {renderBadge(GREEN, 'translate(5px, -12px)', () => handleAccordionClick(comp, GREEN, ''), flagCounts[comp.title]?.correct || 0)}
+                      {renderBadge(RED, 'translate(40px, -12px)', () => handleAccordionClick(comp, RED, ''), flagCounts[comp.title]?.incorrect || 0)}
                     </>
                   )}
                   {comp.subComponent === 1 && (
