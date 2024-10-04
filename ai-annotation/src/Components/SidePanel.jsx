@@ -86,7 +86,7 @@ const SidePanel = ({
     });
 
     setTimeout(() => {
-      const remainingHighlights = document.querySelectorAll(`[id="${componentId}"]`);
+      const remainingHighlights = document.querySelectorAll(`[data-component-name="${componentName}"]`);
       if (remainingHighlights.length === 0) {
         updateComponents('REMOVE_FROM_TEXT', { title: componentName });
       }
