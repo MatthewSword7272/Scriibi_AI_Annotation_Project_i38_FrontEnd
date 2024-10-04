@@ -91,7 +91,7 @@ const SidePanel = ({
         updateComponents('REMOVE_FROM_TEXT', { title: componentName });
       }
     }, 0);
-  }, [setPresentingText, setHighlightedWords, selectedSkill, updateComponents]);
+  }, [selectedSkill, setFlagCounts, setHighlightedWords, setPresentingText, updateComponents]);
 
   // Event handlers
   const handleDialogClick = () => showDialog("ASP.NET", "Actual content about ASP.NET");
