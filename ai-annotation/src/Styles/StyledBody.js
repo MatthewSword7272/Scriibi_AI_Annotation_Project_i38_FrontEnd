@@ -23,8 +23,7 @@ const StyledSubBodyContainer1 = styled.div`
 
 const StyledSubBodyContainer2 = styled.div`
     width: 25vw;
-    max-width: 20%;
-
+    max-width: 35%;
 `
 
 export {StyledBodyContainer, StyledSubBodyContainer1, StyledSubBodyContainer2}

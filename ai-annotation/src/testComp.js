@@ -5,16 +5,19 @@ const testComps = [
             "id": 1,
             "title": "Capitalise Proper Noun",
             "description": "Capitalise names for moments of remembrance, gratitude, and connection with historical events",
+            "subComponent": 2
         },
         {
             "id": 2,
             "title": "capitalise key event",
             "description": "Text",
+            "subComponent": 2
         },
         {
             "id": 3,
             "title": "commas - lists",
             "description": "Text",
+            "subComponent": 2
         }
     ],
     [//Vocabulary
@@ -73,6 +76,7 @@ const testComps = [
             "id": 1,
             "title": "ideas relate coherently",
             "description": "Text",
+            "subComponent": 1
         },
         {
             "id": 2,
