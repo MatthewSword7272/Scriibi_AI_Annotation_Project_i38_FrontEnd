@@ -70,10 +70,10 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     {skillData.map((skill, index) => (
        <StyledRadioButton
         label={skill.name}
-        key={index + 1}
+        key={index}
         name="skill"
-        value={(index + 1).toString()}
-        checked={selectedSkill === (index + 1)}
+        value={(index).toString()}
+        checked={selectedSkill === (index)}
         onChange={handleSkillChange}
      />
     ))}

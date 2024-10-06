@@ -15,10 +15,10 @@ import getCriteriaForASkill from "api/getCriteriaForASkill";
 import getTextComponentsForSkill from "api/getTextComponentsforSkill";
 import getSkillsList from "api/getSkillsList";
 import { COLOURS } from "Constraints/colours";
+import { GREEN } from "Constraints/constants";
 
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
-import { GREEN } from "Constraints/constants";
 
 const Home = () => {
   // Constants
@@ -58,13 +58,14 @@ const Home = () => {
 
   // Get text component
   useEffect(() => {
-    getTextComponentsForSkill(API_URL, selectedSkill, API_KEY)
+    getTextComponentsForSkill(API_URL, (selectedSkill + 1), API_KEY)
     .then((res) => res.data)
     .then((data) => {
       setTextComponent(data);
+      console.log(data);
 
       setComponents(prevComponents => {
-        const currentTextComps = prevComponents.textComps[selectedSkill - 1] || [];
+        const currentTextComps = prevComponents.textComps[selectedSkill] || [];
         let currentMissingComps = data.filter((txtComponent) => txtComponent.markup_id === 1);
         let currentNotes = data.filter((txtComponent) => txtComponent.markup_id === 2);
   
@@ -118,9 +119,9 @@ const Home = () => {
   // useCallbacks
   const updateComponents = useCallback((action, component) => {
     setComponents(prevState => {
-      const currentTextComps = prevState.textComps[selectedSkill - 1] || [];
-      const currentMissingComps = prevState.missingComps[selectedSkill - 1] || [];
-      const currentNotes = prevState.notes[selectedSkill - 1] || [];
+      const currentTextComps = prevState.textComps[selectedSkill] || [];
+      const currentMissingComps = prevState.missingComps[selectedSkill] || [];
+      const currentNotes = prevState.notes[selectedSkill] || [];
 
       switch(action) {
         case 'ADD_TO_TEXT':
@@ -130,11 +131,11 @@ const Home = () => {
           return {
             textComps: {
               ...prevState.textComps,
-              [selectedSkill - 1]: [...currentTextComps, component]
+              [selectedSkill]: [...currentTextComps, component]
             },
             missingComps: {
               ...prevState.missingComps,
-              [selectedSkill - 1]: currentMissingComps.filter(comp => comp.name !== component.name)
+              [selectedSkill]: currentMissingComps.filter(comp => comp.name !== component.name)
             },
             notes: {
               ...prevState.notes
@@ -149,15 +150,15 @@ const Home = () => {
           return {
             textComps: {
               ...prevState.textComps,
-              [selectedSkill - 1]: currentTextComps.filter(comp => comp.title !== component.title)
+              [selectedSkill]: currentTextComps.filter(comp => comp.title !== component.title)
             },
             missingComps: {
               ...prevState.missingComps,
-              [selectedSkill - 1]: [...currentMissingComps, compToMove]
+              [selectedSkill]: [...currentMissingComps, compToMove]
             },
             notes: {
               ...prevState.notes,
-              [selectedSkill - 1]: [...currentNotes]
+              [selectedSkill]: [...currentNotes]
             }
           };
 
@@ -176,7 +177,7 @@ const Home = () => {
     const highlightMap = new Map();
 
     // Group highlights by their index
-    highlightedWords[selectedSkill - 1].forEach((highlight) => {
+    highlightedWords[selectedSkill].forEach((highlight) => {
       if (!highlightMap.has(highlight.index)) {
         highlightMap.set(highlight.index, []);
       }
@@ -216,8 +217,10 @@ const Home = () => {
               mark.dataset.subcomponentText = highlight.subComponent.subText || '\u2003';
             }
 
-            const componentID = testComps[selectedSkill].find(c => c.title === highlight.component).id;
-            mark.style.background = `var(--c${componentID}-background)`;
+            const componentID = textComponent.map(c => c.name).indexOf(highlight.component) + 1;
+            // mark.style.background = `var(--c${componentID}-background)`;
+            mark.style.background = `${color}`;
+
             if (highlight.subComponent) {
               mark.style.setProperty('--subcomponent-background', highlight.subComponent.subBackground);
             }
@@ -236,7 +239,7 @@ const Home = () => {
     });
 
     return tempDiv.innerHTML;
-  }, [selectedSkill]);
+  }, [selectedSkill, textComponent]);
 
   const updateHighlights = useCallback((component, text, index, subBackground, subText) => {
     if (text) {
@@ -326,7 +329,8 @@ const Home = () => {
   const componentProps = {
     components: {
       textComps: components.textComps[selectedSkill] || [],
-      missingComps: components.missingComps[selectedSkill] || []
+      missingComps: components.missingComps[selectedSkill] || [],
+      notes: components.notes[selectedSkill] || []
     },
     updateComponents
   };
