@@ -1,4 +1,4 @@
-import sendOriginalTextSample from "api/sendHumanAnnotation";
+import sendOriginalTextSample from "api/sendOriginalTextSample";
 import axios from "axios";
 import React, { useState } from "react";
 import { StyledButtonComponent } from "Styles/StyledButton";
@@ -39,7 +39,6 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) =>
 
     let reqBody = {
       text: text,
-      skillLevelId: selectedSkill,
     }
     
     sendOriginalTextSample(API_URL, reqBody, API_KEY)
