@@ -14,27 +14,41 @@ import {
 } from "../Styles/StyledCarousel";
 
 const SkillCarousel = ({ skillData, skillsList}) => {
-  const levels = Object.keys(skillData).filter((key) => key.startsWith("Level"));
   const [selectedLevel, setSelectedLevel] = useState(null); 
   const [gridCentre, setGridCentre] = useState(0); //Start at the Middle Carousel Item
+  const [carouselLimit, setCarouselLimit] = useState({
+    leftLimit: 4,
+    rightLimit: 6,
+  })
   const MOVE_LIMIT = 1
 
   const moveLeft = () => {
     setGridCentre((prevIndex) => 
       prevIndex < MOVE_LIMIT ? prevIndex + 1 : prevIndex
     );
+    setCarouselLimit((prev) => {
+      return {
+        leftLimit: prev.leftLimit--,
+        rightLimit: prev.rightLimit--,
+      }
+    });
   };
 
   const moveRight = () => {
     setGridCentre((prevIndex) => 
       prevIndex > -MOVE_LIMIT ? prevIndex - 1 : prevIndex
     );
+    setCarouselLimit((prev) => {
+      return {
+        leftLimit: prev.leftLimit++,
+        rightLimit: prev.rightLimit++,
+      }
+    });
   };
 
   const chooseLevel = (index) => {
     setSelectedLevel(index);
   }
-
 
   return (
     <StyledCarouselContainer>
@@ -50,6 +64,12 @@ const SkillCarousel = ({ skillData, skillsList}) => {
               <StyledH4 key={(parseInt(detail.level_id))/2}>{(parseInt(detail.level_id))/2}</StyledH4>
             </>
           ))}
+          {/* {skillData.filter((levelDetail) => Math.floor(levelDetail.level_id/2) >= carouselLimit.leftLimit && Math.floor(levelDetail.level_id/2) <= carouselLimit.rightLimit).map((detail, _) => (
+            <>
+              <StyledH4 key={(parseInt(detail.level_id) - 1)/2}>{(parseInt(detail.level_id) - 1)/2}</StyledH4>
+              <StyledH4 key={(parseInt(detail.level_id))/2}>{(parseInt(detail.level_id))/2}</StyledH4>
+            </>
+          ))} */}
         </StyledCarouselRow>
         <StyledCarouselRow>
           <StyledDotContainer>
@@ -71,7 +91,7 @@ const SkillCarousel = ({ skillData, skillsList}) => {
                 <ul>
                   {
                     detail.criteria.split('\n').map((criterion, index) =>
-                      <li key={index}>{criterion}</li>
+                      (<li key={index}>{criterion}</li>)
                     )
                   }
                 </ul>
