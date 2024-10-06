@@ -195,7 +195,7 @@ const Home = () => {
         let currentOffset = 0, node;
         // Find the color for the current component
         const compMap = textComponent.map((e) => e.name)
-        const color = COLOURS[textComponent.map(component => component.name).indexOf(highlight.component)];
+        const color = COLOURS[compMap.indexOf(highlight.component)];
         console.log(compMap, highlight);
 
         // eslint-disable-next-line no-cond-assign
@@ -247,17 +247,17 @@ const Home = () => {
         ...prevWords,
         [selectedSkill]: [
           ...(prevWords[selectedSkill] || []),
-          {text: text, component: component.title, index: index}
+          {text: text, component: component.name, index: index}
         ]
       }));
       updateComponents('ADD_TO_TEXT', component);
 
       // Update flag counts
       setFlagCounts(prevCounts => {
-        const componentCounts = prevCounts[component.title] || { correct: 0, incorrect: 0 };
+        const componentCounts = prevCounts[component.name] || { correct: 0, incorrect: 0 };
         return {
           ...prevCounts,
-          [component.title]: {
+          [component.name]: {
             ...componentCounts,
             [subBackground === GREEN ? 'correct' : 'incorrect']: componentCounts[subBackground === GREEN ? 'correct' : 'incorrect'] + 1
           }

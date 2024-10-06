@@ -36,8 +36,8 @@ const AccordionSection = ({ title, components, handleAccordionClick, flagCounts,
                   {comp.name}
                   {comp.subComponent === 2 && (
                     <>
-                      {renderBadge(GREEN, 'translate(5px, -12px)', () => handleAccordionClick(comp, GREEN, ''), flagCounts[comp.title]?.correct || 0)}
-                      {renderBadge(RED, 'translate(40px, -12px)', () => handleAccordionClick(comp, RED, ''), flagCounts[comp.title]?.incorrect || 0)}
+                      {renderBadge(GREEN, 'translate(5px, -12px)', () => handleAccordionClick(comp, GREEN, ''), flagCounts[comp.name]?.correct || 0)}
+                      {renderBadge(RED, 'translate(40px, -12px)', () => handleAccordionClick(comp, RED, ''), flagCounts[comp.name]?.incorrect || 0)}
                     </>
                   )}
                   {comp.subComponent === 1 && (
