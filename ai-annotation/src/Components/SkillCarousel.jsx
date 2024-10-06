@@ -13,7 +13,7 @@ import {
   StyledH4,
 } from "../Styles/StyledCarousel";
 
-const SkillCarousel = ({ skillData }) => {
+const SkillCarousel = ({ skillData, skillsList}) => {
   const levels = Object.keys(skillData).filter((key) => key.startsWith("Level"));
   const [selectedLevel, setSelectedLevel] = useState(null); 
   const [gridCentre, setGridCentre] = useState(0); //Start at the Middle Carousel Item
@@ -43,14 +43,17 @@ const SkillCarousel = ({ skillData }) => {
       </StyledArrowContainer>
     <StyledCarouselInnerContainer>
         <StyledCarouselRow gridCentre={gridCentre}>
-          {levels.map((levelKey, index) => (
-            <StyledH4 key={index}>{skillData[levelKey].skill_id/2 - 0.5}</StyledH4>
+          {skillData.map((detail, _) => (
+            <>
+              <StyledH4 key={(parseInt(detail.level_id) - 1)/2}>{(parseInt(detail.level_id) - 1)/2}</StyledH4>
+              <StyledH4 key={(parseInt(detail.level_id))/2}>{(parseInt(detail.level_id))/2}</StyledH4>
+            </>
           ))}
         </StyledCarouselRow>
         <StyledCarouselRow>
           <StyledDotContainer>
             <StyledDotInnerContainer gridCentre={gridCentre}>
-            {levels.map((_, index) => (
+            {skillData.map((detail, index) => (
               <StyledCarouselDot 
                 key={index}
                 isActive={index === selectedLevel}
@@ -61,13 +64,15 @@ const SkillCarousel = ({ skillData }) => {
           </StyledDotContainer>
         </StyledCarouselRow>
         <StyledCarouselRow gridCentre={gridCentre}>
-          {levels.map((levelKey, index) => (
+          {skillData.map((detail, index) => (
             index % 2 === 0 && (
-              <StyledCarouselDescription key={index}>
+              <StyledCarouselDescription key={index/2}>
                 <ul>
-                  {skillData[levelKey].criteria.map((criteria, descIndex) => (
-                    <li key={descIndex}>{criteria}</li>
-                  ))}
+                  {
+                    detail.criteria.split('\n').map((criterion, index) =>
+                      <li key={index}>{criterion}</li>
+                    )
+                  }
                 </ul>
               </StyledCarouselDescription>
             )

@@ -3,13 +3,17 @@ import { StyledAccordionContainer } from 'Styles/StyledAccordionContainer';
 import { StyledNotesButton } from 'Styles/StyledButton';
 import { CAM } from 'Constraints/constants';
 
-const NotesSection = ({ handleDialogClick }) => {
+const NotesSection = ({ handleDialogClick, notesList }) => {
   return (
     <StyledAccordionContainer>
       <h2>Notes</h2>
-      <StyledNotesButton color={CAM} onClick={handleDialogClick}>
-        ASP.NET
-      </StyledNotesButton>
+      {notesList? notesList.map((aNote, index) => {
+        return (
+          <StyledNotesButton color={CAM} onClick={handleDialogClick}>
+            {aNote.name}
+          </StyledNotesButton>
+        );
+      }) : <></>}
     </StyledAccordionContainer>
   );
 };

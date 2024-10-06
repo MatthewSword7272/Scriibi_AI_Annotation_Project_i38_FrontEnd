@@ -5,14 +5,15 @@ import {
 } from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import TestText from "../testText.json";
-import testComps from "../testComp";
 import { HtmlEditor, Inject } from '@syncfusion/ej2-react-richtexteditor';
-import skillsObject from "../Constraints/SkillsObject";
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
 import { BLACK } from "Constraints/constants";
 import getCriteriaForASkill from "api/getCriteriaForASkill";
+import getTextComponentsForSkill from "api/getTextComponentsforSkill";
+import getSkillsList from "api/getSkillsList";
+import { COLOURS } from "Constraints/colours";
 
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
@@ -24,18 +25,20 @@ const Home = () => {
   // States
   const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: []}); // Saving the annotation
   const [presentingText, setPresentingText] = useState(fetchedText);
+  const [skillsList, setSkills] = useState([]);
   const [selectedSkill, setSelectedSkill] = useState(1);
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [components, setComponents] = useState({
     textComps: {},
-    missingComps: {}
+    missingComps: {},
+    notes: {}
   });
+  const [textComponent, setTextComponent] = useState([]);
   const [criteria, setCriteria] = useState([]);
 
   // Memoized values
-  // const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
   useEffect(() => {
     console.log('Running');
     getCriteriaForASkill(API_URL, selectedSkill, API_KEY)
@@ -48,6 +51,48 @@ const Home = () => {
       console.log(error);
     })
   }, [selectedSkill])
+
+  // Get text component
+  useEffect(() => {
+    getTextComponentsForSkill(API_URL, selectedSkill, API_KEY)
+    .then((res) => res.data)
+    .then((data) => {
+      setTextComponent(data);
+
+      setComponents(prevComponents => {
+        const currentTextComps = prevComponents.textComps[selectedSkill - 1] || [];
+        let currentMissingComps = data.filter((txtComponent) => txtComponent.markup_id === 1);
+        let currentNotes = data.filter((txtComponent) => txtComponent.markup_id === 2);
+  
+        return {
+          textComps: {
+            ...prevComponents.textComps,
+            [selectedSkill]: currentTextComps
+          },
+          missingComps: {
+            ...prevComponents.missingComps,
+            [selectedSkill]: currentMissingComps
+          },
+          notes: {
+            ...prevComponents.notes,
+            [selectedSkill]: currentNotes
+          }
+        };
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }, [selectedSkill])
+
+  // Get Skills
+  useEffect(() => {
+    getSkillsList(API_URL, API_KEY)
+    .then((res) => res.data)
+    .then((data) => {
+      setSkills(data);
+    })
+  }, [])
 
   // Functions
   const handleSkillChange = (event) => {
@@ -69,38 +114,46 @@ const Home = () => {
   // useCallbacks
   const updateComponents = useCallback((action, component) => {
     setComponents(prevState => {
-      const currentTextComps = prevState.textComps[selectedSkill] || [];
-      const currentMissingComps = prevState.missingComps[selectedSkill] || [];
+      const currentTextComps = prevState.textComps[selectedSkill - 1] || [];
+      const currentMissingComps = prevState.missingComps[selectedSkill - 1] || [];
+      const currentNotes = prevState.notes[selectedSkill - 1] || [];
 
       switch(action) {
         case 'ADD_TO_TEXT':
-          if (currentTextComps.some(comp => comp.title === component.title)) {
+          if (currentTextComps.some(comp => comp.name === component.name)) {
             return prevState;
           }
           return {
             textComps: {
               ...prevState.textComps,
-              [selectedSkill]: [...currentTextComps, component]
+              [selectedSkill - 1]: [...currentTextComps, component]
             },
             missingComps: {
               ...prevState.missingComps,
-              [selectedSkill]: currentMissingComps.filter(comp => comp.title !== component.title)
+              [selectedSkill - 1]: currentMissingComps.filter(comp => comp.name !== component.name)
+            },
+            notes: {
+              ...prevState.notes
             }
           };
 
         case 'REMOVE_FROM_TEXT':
-          const compToMove = currentTextComps.find(comp => comp.title === component.title);
+          const compToMove = currentTextComps.find(comp => comp.name === component.name);
           if (!compToMove) {
             return prevState;
           }
           return {
             textComps: {
               ...prevState.textComps,
-              [selectedSkill]: currentTextComps.filter(comp => comp.title !== component.title)
+              [selectedSkill - 1]: currentTextComps.filter(comp => comp.title !== component.title)
             },
             missingComps: {
               ...prevState.missingComps,
-              [selectedSkill]: [...currentMissingComps, compToMove]
+              [selectedSkill - 1]: [...currentMissingComps, compToMove]
+            },
+            notes: {
+              ...prevState.notes,
+              [selectedSkill - 1]: [...currentNotes]
             }
           };
 
@@ -116,7 +169,7 @@ const Home = () => {
     const highlightMap = new Map();
 
     // Group highlights by their index
-    highlightedWords[selectedSkill].forEach((highlight) => {
+    highlightedWords[selectedSkill - 1].forEach((highlight) => {
       if (!highlightMap.has(highlight.index)) {
         highlightMap.set(highlight.index, []);
       }
@@ -131,7 +184,9 @@ const Home = () => {
       const highlights = highlightMap.get(index);
       highlights.forEach((highlight) => {
         // Find the color for the current component
-        const color = testComps[selectedSkill].find(component => component.title === highlight.component).color;
+        const compMap = textComponent.map((e) => e.name)
+        const color = COLOURS[textComponent.map(component => component.name).indexOf(highlight.component)];
+        console.log(compMap, highlight);
 
         // Highlight data
         const data = {
@@ -177,33 +232,33 @@ const Home = () => {
         ...prevWords,
         [selectedSkill]: [
           ...(prevWords[selectedSkill] || []),
-          {text: text, component: component.title, index: index}
+          {text: text, component: component.name, index: index}
         ]
       }));
       updateComponents('ADD_TO_TEXT', component);
     }
   }, [updateComponents, selectedSkill]);
 
-  // useEffects - Accordion
-  useEffect(() => {
-    setComponents(prevComponents => {
-      const currentTextComps = prevComponents.textComps[selectedSkill] || [];
-      const currentMissingComps = testComps[selectedSkill].filter(comp => 
-        !currentTextComps.some(textComp => textComp.title === comp.title)
-      );
+  // useEffects - Accordion noted
+  // useEffect(() => {
+  //   setComponents(prevComponents => {
+  //     const currentTextComps = prevComponents.textComps[selectedSkill] || [];
+  //     const currentMissingComps = testComps[selectedSkill].filter(comp => 
+  //       !currentTextComps.some(textComp => textComp.title === comp.title)
+  //     );
 
-      return {
-        textComps: {
-          ...prevComponents.textComps,
-          [selectedSkill]: currentTextComps
-        },
-        missingComps: {
-          ...prevComponents.missingComps,
-          [selectedSkill]: currentMissingComps
-        }
-      };
-    });
-  }, [selectedSkill]);
+  //     return {
+  //       textComps: {
+  //         ...prevComponents.textComps,
+  //         [selectedSkill]: currentTextComps
+  //       },
+  //       missingComps: {
+  //         ...prevComponents.missingComps,
+  //         [selectedSkill]: currentMissingComps
+  //       }
+  //     };
+  //   });
+  // }, [selectedSkill]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -233,10 +288,14 @@ const Home = () => {
         <SkillSelector
           handleSkillChange={handleSkillChange}
           selectedSkill={selectedSkill}
-          skillData={criteria}
+
+          skillData={skillsList}
           text={presentingText}
         />
-        <SkillCarousel skillData={criteria} />
+        <SkillCarousel
+          skillData={criteria}
+          skillsList={skillsList}
+        />
         <StyledRichTextEditor
           id="rte-target"
           value={presentingText}
@@ -253,7 +312,8 @@ const Home = () => {
         // Accordion
         components={{
           textComps: components.textComps[selectedSkill] || [],
-          missingComps: components.missingComps[selectedSkill] || []
+          missingComps: components.missingComps[selectedSkill] || [],
+          notes: components.notes[selectedSkill] || []
         }}
         updateHighlights={updateHighlights} 
         setIsDeleteMode={setIsDeleteMode}

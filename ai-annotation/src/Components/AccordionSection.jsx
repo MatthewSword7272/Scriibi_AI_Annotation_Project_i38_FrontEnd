@@ -12,7 +12,7 @@ const AccordionSection = ({ title, components, handleAccordionClick, isMissing =
       <StyledAccordionComponent
         expandMode="Single"
         expanding={(e) => {
-          const comp = components.find(c => c.title === e.item.header);
+          const comp = components.find(c => c.name === e.item.header);
           if (comp) handleAccordionClick(comp);
         }}
         components={components}
@@ -22,8 +22,8 @@ const AccordionSection = ({ title, components, handleAccordionClick, isMissing =
             <AccordionItemDirective
               key={index}
               expanded={false}
-              header={comp.title}
-              content={comp.description}
+              header={comp.name}
+              content={comp.example}
             />
           ))}
         </AccordionItemsDirective>

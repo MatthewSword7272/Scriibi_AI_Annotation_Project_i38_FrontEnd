@@ -156,6 +156,7 @@ const SidePanel = ({
     console.log('SidePanel received new components:', components);
     console.log('textComps:', components.textComps);
     console.log('missingComps:', components.missingComps);
+    console.log('Notes:', components.notes);
   }, [components]);
 
   return (
@@ -192,7 +193,7 @@ const SidePanel = ({
         position={DIALOG_BOX_POSITION}
       />
 
-      <NotesSection handleDialogClick={handleDialogClick} />
+      <NotesSection handleDialogClick={handleDialogClick} notesList={components.notes} />
       <AccordionSection title="Annotation" components={components.textComps} handleAccordionClick={handleAccordionClick} />
       <AccordionSection title="Missing" components={components.missingComps} handleAccordionClick={handleAccordionClick} isMissing={true} />
       <EditSection 
