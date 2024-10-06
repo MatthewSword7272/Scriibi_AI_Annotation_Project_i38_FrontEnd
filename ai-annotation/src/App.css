@@ -24,6 +24,23 @@
   line-height: 2.4;
 }
 
+.rte-container {
+  position: relative;
+  width: 100%; /* Adjust as needed */
+}
+
+.floating-label {
+  position: absolute;
+  z-index: 2;
+  top: -10px; /* Adjust to position above the editor */
+  left: 10px; /* Adjust to position to the left of the editor */
+  background-color: white; /* cover any part of the editor */
+  padding: 0 5px; /* add some padding around the label */
+  font-size: 14px; 
+  color: #333;
+}
+
+
 .highlight {
   cursor: pointer; 
   padding: 1px 3px;
@@ -42,3 +59,32 @@
   position: absolute;
   transform: translate(-105%, -3px);
 }
+
+.e-acrdn-header {
+  overflow: visible !important;
+}
+
+:root {
+  --c1-background: #999999;
+  --c2-background: #DDDDDD;
+  --c3-background: #CB9998;
+  --c4-background: #F5A3B7;
+  --c5-background: #fCE5Ed;
+  --c6-background: #9899C5;
+  --c7-background: #B4C0EE;
+  --c8-background: #B5D6D3;
+  --c9-background: #B2EFFA;
+  --c10-background: #D7C2A7;
+  --c11-background: #FACDAE;
+  --c12-background: #FFEFE0;
+  --c13-background: #FFF29F;
+  --c14-background: #FFFDE8;
+  --c15-background: #CCCC98;
+  --c16-background: #B1E1B7;
+  --c17-background: #E5F9B2;
+  --c18-background: #E0FDE7;
+  --c19-background: #D3A6E1;
+  --c20-background: #F9ADF5;
+  --c21-background: #F2E5FF;
+}
+

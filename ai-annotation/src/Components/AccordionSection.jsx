@@ -2,9 +2,17 @@ import React from 'react';
 import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2-react-navigations";
 import { StyledAccordionComponent } from 'Styles/StyledAccordion';
 import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
+import StyledFlag from 'Styles/StyledFlag';
+import { BLACK, GREEN, RED } from 'Constraints/constants';
 
-const AccordionSection = ({ title, components, handleAccordionClick, isMissing = false }) => {
+const AccordionSection = ({ title, components, handleAccordionClick, flagCounts, isMissing = false }) => {
   const Container = isMissing ? StyledAccordionMissingContainer : StyledAccordionContainer;
+
+  const renderBadge = (color, translate, onClick, text) => (
+    <StyledFlag color={color} translate={translate} onClick={onClick}>
+      {text}
+    </StyledFlag>
+  );
 
   return (
     <Container>
@@ -12,8 +20,9 @@ const AccordionSection = ({ title, components, handleAccordionClick, isMissing =
       <StyledAccordionComponent
         expandMode="Single"
         expanding={(e) => {
-          const comp = components.find(c => c.name === e.item.header);
-          if (comp) handleAccordionClick(comp);
+          const headerContent = e.item.properties.header()
+          const comp = components.find(c => c.name === headerContent.props.children[0]);
+          if (comp && !comp.subComponent) handleAccordionClick(comp);
         }}
         components={components}
       >
@@ -22,7 +31,24 @@ const AccordionSection = ({ title, components, handleAccordionClick, isMissing =
             <AccordionItemDirective
               key={index}
               expanded={false}
-              header={comp.name}
+              header={() => (
+                <div style={{ position: 'relative' }}>
+                  {comp.name}
+                  {comp.subComponent === 2 && (
+                    <>
+                      {renderBadge(GREEN, 'translate(5px, -12px)', () => handleAccordionClick(comp, GREEN, ''), flagCounts[comp.title]?.correct || 0)}
+                      {renderBadge(RED, 'translate(40px, -12px)', () => handleAccordionClick(comp, RED, ''), flagCounts[comp.title]?.incorrect || 0)}
+                    </>
+                  )}
+                  {comp.subComponent === 1 && (
+                    <>
+                      {renderBadge(BLACK, 'translate(5px, -12px)', () => handleAccordionClick(comp, BLACK, 'C'), 'C')}
+                      {renderBadge(BLACK, 'translate(40px, -12px)', () => handleAccordionClick(comp, BLACK, 'E'), 'E')}
+                      {renderBadge(BLACK, 'translate(75px, -12px)', () => handleAccordionClick(comp, BLACK, 'EE'), 'EE')}
+                    </>
+                  )}
+                </div>
+              )}
               content={comp.example}
             />
           ))}

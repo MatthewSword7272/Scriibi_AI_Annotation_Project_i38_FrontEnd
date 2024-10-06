@@ -4,6 +4,7 @@ import {
   StyledSubBodyContainer1,
 } from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
+import { Toolbar } from "@syncfusion/ej2-react-richtexteditor";
 import TestText from "../testText.json";
 import { HtmlEditor, Inject } from '@syncfusion/ej2-react-richtexteditor';
 import SkillCarousel from "./SkillCarousel";
@@ -17,6 +18,7 @@ import { COLOURS } from "Constraints/colours";
 
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
+import { GREEN } from "Constraints/constants";
 
 const Home = () => {
   // Constants
@@ -26,7 +28,8 @@ const Home = () => {
   const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: []}); // Saving the annotation
   const [presentingText, setPresentingText] = useState(fetchedText);
   const [skillsList, setSkills] = useState([]);
-  const [selectedSkill, setSelectedSkill] = useState(1);
+  const [selectedSkill, setSelectedSkill] = useState(0);
+  const [skillAnnotated, setSkillAnnotated] = useState({ 0: false, 1: false, 2: false, 3: false, 4: false})
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
@@ -37,11 +40,12 @@ const Home = () => {
   });
   const [textComponent, setTextComponent] = useState([]);
   const [criteria, setCriteria] = useState([]);
+  const [flagCounts, setFlagCounts] = useState({});
 
   // Memoized values
   useEffect(() => {
     console.log('Running');
-    getCriteriaForASkill(API_URL, selectedSkill, API_KEY)
+    getCriteriaForASkill(API_URL, (selectedSkill + 1), API_KEY)
     .then((res) => res.data)
     .then((data) => {
       setCriteria(data);
@@ -165,7 +169,10 @@ const Home = () => {
 
   // Function to add highlights to the text
   const addHighlight = useCallback((highlightedWords, text) => {
-    let result = text;
+    // Create a temporary div to manipulate the HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = text;
+
     const highlightMap = new Map();
 
     // Group highlights by their index
@@ -179,63 +186,80 @@ const Home = () => {
     // Sort indices in descending order to avoid offsetting subsequent highlights
     const sortedIndices = Array.from(highlightMap.keys()).sort((a, b) => b - a);
 
-    // Apply highlights to the text
     sortedIndices.forEach((index) => {
       const highlights = highlightMap.get(index);
       highlights.forEach((highlight) => {
+        // Create a TreeWalker to iterate through text nodes
+        const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_TEXT, null);
+        let currentOffset = 0, node;
         // Find the color for the current component
         const compMap = textComponent.map((e) => e.name)
         const color = COLOURS[textComponent.map(component => component.name).indexOf(highlight.component)];
         console.log(compMap, highlight);
 
-        // Highlight data
-        const data = {
-          id: index,
-          content: highlight.text,
-          componentData: {
-            name: highlight.component,
-            background: color,
-            // subComponent: { // all properties of subComponent are non-nullable
-            //   text: "",
-            //   background: ""
-            // }
-          }
-        }
+        // eslint-disable-next-line no-cond-assign
+        while (node = walker.nextNode()) {
+          // @ts-ignore
+          if (currentOffset + node.length > highlight.index) {
+            const range = document.createRange();
+            const startOffset = highlight.index - currentOffset;
+            range.setStart(node, startOffset);
+            // @ts-ignore
+            range.setEnd(node, Math.min(startOffset + highlight.text.length, node.length));
 
-        // Create the HTML markup for the highlight
-        const newMarkHtml = 
-        `<mark 
-          class="highlight${data.componentData.subComponent && ' flag'}"
-          id="${data.id}"
-          data-highlight-content="${data.content}" 
-          data-component-name="${data.componentData.name}"
-          ${data.componentData.subComponent ? `
-            data-subcomponent-text="${data.componentData.subComponent.text || '\u2003'}"` : 
-          ""}
-          style="background: ${data.componentData.background};
-          ${data.componentData.subComponent && 
-          `--subcomponent-background: ${data.componentData.subComponent.background || `${BLACK}`};`}">
-          ${data.content}
-        </mark>`.replace(/\n/g, '').replace(/\s{2,}/g, ' ').replace(/>\s+</g, '><').replace(/>\s+/g, '>').replace(/\s+</g, '<'); // clean white spaces and new line characters
-      
-        // Insert the highlight into the text
-        result = result.slice(0, index) + newMarkHtml + result.slice(index + highlight.text.length);
+            const mark = document.createElement('mark');
+            mark.className = `highlight${highlight.subComponent ? ' flag' : ''}`;
+            mark.id = highlight.index;
+            mark.dataset.highlightContent = highlight.text;
+            mark.dataset.componentName = highlight.component;
+            if (highlight.subComponent) {
+              mark.dataset.subcomponentText = highlight.subComponent.subText || '\u2003';
+            }
+
+            const componentID = testComps[selectedSkill].find(c => c.title === highlight.component).id;
+            mark.style.background = `var(--c${componentID}-background)`;
+            if (highlight.subComponent) {
+              mark.style.setProperty('--subcomponent-background', highlight.subComponent.subBackground);
+            }
+
+            try {
+              range.surroundContents(mark);
+            } catch (error) {
+              console.error('Error applying highlight:', error);
+            }
+            break;
+          }
+          // @ts-ignore
+          currentOffset += node.length;
+        }
       });
     });
 
-    return result;
+    return tempDiv.innerHTML;
   }, [selectedSkill]);
 
-  const updateHighlights = useCallback((component, text, index) => {
+  const updateHighlights = useCallback((component, text, index, subBackground, subText) => {
     if (text) {
       setHighlightedWords(prevWords => ({
         ...prevWords,
         [selectedSkill]: [
           ...(prevWords[selectedSkill] || []),
-          {text: text, component: component.name, index: index}
+          {text: text, component: component.title, index: index}
         ]
       }));
       updateComponents('ADD_TO_TEXT', component);
+
+      // Update flag counts
+      setFlagCounts(prevCounts => {
+        const componentCounts = prevCounts[component.title] || { correct: 0, incorrect: 0 };
+        return {
+          ...prevCounts,
+          [component.title]: {
+            ...componentCounts,
+            [subBackground === GREEN ? 'correct' : 'incorrect']: componentCounts[subBackground === GREEN ? 'correct' : 'incorrect'] + 1
+          }
+        };
+      });
     }
   }, [updateComponents, selectedSkill]);
 
@@ -282,46 +306,63 @@ const Home = () => {
     setWordCount(countWords(presentingText));
   }, [presentingText, countWords]);
 
+  //Props
+  const skillProps = {
+    handleSkillChange,
+    selectedSkill,
+    skillData: skillsList,
+    text: presentingText,
+    skillAnnotated,
+    setSkillAnnotated
+  };
+
+  const modeProps = {
+    isDeleteMode,
+    isAddingMode,
+    setIsAddingMode,
+    setIsDeleteMode
+  };
+
+  const componentProps = {
+    components: {
+      textComps: components.textComps[selectedSkill] || [],
+      missingComps: components.missingComps[selectedSkill] || []
+    },
+    updateComponents
+  };
+
+  const flagProps = {
+    flagCounts,
+    setFlagCounts
+  }
+
   return (
     <StyledBodyContainer id="target">
       <StyledSubBodyContainer1>
-        <SkillSelector
-          handleSkillChange={handleSkillChange}
-          selectedSkill={selectedSkill}
-
-          skillData={skillsList}
-          text={presentingText}
-        />
-        <SkillCarousel
-          skillData={criteria}
-          skillsList={skillsList}
-        />
-        <StyledRichTextEditor
-          id="rte-target"
-          value={presentingText}
-          change={handleWordCount}
-          toolbarSettings={{enable: false}}>
-          <Inject services={[HtmlEditor]} />
-        </StyledRichTextEditor>
-        <div><b>Word Count: {wordCount}</b></div>
+        <SkillSelector {...skillProps}/>
+        <SkillCarousel skillData={criteria} />
+        <div className="rte-container">
+          <label className="floating-label" htmlFor="rte-target">Student Writing Text</label>
+          <StyledRichTextEditor
+            id="rte-target"
+            value={presentingText}
+            change={handleWordCount}
+            toolbarSettings={{enable: false}}>
+            <Inject services={[HtmlEditor, Toolbar]} />
+          </StyledRichTextEditor>
+          <div><b>Word Count: {wordCount}</b></div>
+        </div>
       </StyledSubBodyContainer1>
       <SidePanel
         key={`${selectedSkill}-${JSON.stringify(components)}`}
-        isDeleteMode={isDeleteMode} 
-        isAddingMode={isAddingMode}
-        // Accordion
-        components={{
-          textComps: components.textComps[selectedSkill] || [],
-          missingComps: components.missingComps[selectedSkill] || [],
-          notes: components.notes[selectedSkill] || []
-        }}
-        updateHighlights={updateHighlights} 
-        setIsDeleteMode={setIsDeleteMode}
-        setIsAddingMode={setIsAddingMode}
+        modeProps={modeProps}
+        componentProps={componentProps}
+        updateHighlights={updateHighlights}
         setHighlightedWords={setHighlightedWords}
-        updateComponents={updateComponents}
         setPresentingText={setPresentingText}
         selectedSkill={selectedSkill}
+        isAnnotated={skillAnnotated[selectedSkill]} 
+        flagProps={flagProps}
       />
     </StyledBodyContainer>
   );

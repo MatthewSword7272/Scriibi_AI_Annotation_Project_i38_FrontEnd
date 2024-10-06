@@ -9,17 +9,20 @@ import EditSection from './EditSection';
 import AccordionSection from './AccordionSection';
 
 const SidePanel = ({
-  isDeleteMode,
-  isAddingMode,
-  components,
+  modeProps,
+  componentProps,
   updateHighlights,
-  setIsAddingMode,
-  setIsDeleteMode,
   setHighlightedWords,
-  updateComponents,
   setPresentingText,
-  selectedSkill
+  selectedSkill,
+  flagProps,
+  isAnnotated
 }) => {
+  
+  const { isDeleteMode, isAddingMode, setIsAddingMode, setIsDeleteMode } = modeProps;
+  const { components, updateComponents } = componentProps;
+  const { flagCounts, setFlagCounts } = flagProps;
+
   // States
   const [dialogVisibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
@@ -56,6 +59,7 @@ const SidePanel = ({
     const highlightText = target.textContent;
     const componentId = target.id;
     const componentName = target.dataset.componentName
+    const subBackground = target.style.getPropertyValue('--subcomponent-background');
 
     setPresentingText((prevText) => {
       const regex = new RegExp(`<mark[^>]*id="${componentId}"[^>]*>?.*</mark>`, 'g');
@@ -69,20 +73,32 @@ const SidePanel = ({
       )
     }));
 
+    setFlagCounts(prevCounts => {
+      const componentCounts = prevCounts[componentName];
+      const flagType = subBackground === GREEN ? 'correct' : 'incorrect';
+      return {
+        ...prevCounts,
+        [componentName]: {
+          ...componentCounts,
+          [flagType]: Math.max(0, componentCounts[flagType] - 1)
+        }
+      };
+    });
+
     setTimeout(() => {
-      const remainingHighlights = document.querySelectorAll(`[id="${componentId}"]`);
+      const remainingHighlights = document.querySelectorAll(`[data-component-name="${componentName}"]`);
       if (remainingHighlights.length === 0) {
         updateComponents('REMOVE_FROM_TEXT', { title: componentName });
       }
     }, 0);
-  }, [setPresentingText, setHighlightedWords, selectedSkill, updateComponents]);
+  }, [selectedSkill, setFlagCounts, setHighlightedWords, setPresentingText, updateComponents]);
 
   // Event handlers
   const handleDialogClick = () => showDialog("ASP.NET", "Actual content about ASP.NET");
 
-  const handleAccordionClick = useCallback((comp) => {
+  const handleAccordionClick = useCallback((comp, subBackground = undefined, subText = undefined) => {
     if (isAddingMode && selectedText.text !== "") {
-      updateHighlights(comp, selectedText.text, selectedText.index);
+      updateHighlights(comp, selectedText.text, selectedText.index, subBackground, subText);
       setSelectedText({ text: "", index: -1 });
     }
   }, [updateHighlights, isAddingMode, selectedText]);
@@ -130,7 +146,10 @@ const SidePanel = ({
         // if no overlapping highlights
         if (!containsMark) {
           setSelectedText({ text, index });
-        } else {
+        } else { 
+          // unselect text, reset selectedText state, then alert user
+          selection.removeAllRanges()
+          setSelectedText({ text: "", index: -1 });
           showToast();
         }
       }
@@ -194,14 +213,16 @@ const SidePanel = ({
       />
 
       <NotesSection handleDialogClick={handleDialogClick} notesList={components.notes} />
-      <AccordionSection title="Annotation" components={components.textComps} handleAccordionClick={handleAccordionClick} />
-      <AccordionSection title="Missing" components={components.missingComps} handleAccordionClick={handleAccordionClick} isMissing={true} />
-      <EditSection 
-        isAddingMode={isAddingMode}
-        isDeleteMode={isDeleteMode}
-        setIsAddingMode={setIsAddingMode}
-        setIsDeleteMode={setIsDeleteMode}
-      />
+      <AccordionSection title="Annotation" components={components.textComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts}/>
+      <AccordionSection title="Missing" components={components.missingComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts} isMissing={true} />
+      {isAnnotated &&
+        <EditSection 
+          isAddingMode={isAddingMode}
+          isDeleteMode={isDeleteMode}
+          setIsAddingMode={setIsAddingMode}
+          setIsDeleteMode={setIsDeleteMode}
+        />
+      }
     </StyledSubBodyContainer2>
   );
 };

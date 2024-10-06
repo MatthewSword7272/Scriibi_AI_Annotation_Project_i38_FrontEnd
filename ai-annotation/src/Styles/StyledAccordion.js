@@ -37,13 +37,13 @@ const StyledAccordionComponent = styled(AccordionComponent)`
         border-radius: 20px;
       }
     }
-
-    .e-acrdn-item.e-item-focus.e-expand-state.e-select, 
-    .e-acrdn-item.e-item-focus.e-select.e-selected.e-expand-state,
-    .e-acrdn-item.e-select.e-item-focus {
-      border: unset;
-    }
   `)}
+
+  .e-acrdn-item.e-item-focus.e-expand-state.e-select, 
+  .e-acrdn-item.e-item-focus.e-select.e-selected.e-expand-state,
+  .e-acrdn-item.e-select.e-item-focus {
+    border: unset;
+  }
 `;
 
 export { StyledAccordionComponent };
