@@ -10,7 +10,7 @@ import { HtmlEditor, Inject } from '@syncfusion/ej2-react-richtexteditor';
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
-import { BLACK } from "Constraints/constants";
+import { BLACK, GREEN } from "Constraints/constants";
 import getCriteriaForASkill from "api/getCriteriaForASkill";
 import getTextComponentsForSkill from "api/getTextComponentsforSkill";
 import getSkillsList from "api/getSkillsList";
@@ -162,14 +162,14 @@ const Home = () => {
           };
 
         case 'REMOVE_FROM_TEXT':
-          const compToMove = currentTextComps.find(comp => comp.name === component.name);
+          const compToMove = currentTextComps.find(comp => comp.name === component.title);
           if (!compToMove) {
             return prevState;
           }
           return {
             textComps: {
               ...prevState.textComps,
-              [selectedSkill]: currentTextComps.filter(comp => comp.title !== component.title)
+              [selectedSkill]: currentTextComps.filter(comp => comp.name !== component.title)
             },
             missingComps: {
               ...prevState.missingComps,
@@ -290,21 +290,37 @@ const Home = () => {
 
       updateComponents('ADD_TO_TEXT', component);
     }
-    // Update flag counts
+
+
+    // TODO: Check if FlagCounts is updated properly
+
+
+    // setFlagCounts(prevCounts => {
+    //   // Update presenting text for the current skill
+    //   setPresentingTexts(prev => ({
+    //     ...prev,
+    //     [selectedSkill]: addHighlight({ [selectedSkill]: [...(prev[selectedSkill] || []), { text, component: component.name, index, subComponent: { subText, subBackground } }] }, skillTexts[selectedSkill])
+    //   }));
+    // })
+
     setFlagCounts(prevCounts => {
-      // Update presenting text for the current skill
-      setPresentingTexts(prev => ({
-        ...prev,
-        [selectedSkill]: addHighlight({ [selectedSkill]: [...(prev[selectedSkill] || []), { text, component: component.name, index, subComponent: { subText, subBackground } }] }, skillTexts[selectedSkill])
-      }));
-    })
-  }, [updateComponents, selectedSkill, addHighlight, skillTexts]);
+      const componentCounts = prevCounts[component.title] || { correct: 0, incorrect: 0 };
+      return {
+        ...prevCounts,
+        [component.title]: {
+          ...componentCounts,
+          [subBackground === GREEN ? 'correct' : 'incorrect']: componentCounts[subBackground === GREEN ? 'correct' : 'incorrect'] + 1
+        }
+      };
+    });
+  }, [updateComponents, selectedSkill]);
 
   // useEffects
   useEffect(() => {
     // Update the presenting text when switching skills
     const updatedText = addHighlight(highlightedWords, skillTexts[selectedSkill]);
     setPresentingTexts(prev => ({ ...prev, [selectedSkill]: updatedText }));
+    console.log("highlightedWords:", highlightedWords);
   }, [selectedSkill, addHighlight, highlightedWords, skillTexts]);
 
   useEffect(() => {
