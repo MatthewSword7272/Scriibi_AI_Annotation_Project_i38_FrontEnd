@@ -9,11 +9,15 @@ import {
   StyledSkillButtonContainer,
   StyledSkillContainer,
 } from "Styles/StyledRadioButton";
+import processText from "api/processText";
 
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 
-const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime}) => {
+const ANNOTATE_URL = process.env.REACT_APP_TEXTPROCESSING_URL
+const ANNOTATE_KEY = process.env.REACT_APP_TEXTPROCESSING_FUNCTION_KEY
+
+const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime, setPresentingText, setComponents}) => {
   const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
   const toastInstance = useRef(null);
   const TOAST_POSITION = { X: 'center', Y: 'top' };
@@ -44,6 +48,48 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     if (!firstTime) {
       setFirstTime(true);
     }
+
+    processText(ANNOTATE_URL, {
+      skillID: selectedSkill + 1,
+      text: text[selectedSkill]
+    }, ANNOTATE_KEY)
+    .then((res) => res.data)
+    .then((data) => {
+      if (Object.keys(data).length > 0) {
+        const highlightedText = data.annotations?.highlighted_text
+        const componentsList = data['components_list']
+
+        console.log("Components list", data.components_list.present)
+
+        // if (highlightedText) {
+        //   setPresentingText(highlightedText)
+        // }
+
+        // setComponents(prev => {
+        //   console.log("previous comps", prev)
+        //   return {
+        //     textComps: {
+        //       ...prev.textComps,
+        //       ...componentsList.present
+        //     },
+        //     missingComps: {
+        //       ...prev.missingComps,
+        //       ...componentsList.missing
+        //     }
+        //   }
+        // });
+      
+
+        if (data.annotations.note) {
+        }
+
+        console.log(data);
+      }      
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    
     
     setSkillAnnotated(prevState => ({ ...prevState, [selectedSkill]: true }))
 

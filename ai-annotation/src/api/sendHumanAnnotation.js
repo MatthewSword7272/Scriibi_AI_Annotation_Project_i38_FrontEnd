@@ -5,6 +5,6 @@ export default function sendHumanAnnotatedSample(url, reqBody, apiKey) {
         text: reqBody.text,
         annotationType: 3,
         skillLevelId: reqBody.skillLevelId,
-        textSampleId: 6
+        sampleId: 6
     })
 }
