@@ -34,9 +34,9 @@ const Home = () => {
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [components, setComponents] = useState({
-    textComps: {},
-    missingComps: {},
-    notes: {}
+    textComps: [],
+    missingComps: [],
+    notes: []
   });
   const [textComponent, setTextComponent] = useState([]);
   const [criteria, setCriteria] = useState([]);

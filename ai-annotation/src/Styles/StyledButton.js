@@ -24,6 +24,7 @@ const StyledNotesButton = styled(StyledButtonComponent)`
     font-size: 15px;
     padding: 10px 15px;
     color: ${BLACK};
+    margin: 5px 0;
 
     &:hover {
         background-color: ${({ color }) => color};

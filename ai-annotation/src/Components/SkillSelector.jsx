@@ -1,7 +1,7 @@
 import sendOriginalTextSample from "api/sendOriginalTextSample";
 import { ToastComponent } from "@syncfusion/ej2-react-notifications";
 import axios from "axios";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { StyledButtonComponent } from "Styles/StyledButton";
 import {
   StyledRadioButton,
@@ -18,6 +18,7 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
   const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
   const toastInstance = useRef(null);
   const TOAST_POSITION = { X: 'center', Y: 'top' };
+  const [sampleId, setSampleId] = useState(0);
 
   const sendText = async () => {
     axios({
@@ -50,6 +51,7 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     .then((res) => res.data)
     .then((data) => {
       console.log('Inserted ID: ', data);
+      setSampleId(data);
     })
     .catch((err) => {
       console.log(err);
