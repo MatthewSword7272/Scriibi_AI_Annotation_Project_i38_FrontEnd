@@ -42,6 +42,7 @@
 
 
 .highlight {
+  background: var(--component-background)!important;
   cursor: pointer; 
   padding: 1px 3px;
   border-radius: 5px;
@@ -51,7 +52,7 @@
 .flag::after {
   content: attr(data-subcomponent-text);
   line-height: normal;
-  background: var(--subcomponent-background);
+  background: var(--subcomponent-background) !important;
   color: white;
   border-radius: 5px;
   padding: 0 4px;

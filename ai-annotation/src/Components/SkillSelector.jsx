@@ -61,23 +61,30 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
 
         console.log("Components list", data.components_list.present)
 
-        // if (highlightedText) {
-        //   setPresentingText(highlightedText)
-        // }
+        if (highlightedText) {
+          setPresentingText(prev => ({...prev, [selectedSkill]: highlightedText}))
+        }
 
-        // setComponents(prev => {
-        //   console.log("previous comps", prev)
-        //   return {
-        //     textComps: {
-        //       ...prev.textComps,
-        //       ...componentsList.present
-        //     },
-        //     missingComps: {
-        //       ...prev.missingComps,
-        //       ...componentsList.missing
-        //     }
-        //   }
-        // });
+        if (Object.keys(componentsList).length > 0) {
+          console.log(data.missing);
+          // console.log(componentsList.present.map(component => console.log("component", component)))
+          setComponents(prev => {
+            return {
+            ...prev, 
+            textComps: {
+              ...prev.textComps,
+              [selectedSkill]: componentsList.present,
+            },
+            missingComps: {
+              ...prev.missingComps,
+              [selectedSkill]: componentsList.missing,
+            },
+            notes: {  
+              ...prev.notes,
+            }
+          }});
+        }
+        
       
 
         if (data.annotations.note) {

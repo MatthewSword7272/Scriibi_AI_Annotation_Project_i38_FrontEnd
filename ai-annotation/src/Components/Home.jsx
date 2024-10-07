@@ -28,6 +28,7 @@ const Home = () => {
   const [firstTime, setFirstTime] = useState(false);
   const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: [] });
   const [presentingTexts, setPresentingTexts] = useState({ 0: "", 1: "", 2: "", 3: "", 4: "" });
+  const [notesContent, setNotesContent] = useState({})
   const [selectedSkill, setSelectedSkill] = useState(0);
   const [skillAnnotated, setSkillAnnotated] = useState({ 0: false, 1: false, 2: false, 3: false, 4: false });
   const [isAddingMode, setIsAddingMode] = useState(false);
@@ -101,6 +102,11 @@ const Home = () => {
         setSkills(data);
       })
   }, [])
+
+  // For debugging
+  useEffect(() => {
+    console.log(components);
+  }, [components])
 
   // Functions
   const handleSkillChange = (event) => {
