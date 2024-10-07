@@ -13,7 +13,7 @@ import {
   StyledH4,
 } from "../Styles/StyledCarousel";
 
-const SkillCarousel = ({ skillData, skillsList}) => {
+const SkillCarousel = ({ skillData }) => {
   const [selectedLevel, setSelectedLevel] = useState(null); 
   const [carouselLimit, setCarouselLimit] = useState({
     leftLimit: 4,
