@@ -29,8 +29,9 @@ const Home = () => {
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [components, setComponents] = useState({
-    textComps: {},
-    missingComps: {}
+    textComps: [],
+    missingComps: [],
+    noteComps: []
   });
   const [criteria, setCriteria] = useState([]);
 
@@ -235,6 +236,8 @@ const Home = () => {
           selectedSkill={selectedSkill}
           skillData={criteria}
           text={presentingText}
+          setPresentingText={setPresentingText}
+          setComponents={setComponents}
         />
         <SkillCarousel skillData={criteria} />
         <StyledRichTextEditor

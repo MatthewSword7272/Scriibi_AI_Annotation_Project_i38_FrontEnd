@@ -1,0 +1,8 @@
+import axios from "axios"
+
+export default function sendLLM(url, reqBody, apiKey) {
+    return axios.post(`${url}/annotate?code=${apiKey}`, {
+        skill_id: reqBody.skillID,
+        text: reqBody.text
+    })
+}

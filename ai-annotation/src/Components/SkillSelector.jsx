@@ -1,3 +1,4 @@
+import processText from "api/processText";
 import axios from "axios";
 import React, { useState } from "react";
 import { StyledButtonComponent } from "Styles/StyledButton";
@@ -8,7 +9,10 @@ import {
   StyledSkillContainer,
 } from "Styles/StyledRadioButton";
 
-const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) => {
+const ANNOTATE_URL = process.env.REACT_APP_TEXTPROCESSING_URL
+const ANNOTATE_KEY = process.env.REACT_APP_TEXTPROCESSING_FUNCTION_KEY
+
+const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, setPresentingText, setComponents, text }) => {
 
   const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
   const [isAnnotated, setIsAnnotated] = useState(false);
@@ -31,6 +35,40 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text }) =>
   }
 
   const annotate = () => {
+    processText(ANNOTATE_URL, {
+      skillID: 1,
+      text: text
+    }, ANNOTATE_KEY)
+    .then((res) => res.data)
+    .then((data) => {
+      if (Object.keys(data).length > 0) {
+        const highlightedText = data.annotations?.highlighted_text
+        const componentsList = data['components_list']
+
+        console.log("Components list", data.components_list.present)
+
+        if (highlightedText) {
+          setPresentingText(prev => prev = highlightedText)
+        }
+
+        setComponents({
+          textComps: componentsList.present || [],
+          missingComps: componentsList.missing || [],
+          noteComps: componentsList.notes || []
+        })
+
+        if (data.annotations.note) {
+
+        }
+
+        console.log(data);
+      }
+      
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+
     setIsAnnotated(true); //This will annotate the text and switch between the Buttons between Annotate to Save
   }
 
