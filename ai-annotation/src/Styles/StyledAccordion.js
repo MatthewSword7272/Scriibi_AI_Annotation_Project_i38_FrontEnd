@@ -33,7 +33,11 @@ const StyledAccordionComponent = styled(AccordionComponent)`
 
       &.e-select .e-acrdn-panel .e-acrdn-content {
         background: ${WHITE};
+
         border: 5px ${COLOURS[index]} solid;
+
+        /* border: 5px var(--c${comp.id}-background) solid; */
+
         border-radius: 20px;
       }
     }

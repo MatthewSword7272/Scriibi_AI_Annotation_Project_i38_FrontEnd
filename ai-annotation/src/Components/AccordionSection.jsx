@@ -22,6 +22,7 @@ const AccordionSection = ({ title, components, handleAccordionClick, flagCounts,
         expanding={(e) => {
           const headerContent = e.item.properties.header()
           const comp = components.find(c => c.name === headerContent.props.children[0]);
+
           if (comp && !comp.subComponent) handleAccordionClick(comp);
         }}
         components={components}

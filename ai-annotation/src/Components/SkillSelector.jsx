@@ -14,7 +14,6 @@ const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 
 const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated }) => {
-
   const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
   const toastInstance = useRef(null);
   const TOAST_POSITION = { X: 'center', Y: 'top' };
@@ -41,6 +40,11 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
   }
 
   const annotate = () => {
+    
+    if (!firstTime) {
+      setFirstTime(true);
+    }
+    
     setSkillAnnotated(prevState => ({ ...prevState, [selectedSkill]: true }))
 
     let reqBody = {

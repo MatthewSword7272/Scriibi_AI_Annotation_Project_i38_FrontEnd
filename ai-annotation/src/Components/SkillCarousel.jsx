@@ -15,7 +15,6 @@ import {
 
 const SkillCarousel = ({ skillData, skillsList}) => {
   const [selectedLevel, setSelectedLevel] = useState(null); 
-  // const [gridCentre, setGridCentre] = useState(0); //Start at the Middle Carousel Item
   const [carouselLimit, setCarouselLimit] = useState({
     leftLimit: 4,
     rightLimit: 6,
@@ -24,10 +23,6 @@ const SkillCarousel = ({ skillData, skillsList}) => {
 
   const [filteredData, setFilterData] = useState([]);
   const moveLeft = () => {
-    // setGridCentre((prevIndex) => 
-    //   prevIndex < MOVE_LIMIT ? prevIndex + 1 : prevIndex
-    // );
-
     setCarouselLimit((prev) => {
       return {
         leftLimit: prev.leftLimit--,
@@ -37,10 +32,6 @@ const SkillCarousel = ({ skillData, skillsList}) => {
   };
 
   const moveRight = () => {
-    // setGridCentre((prevIndex) => 
-    //   prevIndex > -MOVE_LIMIT ? prevIndex - 1 : prevIndex
-    // );
-
     setCarouselLimit((prev) => {
       return {
         leftLimit: prev.leftLimit++,

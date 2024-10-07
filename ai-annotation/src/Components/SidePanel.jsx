@@ -54,7 +54,6 @@ const SidePanel = ({
   }, []);
 
   const deleteHighlight = useCallback((target) => {
-
     if (!target || !target.matches('.highlight, [data-highlight]')) return;
     const highlightText = target.textContent;
     const componentId = target.id;
@@ -66,12 +65,29 @@ const SidePanel = ({
       return prevText.replace(regex, highlightText);
     });
 
-    setHighlightedWords((prevHighlights) => ({
-      ...prevHighlights,
-      [selectedSkill]: prevHighlights[selectedSkill].filter(highlight => 
-        !(highlight.text === highlightText && highlight.component === componentName)
-      )
-    }));
+    setHighlightedWords((prevHighlights) => {
+      const currentSkillHighlights = Array.isArray(prevHighlights[selectedSkill]) 
+        ? prevHighlights[selectedSkill] 
+        : [];
+      return {
+        ...prevHighlights,
+        [selectedSkill]: currentSkillHighlights.filter(highlight => 
+          !(highlight.text === highlightText && highlight.component === componentName)
+        )
+      };
+    });
+
+    setFlagCounts(prevCounts => {
+      const componentCounts = prevCounts[componentName];
+      const flagType = subBackground === GREEN ? 'correct' : 'incorrect';
+      return {
+        ...prevCounts,
+        [componentName]: {
+          ...componentCounts,
+          [flagType]: Math.max(0, componentCounts[flagType] - 1)
+        }
+      };
+    });
 
     setFlagCounts(prevCounts => {
       const componentCounts = prevCounts[componentName];
@@ -211,7 +227,6 @@ const SidePanel = ({
         beforeOpen={onDialogBeforeOpen}
         position={DIALOG_BOX_POSITION}
       />
-
       <NotesSection handleDialogClick={handleDialogClick} notesList={components.notes} />
       <AccordionSection title="Annotation" components={components.textComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts}/>
       <AccordionSection title="Missing" components={components.missingComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts} isMissing={true} />
