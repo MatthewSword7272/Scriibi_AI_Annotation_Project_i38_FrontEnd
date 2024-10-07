@@ -21,7 +21,8 @@ const AccordionSection = ({ title, components, handleAccordionClick, flagCounts,
         expandMode="Single"
         expanding={(e) => {
           const headerContent = e.item.properties.header()
-          const comp = components.find(c => c.title === headerContent.props.children[0]);
+          const comp = components.find(c => c.name === headerContent.props.children[0]);
+
           if (comp && !comp.subComponent) handleAccordionClick(comp);
         }}
         components={components}
@@ -33,11 +34,11 @@ const AccordionSection = ({ title, components, handleAccordionClick, flagCounts,
               expanded={false}
               header={() => (
                 <div style={{ position: 'relative' }}>
-                  {comp.title}
+                  {comp.name}
                   {comp.subComponent === 2 && (
                     <>
-                      {renderBadge(GREEN, 'translate(5px, -12px)', () => handleAccordionClick(comp, GREEN, ''), flagCounts[comp.title]?.correct || 0)}
-                      {renderBadge(RED, 'translate(40px, -12px)', () => handleAccordionClick(comp, RED, ''), flagCounts[comp.title]?.incorrect || 0)}
+                      {renderBadge(GREEN, 'translate(5px, -12px)', () => handleAccordionClick(comp, GREEN, ''), flagCounts[comp.name]?.correct || 0)}
+                      {renderBadge(RED, 'translate(40px, -12px)', () => handleAccordionClick(comp, RED, ''), flagCounts[comp.name]?.incorrect || 0)}
                     </>
                   )}
                   {comp.subComponent === 1 && (
@@ -49,7 +50,7 @@ const AccordionSection = ({ title, components, handleAccordionClick, flagCounts,
                   )}
                 </div>
               )}
-              content={comp.description}
+              content={comp.example}
             />
           ))}
         </AccordionItemsDirective>

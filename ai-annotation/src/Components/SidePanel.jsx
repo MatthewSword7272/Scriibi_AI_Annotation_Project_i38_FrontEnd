@@ -89,6 +89,18 @@ const SidePanel = ({
       };
     });
 
+    setFlagCounts(prevCounts => {
+      const componentCounts = prevCounts[componentName];
+      const flagType = subBackground === GREEN ? 'correct' : 'incorrect';
+      return {
+        ...prevCounts,
+        [componentName]: {
+          ...componentCounts,
+          [flagType]: Math.max(0, componentCounts[flagType] - 1)
+        }
+      };
+    });
+
     setTimeout(() => {
       const remainingHighlights = document.querySelectorAll(`[data-component-name="${componentName}"]`);
       if (remainingHighlights.length === 0) {
@@ -179,6 +191,7 @@ const SidePanel = ({
     console.log('SidePanel received new components:', components);
     console.log('textComps:', components.textComps);
     console.log('missingComps:', components.missingComps);
+    console.log('Notes:', components.notes);
   }, [components]);
 
   return (
@@ -214,8 +227,7 @@ const SidePanel = ({
         beforeOpen={onDialogBeforeOpen}
         position={DIALOG_BOX_POSITION}
       />
-
-      <NotesSection handleDialogClick={handleDialogClick} />
+      <NotesSection handleDialogClick={handleDialogClick} notesList={components.notes} />
       <AccordionSection title="Annotation" components={components.textComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts}/>
       <AccordionSection title="Missing" components={components.missingComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts} isMissing={true} />
       {isAnnotated &&

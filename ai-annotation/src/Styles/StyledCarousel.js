@@ -15,13 +15,12 @@ const StyledCarouselInnerContainer = styled.div`
   width: 99%;
   display: flex;
   flex-direction: column;
-  
 `;
 
 const StyledCarouselRow = styled.div`
   display: flex;
   justify-content: space-evenly;
-  transform: translateX(${props => -props.gridCentre * 35}%);
+  ${'' /* transform: translateX(${props => -props.gridCentre * 35}%); */}
   align-items: center;
   margin-bottom: 15px;
   transition: transform 0.5s ease-in-out;
@@ -56,7 +55,7 @@ const StyledDotInnerContainer = styled.div`
   justify-content: space-evenly;
   align-items: center; 
   column-gap: 3vw;
-  transform: translateX(${props => -props.gridCentre * 35}%);
+  ${'' /* transform: translateX(${props => -props.gridCentre * 35}%); */}
   transition: transform 0.5s ease-in-out;
 `
 
@@ -79,7 +78,7 @@ const StyledCarouselDescription = styled.div`
 
   ul {
     font-family: 'Segoe UI', sans-serif;
-    max-height: 200px;
+    min-height: 300px;
     overflow-y: auto;
     padding-left: 20px;
   }

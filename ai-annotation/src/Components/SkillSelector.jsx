@@ -1,6 +1,7 @@
+import sendOriginalTextSample from "api/sendOriginalTextSample";
 import { ToastComponent } from "@syncfusion/ej2-react-notifications";
 import axios from "axios";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { StyledButtonComponent } from "Styles/StyledButton";
 import {
   StyledRadioButton,
@@ -9,11 +10,14 @@ import {
   StyledSkillContainer,
 } from "Styles/StyledRadioButton";
 
-const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, setFirstTime, firstTime }) => {
+const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
+const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 
+const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated }) => {
   const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
   const toastInstance = useRef(null);
   const TOAST_POSITION = { X: 'center', Y: 'top' };
+  const [sampleId, setSampleId] = useState(0);
 
   const sendText = async () => {
     axios({
@@ -36,10 +40,27 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
   }
 
   const annotate = () => {
+    
     if (!firstTime) {
       setFirstTime(true);
     }
-    setSkillAnnotated(prevState => ({ ...prevState, [selectedSkill]: true })) //This will annotate the text and switch between the Buttons between Annotate to Save
+    
+    setSkillAnnotated(prevState => ({ ...prevState, [selectedSkill]: true }))
+
+    let reqBody = {
+      text: text,
+    }
+    
+    sendOriginalTextSample(API_URL, reqBody, API_KEY)
+    .then((res) => res.data)
+    .then((data) => {
+      console.log('Inserted ID: ', data);
+      setSampleId(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    //This will annotate the text and switch between the Buttons between Annotate to Save
   }
 
   const showToast = (message, title, toastClass, icon) => {
@@ -52,13 +73,13 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     <StyledSkillContainer>
 
     <StyledRadioButtonContainer>
-    {Object.keys(skillData).map((skillName, index) => (
+    {skillData.map((skill, index) => (
        <StyledRadioButton
-        label={skillName}
+        label={skill.name}
         key={index}
         name="skill"
-        value={index.toString()}
-        checked={selectedSkill === index}
+        value={(index).toString()}
+        checked={selectedSkill === (index)}
         onChange={handleSkillChange}
      />
     ))}
