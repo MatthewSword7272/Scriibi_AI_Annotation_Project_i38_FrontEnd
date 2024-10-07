@@ -17,13 +17,15 @@ import { GREEN } from "Constraints/constants";
 
 const Home = () => {
   // Constants
-  const fetchedText = TestText.test;
+  const fetchedText = "";
 
   // States
+  const [originalText, setOriginalText] = useState("");
+  const [firstTime, setFirstTime] = useState(false);
   const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: []});
-  const [presentingText, setPresentingText] = useState(fetchedText);
+  const [presentingTexts, setPresentingTexts] = useState({0: "", 1: "", 2: "", 3: "", 4: ""});
   const [selectedSkill, setSelectedSkill] = useState(0);
-  const [skillAnnotated, setSkillAnnotated] = useState({ 0: false, 1: false, 2: false, 3: false, 4: false})
+  const [skillAnnotated, setSkillAnnotated] = useState({ 0: false, 1: false, 2: false, 3: false, 4: false});
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
@@ -32,16 +34,25 @@ const Home = () => {
     missingComps: {}
   });
   const [flagCounts, setFlagCounts] = useState({});
+  const [skillTexts, setSkillTexts] = useState({0: "", 1: "", 2: "", 3: "", 4: ""});
+  const [currentText, setCurrentText] = useState("");
 
   // Memoized values
   const skillData = useMemo(() => testSkillsInfo[skillsObject[selectedSkill]], [selectedSkill]);
 
   // Functions
   const handleSkillChange = (event) => {
-    setSelectedSkill(parseInt(event.target.value, 10));
+    const newSkill = parseInt(event.target.value, 10);
+    setSelectedSkill(newSkill);
+    // Load the text for the new skill
+    setCurrentText(skillTexts[newSkill]);
   };
 
   const countWords = useCallback((text) => {
+    if (typeof text !== 'string') {
+      console.warn('countWords received non-string input:', text);
+      return 0;
+    }
     return text.replace(/<[^>]*>/g, '')
                .replace(/[^a-zA-Z\s]/g, '')
                .trim()
@@ -50,7 +61,16 @@ const Home = () => {
   }, []);
 
   const handleWordCount = (args) => {
-    setPresentingText(args.value);
+    if (!firstTime) {
+      setOriginalText(args.value);
+      // Initialize all skill texts and presenting texts with the original text
+      setSkillTexts({0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value});
+      setPresentingTexts({0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value});
+    } else {
+      // Update the text for the current skill only
+      setSkillTexts(prev => ({...prev, [selectedSkill]: args.value}));
+    }
+    setCurrentText(args.value);
   };
 
   // useCallbacks
@@ -105,8 +125,13 @@ const Home = () => {
 
     const highlightMap = new Map();
 
+    // Ensure highlightedWords[selectedSkill] is an array
+    const currentHighlights = Array.isArray(highlightedWords[selectedSkill]) 
+      ? highlightedWords[selectedSkill] 
+      : []; 
+
     // Group highlights by their index
-    highlightedWords[selectedSkill].forEach((highlight) => {
+    currentHighlights.forEach((highlight) => {
       if (!highlightMap.has(highlight.index)) {
         highlightMap.set(highlight.index, []);
       }
@@ -166,21 +191,26 @@ const Home = () => {
 
   const updateHighlights = useCallback((component, text, index, subBackground, subText) => {
     if (text) {
-      setHighlightedWords(prevWords => ({
-        ...prevWords,
-        [selectedSkill]: [
-          ...(prevWords[selectedSkill] || []),
-          {
-            text: text, 
-            component: component.title,
-            index: index, 
-            subComponent: {
-              subText: subText !== undefined ? subText : "",
-              subBackground: subBackground
+      setHighlightedWords(prevWords => {
+        const currentSkillHighlights = Array.isArray(prevWords[selectedSkill]) 
+          ? prevWords[selectedSkill] 
+          : [];
+        return {
+          ...prevWords,
+          [selectedSkill]: [
+            ...currentSkillHighlights,
+            {
+              text: text, 
+              component: component.title,
+              index: index, 
+              subComponent: {
+                subText: subText !== undefined ? subText : "",
+                subBackground: subBackground
+              }
             }
-          }
-        ]
-      }));
+          ]
+        };
+      });
       updateComponents('ADD_TO_TEXT', component);
 
       // Update flag counts
@@ -194,10 +224,22 @@ const Home = () => {
           }
         };
       });
+
+      // Update presenting text for the current skill
+      setPresentingTexts(prev => ({
+        ...prev,
+        [selectedSkill]: addHighlight({[selectedSkill]: [...(prev[selectedSkill] || []), {text, component: component.title, index, subComponent: {subText, subBackground}}]}, skillTexts[selectedSkill])
+      }));
     }
-  }, [updateComponents, selectedSkill]);
+  }, [updateComponents, selectedSkill, addHighlight, skillTexts]);
 
   // useEffects
+  useEffect(() => {
+    // Update the presenting text when switching skills
+    const updatedText = addHighlight(highlightedWords, skillTexts[selectedSkill]);
+    setPresentingTexts(prev => ({...prev, [selectedSkill]: updatedText}));
+  }, [selectedSkill, addHighlight, highlightedWords, skillTexts]);
+
   useEffect(() => {
     setComponents(prevComponents => {
       const currentTextComps = prevComponents.textComps[selectedSkill] || [];
@@ -232,20 +274,27 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const updatedText = addHighlight(highlightedWords, fetchedText);
-    setPresentingText(updatedText);
-  }, [addHighlight, fetchedText, highlightedWords]);
+    const textToCount = presentingTexts[selectedSkill] || '';
+    setWordCount(countWords(textToCount));
+  }, [presentingTexts, selectedSkill, countWords]);
 
+  // New useEffect to handle text changes
   useEffect(() => {
-    setWordCount(countWords(presentingText));
-  }, [presentingText, countWords]);
+    if (!firstTime && currentText) {
+      setOriginalText(currentText);
+      setSkillTexts({0: currentText, 1: currentText, 2: currentText, 3: currentText, 4: currentText});
+      setFirstTime(true);
+    } else if (firstTime) {
+      setSkillTexts(prev => ({...prev, [selectedSkill]: currentText}));
+    }
+  }, [currentText, firstTime, selectedSkill]);
 
   //Props
   const skillProps = {
     handleSkillChange,
     selectedSkill,
     skillData: testSkillsInfo,
-    text: presentingText,
+    text: presentingTexts[selectedSkill],
     skillAnnotated,
     setSkillAnnotated
   };
@@ -273,13 +322,13 @@ const Home = () => {
   return (
     <StyledBodyContainer id="target">
       <StyledSubBodyContainer1>
-        <SkillSelector {...skillProps}/>
+        <SkillSelector {...skillProps} setFirstTime={setFirstTime} firstTime={firstTime}/>
         <SkillCarousel skillData={skillData} />
         <div className="rte-container">
           <label className="floating-label" htmlFor="rte-target">Student Writing Text</label>
           <StyledRichTextEditor
             id="rte-target"
-            value={presentingText}
+            value={presentingTexts[selectedSkill]}
             change={handleWordCount}
             toolbarSettings={{enable: false}}>
             <Inject services={[HtmlEditor, Toolbar]} />
@@ -292,8 +341,11 @@ const Home = () => {
         modeProps={modeProps}
         componentProps={componentProps}
         updateHighlights={updateHighlights}
-        setHighlightedWords={setHighlightedWords}
-        setPresentingText={setPresentingText}
+        setHighlightedWords={(newHighlights) => setHighlightedWords(prev => ({
+          ...prev,
+          [selectedSkill]: newHighlights
+        }))}
+        setPresentingText={(newText) => setPresentingTexts(prev => ({...prev, [selectedSkill]: newText}))}
         selectedSkill={selectedSkill}
         isAnnotated={skillAnnotated[selectedSkill]} 
         flagProps={flagProps}

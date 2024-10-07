@@ -9,7 +9,7 @@ import {
   StyledSkillContainer,
 } from "Styles/StyledRadioButton";
 
-const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated }) => {
+const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, setFirstTime, firstTime }) => {
 
   const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
   const toastInstance = useRef(null);
@@ -36,6 +36,9 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
   }
 
   const annotate = () => {
+    if (!firstTime) {
+      setFirstTime(true);
+    }
     setSkillAnnotated(prevState => ({ ...prevState, [selectedSkill]: true })) //This will annotate the text and switch between the Buttons between Annotate to Save
   }
 

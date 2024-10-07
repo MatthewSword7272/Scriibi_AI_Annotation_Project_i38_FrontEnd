@@ -54,7 +54,6 @@ const SidePanel = ({
   }, []);
 
   const deleteHighlight = useCallback((target) => {
-
     if (!target || !target.matches('.highlight, [data-highlight]')) return;
     const highlightText = target.textContent;
     const componentId = target.id;
@@ -66,12 +65,17 @@ const SidePanel = ({
       return prevText.replace(regex, highlightText);
     });
 
-    setHighlightedWords((prevHighlights) => ({
-      ...prevHighlights,
-      [selectedSkill]: prevHighlights[selectedSkill].filter(highlight => 
-        !(highlight.text === highlightText && highlight.component === componentName)
-      )
-    }));
+    setHighlightedWords((prevHighlights) => {
+      const currentSkillHighlights = Array.isArray(prevHighlights[selectedSkill]) 
+        ? prevHighlights[selectedSkill] 
+        : [];
+      return {
+        ...prevHighlights,
+        [selectedSkill]: currentSkillHighlights.filter(highlight => 
+          !(highlight.text === highlightText && highlight.component === componentName)
+        )
+      };
+    });
 
     setFlagCounts(prevCounts => {
       const componentCounts = prevCounts[componentName];
