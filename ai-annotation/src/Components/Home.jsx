@@ -14,8 +14,6 @@ import { BLACK } from "Constraints/constants";
 import getCriteriaForASkill from "api/getCriteriaForASkill";
 import getTextComponentsForSkill from "api/getTextComponentsforSkill";
 import getSkillsList from "api/getSkillsList";
-import { COLOURS } from "Constraints/colours";
-import { GREEN } from "Constraints/constants";
 
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
@@ -28,10 +26,10 @@ const Home = () => {
   const [skillsList, setSkills] = useState([]);
   const [originalText, setOriginalText] = useState("");
   const [firstTime, setFirstTime] = useState(false);
-  const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: []});
-  const [presentingTexts, setPresentingTexts] = useState({0: "", 1: "", 2: "", 3: "", 4: ""});
+  const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: [] });
+  const [presentingTexts, setPresentingTexts] = useState({ 0: "", 1: "", 2: "", 3: "", 4: "" });
   const [selectedSkill, setSelectedSkill] = useState(0);
-  const [skillAnnotated, setSkillAnnotated] = useState({ 0: false, 1: false, 2: false, 3: false, 4: false});
+  const [skillAnnotated, setSkillAnnotated] = useState({ 0: false, 1: false, 2: false, 3: false, 4: false });
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
@@ -42,64 +40,65 @@ const Home = () => {
   });
   const [textComponent, setTextComponent] = useState([]);
   const [criteria, setCriteria] = useState([]);
-  const [skillTexts, setSkillTexts] = useState({0: "", 1: "", 2: "", 3: "", 4: ""});
+  const [skillTexts, setSkillTexts] = useState({ 0: "", 1: "", 2: "", 3: "", 4: "" });
   const [currentText, setCurrentText] = useState("");
+  const [flagCounts, setFlagCounts] = useState({});
 
   // Memoized values
   useEffect(() => {
     console.log('Running');
     getCriteriaForASkill(API_URL, (selectedSkill + 1), API_KEY)
-    .then((res) => res.data)
-    .then((data) => {
-      setCriteria(data);
-      console.log(data);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+      .then((res) => res.data)
+      .then((data) => {
+        setCriteria(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }, [selectedSkill])
 
   // Get text component
   useEffect(() => {
     getTextComponentsForSkill(API_URL, (selectedSkill + 1), API_KEY)
-    .then((res) => res.data)
-    .then((data) => {
-      setTextComponent(data);
-      console.log(data);
+      .then((res) => res.data)
+      .then((data) => {
+        setTextComponent(data);
+        console.log(data);
 
-      setComponents(prevComponents => {
-        const currentTextComps = prevComponents.textComps[selectedSkill] || [];
-        let currentMissingComps = data.filter((txtComponent) => txtComponent.markup_id === 1);
-        let currentNotes = data.filter((txtComponent) => txtComponent.markup_id === 2);
-  
-        return {
-          textComps: {
-            ...prevComponents.textComps,
-            [selectedSkill]: currentTextComps
-          },
-          missingComps: {
-            ...prevComponents.missingComps,
-            [selectedSkill]: currentMissingComps
-          },
-          notes: {
-            ...prevComponents.notes,
-            [selectedSkill]: currentNotes
-          }
-        };
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+        setComponents(prevComponents => {
+          const currentTextComps = prevComponents.textComps[selectedSkill] || [];
+          let currentMissingComps = data.filter((txtComponent) => txtComponent.markup_id === 1);
+          let currentNotes = data.filter((txtComponent) => txtComponent.markup_id === 2);
+
+          return {
+            textComps: {
+              ...prevComponents.textComps,
+              [selectedSkill]: currentTextComps
+            },
+            missingComps: {
+              ...prevComponents.missingComps,
+              [selectedSkill]: currentMissingComps
+            },
+            notes: {
+              ...prevComponents.notes,
+              [selectedSkill]: currentNotes
+            }
+          };
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }, [selectedSkill])
 
   // Get Skills
   useEffect(() => {
     getSkillsList(API_URL, API_KEY)
-    .then((res) => res.data)
-    .then((data) => {
-      setSkills(data);
-    })
+      .then((res) => res.data)
+      .then((data) => {
+        setSkills(data);
+      })
   }, [])
 
   // Functions
@@ -116,21 +115,21 @@ const Home = () => {
       return 0;
     }
     return text.replace(/<[^>]*>/g, '')
-               .replace(/[^a-zA-Z\s]/g, '')
-               .trim()
-               .split(/\s+/)
-               .filter(word => word !== '').length;
+      .replace(/[^a-zA-Z\s]/g, '')
+      .trim()
+      .split(/\s+/)
+      .filter(word => word !== '').length;
   }, []);
 
   const handleWordCount = (args) => {
     if (!firstTime) {
       setOriginalText(args.value);
       // Initialize all skill texts and presenting texts with the original text
-      setSkillTexts({0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value});
-      setPresentingTexts({0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value});
+      setSkillTexts({ 0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value });
+      setPresentingTexts({ 0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value });
     } else {
       // Update the text for the current skill only
-      setSkillTexts(prev => ({...prev, [selectedSkill]: args.value}));
+      setSkillTexts(prev => ({ ...prev, [selectedSkill]: args.value }));
     }
     setCurrentText(args.value);
   };
@@ -142,7 +141,7 @@ const Home = () => {
       const currentMissingComps = prevState.missingComps[selectedSkill] || [];
       const currentNotes = prevState.notes[selectedSkill] || [];
 
-      switch(action) {
+      switch (action) {
         case 'ADD_TO_TEXT':
           if (currentTextComps.some(comp => comp.name === component.name)) {
             return prevState;
@@ -196,9 +195,9 @@ const Home = () => {
     const highlightMap = new Map();
 
     // Ensure highlightedWords[selectedSkill] is an array
-    const currentHighlights = Array.isArray(highlightedWords[selectedSkill]) 
-      ? highlightedWords[selectedSkill] 
-      : []; 
+    const currentHighlights = Array.isArray(highlightedWords[selectedSkill])
+      ? highlightedWords[selectedSkill]
+      : [];
 
     // Group highlights by their index
     currentHighlights.forEach((highlight) => {
@@ -219,7 +218,6 @@ const Home = () => {
         let currentOffset = 0, node;
         // Find the color for the current component
         const compMap = textComponent.map((e) => e.name)
-        const color = COLOURS[compMap.indexOf(highlight.component)];
         console.log(compMap, highlight);
 
         // eslint-disable-next-line no-cond-assign
@@ -268,17 +266,17 @@ const Home = () => {
   const updateHighlights = useCallback((component, text, index, subBackground, subText) => {
     if (text) {
       setHighlightedWords(prevWords => {
-        const currentSkillHighlights = Array.isArray(prevWords[selectedSkill]) 
-          ? prevWords[selectedSkill] 
+        const currentSkillHighlights = Array.isArray(prevWords[selectedSkill])
+          ? prevWords[selectedSkill]
           : [];
         return {
           ...prevWords,
           [selectedSkill]: [
             ...currentSkillHighlights,
             {
-              text: text, 
+              text: text,
               component: component.name,
-              index: index, 
+              index: index,
               subComponent: {
                 subText: subText !== undefined ? subText : "",
                 subBackground: subBackground
@@ -289,29 +287,29 @@ const Home = () => {
       });
 
       updateComponents('ADD_TO_TEXT', component);
-
-      // Update flag counts
-      setFlagCounts(prevCounts => {
+    }
+    // Update flag counts
+    setFlagCounts(prevCounts => {
       // Update presenting text for the current skill
       setPresentingTexts(prev => ({
         ...prev,
-        [selectedSkill]: addHighlight({[selectedSkill]: [...(prev[selectedSkill] || []), {text, component: component.name, index, subComponent: {subText, subBackground}}]}, skillTexts[selectedSkill])
+        [selectedSkill]: addHighlight({ [selectedSkill]: [...(prev[selectedSkill] || []), { text, component: component.name, index, subComponent: { subText, subBackground } }] }, skillTexts[selectedSkill])
       }));
-    }
+    })
   }, [updateComponents, selectedSkill, addHighlight, skillTexts]);
 
   // useEffects
   useEffect(() => {
     // Update the presenting text when switching skills
     const updatedText = addHighlight(highlightedWords, skillTexts[selectedSkill]);
-    setPresentingTexts(prev => ({...prev, [selectedSkill]: updatedText}));
+    setPresentingTexts(prev => ({ ...prev, [selectedSkill]: updatedText }));
   }, [selectedSkill, addHighlight, highlightedWords, skillTexts]);
 
   useEffect(() => {
     setComponents(prevComponents => {
       const currentTextComps = prevComponents.textComps[selectedSkill] || [];
-      const currentMissingComps = testComps[selectedSkill].filter(comp => 
-        !currentTextComps.some(textComp => textComp.title === comp.title)
+      const currentMissingComps = textComponent.filter(comp =>
+        !currentTextComps.some(textComp => textComp.name === comp.name)
       );
 
       return {
@@ -322,6 +320,9 @@ const Home = () => {
         missingComps: {
           ...prevComponents.missingComps,
           [selectedSkill]: currentMissingComps
+        },
+        notes: {
+          ...prevComponents.notes,
         }
       };
     });
@@ -349,10 +350,10 @@ const Home = () => {
   useEffect(() => {
     if (!firstTime && currentText) {
       setOriginalText(currentText);
-      setSkillTexts({0: currentText, 1: currentText, 2: currentText, 3: currentText, 4: currentText});
+      setSkillTexts({ 0: currentText, 1: currentText, 2: currentText, 3: currentText, 4: currentText });
       setFirstTime(true);
     } else if (firstTime) {
-      setSkillTexts(prev => ({...prev, [selectedSkill]: currentText}));
+      setSkillTexts(prev => ({ ...prev, [selectedSkill]: currentText }));
     }
   }, [currentText, firstTime, selectedSkill]);
 
@@ -360,38 +361,8 @@ const Home = () => {
   const skillProps = {
     handleSkillChange,
     selectedSkill,
-    skillData: testSkillsInfo,
-    text: presentingTexts[selectedSkill],
-    skillAnnotated,
-    setSkillAnnotated
-  };
-
-  const modeProps = {
-    isDeleteMode,
-    isAddingMode,
-    setIsAddingMode,
-    setIsDeleteMode
-  };
-
-  const componentProps = {
-    components: {
-      textComps: components.textComps[selectedSkill] || [],
-      missingComps: components.missingComps[selectedSkill] || []
-    },
-    updateComponents
-  };
-
-  const flagProps = {
-    flagCounts,
-    setFlagCounts
-  }
-
-  //Props
-  const skillProps = {
-    handleSkillChange,
-    selectedSkill,
     skillData: skillsList,
-    text: presentingText,
+    text: presentingTexts,
     skillAnnotated,
     setSkillAnnotated
   };
@@ -420,7 +391,7 @@ const Home = () => {
   return (
     <StyledBodyContainer id="target">
       <StyledSubBodyContainer1>
-        <SkillSelector {...skillProps} setFirstTime={setFirstTime} firstTime={firstTime}/>
+        <SkillSelector {...skillProps} setFirstTime={setFirstTime} firstTime={firstTime} />
         <SkillCarousel skillData={criteria} />
         <div className="rte-container">
           <label className="floating-label" htmlFor="rte-target">Student Writing Text</label>
@@ -428,7 +399,7 @@ const Home = () => {
             id="rte-target"
             value={presentingTexts[selectedSkill]}
             change={handleWordCount}
-            toolbarSettings={{enable: false}}>
+            toolbarSettings={{ enable: false }}>
             <Inject services={[HtmlEditor, Toolbar]} />
           </StyledRichTextEditor>
           <div><b>Word Count: {wordCount}</b></div>
@@ -443,9 +414,9 @@ const Home = () => {
           ...prev,
           [selectedSkill]: newHighlights
         }))}
-        setPresentingText={(newText) => setPresentingTexts(prev => ({...prev, [selectedSkill]: newText}))}
+        setPresentingText={(newText) => setPresentingTexts(prev => ({ ...prev, [selectedSkill]: newText }))}
         selectedSkill={selectedSkill}
-        isAnnotated={skillAnnotated[selectedSkill]} 
+        isAnnotated={skillAnnotated[selectedSkill]}
         flagProps={flagProps}
       />
     </StyledBodyContainer>
