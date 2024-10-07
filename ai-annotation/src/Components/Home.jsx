@@ -63,9 +63,10 @@ const Home = () => {
     getTextComponentsForSkill(API_URL, (selectedSkill + 1), API_KEY)
       .then((res) => res.data)
       .then((data) => {
-        setTextComponent(data);
-        console.log(data);
-
+        setTextComponent(prev => data);
+        data.map(skill => {
+          return skill.map((comp, index = 1) => ({...comp, colorIndex: index}))
+        })
         setComponents(prevComponents => {
           const currentTextComps = prevComponents.textComps[selectedSkill] || [];
           let currentMissingComps = data.filter((txtComponent) => txtComponent.markup_id === 1);
@@ -238,9 +239,10 @@ const Home = () => {
             if (highlight.subComponent) {
               mark.dataset.subcomponentText = highlight.subComponent.subText || '\u2003';
             }
-
+            console.log('textCompoent', textComponent)
             const componentID = textComponent.map(c => c.name).indexOf(highlight.component) + 1;
-            mark.style.background = `var(--c${componentID}-background)`;
+            console.log(highlight);
+            mark.style.background = `var(--c${componentID + 1}-background)`;
 
             if (highlight.subComponent) {
               mark.style.setProperty('--subcomponent-background', highlight.subComponent.subBackground);
@@ -261,7 +263,7 @@ const Home = () => {
 
     return tempDiv.innerHTML;
 
-  }, [selectedSkill]);
+  }, [selectedSkill, textComponent]);
 
   const updateHighlights = useCallback((component, text, index, subBackground, subText) => {
     if (text) {
@@ -326,7 +328,7 @@ const Home = () => {
         }
       };
     });
-  }, [selectedSkill]);
+  }, [selectedSkill, textComponent]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {

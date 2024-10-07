@@ -48,9 +48,9 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     setSkillAnnotated(prevState => ({ ...prevState, [selectedSkill]: true }))
 
     let reqBody = {
-      text: text,
+      text: text[selectedSkill],
     }
-    
+
     sendOriginalTextSample(API_URL, reqBody, API_KEY)
     .then((res) => res.data)
     .then((data) => {

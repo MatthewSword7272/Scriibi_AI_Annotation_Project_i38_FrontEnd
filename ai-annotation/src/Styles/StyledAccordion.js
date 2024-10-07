@@ -13,16 +13,16 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   row-gap: 10px;
   border-radius: 20px !important;
 
-  ${props => props.components && props.components.map((comp, index) => `
+  ${props => props.components && props.components.map((comp, index = 0) => `
     .e-acrdn-item:nth-child(${index + 1}), .e-acrdn-item.e-selected:nth-child(${index + 1}) {
       border-radius: 20px !important;
       border: none;
       color: ${BLACK} !important;
-      background-color: var(--c${index + 1}-background) !important;
+      background-color: var(--c${(comp.text_component_id - (comp.skill_id - 1)*10)}-background) !important;
 
       .e-acrdn-header {
         border-radius: 20px !important;
-        background: var(--c${index + 1}-background) !important;
+        background: var(--c${(comp.text_component_id - (comp.skill_id - 1)*10)}-background) !important;
 
         .e-acrdn-header-content {
           color: ${BLACK} !important;
@@ -34,7 +34,7 @@ const StyledAccordionComponent = styled(AccordionComponent)`
         background: ${WHITE};
 
 
-        border: 5px var(--c${index + 1}-background) solid;
+        border: 5px var(--c${(comp.text_component_id - (comp.skill_id - 1)*10)}-background) solid;
 
         border-radius: 20px;
       }
