@@ -112,14 +112,19 @@ const Home = () => {
 
   const countWords = useCallback((text) => {
     if (typeof text !== 'string') return 0;
-    return text.replace(/<[^>]*>/g, '')  // Remove HTML tags
+    let number = text.replace(/<[^>]*>/g, '')  // Remove HTML tags
                .replace(/[^\w\s]/g, '')  // Remove punctuation
-               .trim()                   // Remove leading/trailing whitespace
-               .split(/\s+/)             // Split into words
-               .length;                  // Count words
+               .trim();                  // Remove leading/trailing whitespace
+    
+    // Check if the trimmed text is empty
+    if (number === '') {
+      return 0;
+    }
+    
+    return number.split(/\s+/).length;  // Split into words and count
   }, []);
 
-  const handleWordCount = (args) => {
+  const handleTextSaving = (args) => { //Save text for switching between skills
     if (!firstTime) {
       setOriginalText(args.value);
       // Initialize all skill texts and presenting texts with the original text
@@ -416,7 +421,7 @@ const Home = () => {
           <StyledRichTextEditor
             id="rte-target"
             value={presentingTexts[selectedSkill]}
-            change={handleWordCount}
+            change={handleTextSaving}
             toolbarSettings={{ enable: false }}>
             <Inject services={[HtmlEditor, Toolbar]} />
           </StyledRichTextEditor>
