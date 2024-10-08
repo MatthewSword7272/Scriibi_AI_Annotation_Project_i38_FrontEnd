@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   StyledBodyContainer,
   StyledSubBodyContainer1,
 } from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import { Toolbar } from "@syncfusion/ej2-react-richtexteditor";
-import TestText from "../testText.json";
 import { HtmlEditor, Inject } from '@syncfusion/ej2-react-richtexteditor';
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
@@ -19,12 +18,9 @@ const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 
 const Home = () => {
-  // Constants
-  const fetchedText = "";
 
   // States
   const [skillsList, setSkills] = useState([]);
-  const [originalText, setOriginalText] = useState("");
   const [firstTime, setFirstTime] = useState(false);
   const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: [] });
   const [presentingTexts, setPresentingTexts] = useState({ 0: "", 1: "", 2: "", 3: "", 4: "" });
@@ -126,7 +122,6 @@ const Home = () => {
 
   const handleTextSaving = (args) => { //Save text for switching between skills
     if (!firstTime) {
-      setOriginalText(args.value);
       // Initialize all skill texts and presenting texts with the original text
       setSkillTexts({ 0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value });
       setPresentingTexts({ 0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value });
@@ -372,7 +367,6 @@ const Home = () => {
   // New useEffect to handle text changes
   useEffect(() => {
     if (!firstTime && currentText) {
-      setOriginalText(currentText);
       setSkillTexts({ 0: currentText, 1: currentText, 2: currentText, 3: currentText, 4: currentText });
       setFirstTime(true);
     } else if (firstTime) {
