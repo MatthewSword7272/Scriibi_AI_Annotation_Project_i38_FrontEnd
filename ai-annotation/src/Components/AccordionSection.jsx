@@ -21,11 +21,11 @@ const AccordionSection = ({ title, components, handleAccordionClick, flagCounts,
         expandMode="Single"
         expanding={(e) => {
           const headerContent = e.item.properties.header()
-          const comp = components.find(c => c.name === headerContent.props.children[0]);
+          const comp = components.find(c => c && c.name === headerContent.props.children[0]);
 
           if (comp && !comp.subComponent) handleAccordionClick(comp);
         }}
-        components={components}
+        components={components || []}
       >
         <AccordionItemsDirective>
           {components && components.map((comp, index) => (
