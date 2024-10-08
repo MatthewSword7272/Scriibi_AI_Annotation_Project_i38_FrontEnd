@@ -162,14 +162,14 @@ const Home = () => {
           };
 
         case 'REMOVE_FROM_TEXT':
-          const compToMove = currentTextComps.find(comp => comp.name === component.title);
+          const compToMove = currentTextComps.find(comp => comp.name === component.name);
           if (!compToMove) {
             return prevState;
           }
           return {
             textComps: {
               ...prevState.textComps,
-              [selectedSkill]: currentTextComps.filter(comp => comp.name !== component.title)
+              [selectedSkill]: currentTextComps.filter(comp => comp.name !== component.name)
             },
             missingComps: {
               ...prevState.missingComps,
@@ -304,10 +304,10 @@ const Home = () => {
     // })
 
     setFlagCounts(prevCounts => {
-      const componentCounts = prevCounts[component.title] || { correct: 0, incorrect: 0 };
+      const componentCounts = prevCounts[component.name] || { correct: 0, incorrect: 0 };
       return {
         ...prevCounts,
-        [component.title]: {
+        [component.name]: {
           ...componentCounts,
           [subBackground === GREEN ? 'correct' : 'incorrect']: componentCounts[subBackground === GREEN ? 'correct' : 'incorrect'] + 1
         }
