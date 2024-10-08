@@ -111,10 +111,10 @@ const Home = () => {
   };
 
   const countWords = useCallback((text) => {
-    if (typeof text !== 'string') {
-      console.warn('countWords received non-string input:', text);
-      return 0;
-    }
+    // if (typeof text !== 'string') {
+    //   console.warn('countWords received non-string input:', text);
+    //   return 0;
+    // }
     return text.replace(/<[^>]*>/g, '')
       .replace(/[^a-zA-Z\s]/g, '')
       .trim()
