@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2-react-navigations";
 import { StyledAccordionComponent } from 'Styles/StyledAccordion';
 import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
@@ -14,17 +14,20 @@ const AccordionSection = ({ title, components, handleAccordionClick, flagCounts,
     </StyledFlag>
   );
 
+  const handleExpanding = useCallback((e) => {
+    if (e && e.item.properties) {
+      const headerContent = e.item.properties.header();
+      const comp = components.find(c => c && c.name === headerContent.props.children[0]);
+      if (comp && !comp.subComponent) handleAccordionClick(comp);
+    }
+  }, [components, handleAccordionClick]);
+
   return (
     <Container>
       <h2>{title}</h2>
       <StyledAccordionComponent
         expandMode="Single"
-        expanding={(e) => {
-          const headerContent = e.item.properties.header()
-          const comp = components.find(c => c && c.name === headerContent.props.children[0]);
-
-          if (comp && !comp.subComponent) handleAccordionClick(comp);
-        }}
+        expanding={handleExpanding}
         components={components || []}
       >
         <AccordionItemsDirective>
