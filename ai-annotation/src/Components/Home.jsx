@@ -111,15 +111,12 @@ const Home = () => {
   };
 
   const countWords = useCallback((text) => {
-    // if (typeof text !== 'string') {
-    //   console.warn('countWords received non-string input:', text);
-    //   return 0;
-    // }
-    return text.replace(/<[^>]*>/g, '')
-      .replace(/[^a-zA-Z\s]/g, '')
-      .trim()
-      .split(/\s+/)
-      .filter(word => word !== '').length;
+    if (typeof text !== 'string') return 0;
+    return text.replace(/<[^>]*>/g, '')  // Remove HTML tags
+               .replace(/[^\w\s]/g, '')  // Remove punctuation
+               .trim()                   // Remove leading/trailing whitespace
+               .split(/\s+/)             // Split into words
+               .length;                  // Count words
   }, []);
 
   const handleWordCount = (args) => {
@@ -309,7 +306,10 @@ const Home = () => {
         ...prevCounts,
         [component.name]: {
           ...componentCounts,
-          [subBackground === GREEN ? 'correct' : 'incorrect']: componentCounts[subBackground === GREEN ? 'correct' : 'incorrect'] + 1
+          [subBackground !== undefined &&
+            (subBackground === GREEN ? 'correct' : 'incorrect')]: 
+          componentCounts[subBackground !== undefined &&
+            (subBackground === GREEN ? 'correct' : 'incorrect')] + 1
         }
       };
     });
