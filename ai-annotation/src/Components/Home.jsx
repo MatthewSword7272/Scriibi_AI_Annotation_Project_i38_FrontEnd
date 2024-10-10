@@ -398,7 +398,7 @@ const Home = () => {
   return (
     <StyledBodyContainer id="target">
       <StyledSubBodyContainer1>
-        <SkillSelector {...skillProps} setFirstTime={setFirstTime} firstTime={firstTime} setPresentingText={setPresentingTexts} setComponents={setComponents} />
+        <SkillSelector {...skillProps} setFirstTime={setFirstTime} firstTime={firstTime} setPresentingTexts={setPresentingTexts} setComponents={setComponents} />
         <SkillCarousel skillData={criteria}/>
         <div className="rte-container">
           <label className="floating-label" htmlFor="rte-target">Student Writing Text</label>

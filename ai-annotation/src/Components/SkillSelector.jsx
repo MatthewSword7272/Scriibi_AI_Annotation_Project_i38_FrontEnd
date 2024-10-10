@@ -10,6 +10,7 @@ import {
   StyledSkillContainer,
 } from "Styles/StyledRadioButton";
 import processText from "api/processText";
+import LoadingScreen from "Styles/StyledLoadingScreen";
 
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
@@ -17,9 +18,10 @@ const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 const ANNOTATE_URL = process.env.REACT_APP_TEXTPROCESSING_URL
 const ANNOTATE_KEY = process.env.REACT_APP_TEXTPROCESSING_FUNCTION_KEY
 
-const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime, setPresentingText, setComponents}) => {
+const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime, setPresentingTexts, setComponents}) => {
   const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
   const toastInstance = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
   const TOAST_POSITION = { X: 'center', Y: 'top' };
   const [sampleId, setSampleId] = useState(0);
 
@@ -45,6 +47,8 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
 
   const annotate = () => {
     
+    setIsLoading(true);
+
     if (!firstTime) {
       setFirstTime(true);
     }
@@ -62,7 +66,7 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
         console.log("Components list", data.components_list.present)
 
         if (highlightedText) {
-          setPresentingText(prev => ({...prev, [selectedSkill]: highlightedText}))
+          setPresentingTexts(prev => ({...prev, [selectedSkill]: highlightedText}))
         }
 
         if (Object.keys(componentsList).length > 0) {
@@ -95,7 +99,9 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     })
     .catch((error) => {
       console.log(error);
-    })
+    }).finally(() => {
+      setIsLoading(false);
+    });
     
     
     setSkillAnnotated(prevState => ({ ...prevState, [selectedSkill]: true }))
@@ -113,7 +119,6 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     .catch((err) => {
       console.log(err);
     })
-    //This will annotate the text and switch between the Buttons between Annotate to Save
   }
 
   const showToast = (message, title, toastClass, icon) => {
@@ -138,7 +143,9 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     ))}
     </StyledRadioButtonContainer>
     <StyledSkillButtonContainer>
-      {skillAnnotated[selectedSkill]
+      {isLoading ? (
+          <LoadingScreen />
+        ) : skillAnnotated[selectedSkill]
         ? <StyledButtonComponent onClick={sendText}>Save</StyledButtonComponent> 
         : <StyledButtonComponent onClick={annotate}>Annotate</StyledButtonComponent>
       }
