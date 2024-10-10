@@ -1,16 +1,14 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   StyledBodyContainer,
   StyledSubBodyContainer1,
 } from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import { Toolbar } from "@syncfusion/ej2-react-richtexteditor";
-import TestText from "../testText.json";
 import { HtmlEditor, Inject } from '@syncfusion/ej2-react-richtexteditor';
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
-import { BLACK } from "Constraints/constants";
 import getCriteriaForASkill from "api/getCriteriaForASkill";
 import getTextComponentsForSkill from "api/getTextComponentsforSkill";
 import getSkillsList from "api/getSkillsList";
@@ -20,7 +18,6 @@ const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 
 const Home = () => {
   // Constants
-  const fetchedText = "";
 
   // States
   const [skillsList, setSkills] = useState([]);
@@ -28,7 +25,6 @@ const Home = () => {
   const [firstTime, setFirstTime] = useState(false);
   const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: [] });
   const [presentingTexts, setPresentingTexts] = useState({ 0: "", 1: "", 2: "", 3: "", 4: "" });
-  const [notesContent, setNotesContent] = useState({})
   const [selectedSkill, setSelectedSkill] = useState(0);
   const [skillAnnotated, setSkillAnnotated] = useState({ 0: false, 1: false, 2: false, 3: false, 4: false });
   const [isAddingMode, setIsAddingMode] = useState(false);
@@ -64,14 +60,15 @@ const Home = () => {
     getTextComponentsForSkill(API_URL, (selectedSkill + 1), API_KEY)
       .then((res) => res.data)
       .then((data) => {
-        setTextComponent(prev => data);
-        data.map(skill => {
-          return skill.map((comp, index = 1) => ({...comp, colorIndex: index}))
-        })
+        // Process the data
+        const processedData = data.map((comp, index) => ({...comp, colorIndex: index + 1}));
+        
+        setTextComponent(processedData);
+
         setComponents(prevComponents => {
           const currentTextComps = prevComponents.textComps[selectedSkill] || [];
-          let currentMissingComps = data.filter((txtComponent) => txtComponent.markup_id === 1);
-          let currentNotes = data.filter((txtComponent) => txtComponent.markup_id === 2);
+          let currentMissingComps = processedData.filter((txtComponent) => txtComponent.markup_id === 1);
+          let currentNotes = processedData.filter((txtComponent) => txtComponent.markup_id === 2);
 
           return {
             textComps: {
@@ -88,11 +85,13 @@ const Home = () => {
             }
           };
         });
+
+        console.log("Updated text components:", processedData);
       })
       .catch((error) => {
-        console.log(error);
-      })
-  }, [selectedSkill])
+        console.error("Error fetching text components:", error);
+      });
+  }, [selectedSkill]);
 
   // Get Skills
   useEffect(() => {
