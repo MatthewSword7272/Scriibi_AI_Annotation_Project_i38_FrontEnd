@@ -7,13 +7,13 @@ const NotesSection = ({ handleDialogClick, notesList }) => {
   return (
     <StyledAccordionContainer>
       <h2>Notes</h2>
-      {notesList? notesList.map((aNote, index) => {
+      {notesList.length > 0 ? notesList.map((aNote) => {
         return (
-          <StyledNotesButton color={CAM} onClick={handleDialogClick}>
+          <StyledNotesButton color={CAM} onClick={() => handleDialogClick(aNote)}>
             {aNote.name}
           </StyledNotesButton>
         );
-      }) : <></>}
+      }) : <p>No notes found</p>}
     </StyledAccordionContainer>
   );
 };

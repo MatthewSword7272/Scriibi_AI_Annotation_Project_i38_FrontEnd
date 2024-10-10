@@ -102,7 +102,7 @@ const SidePanel = ({
   }, [selectedSkill, setFlagCounts, setHighlightedWords, setPresentingText, updateComponents]);
 
   // Event handlers
-  const handleDialogClick = () => showDialog("ASP.NET", "Actual content about ASP.NET");
+  const handleDialogClick = (note) => showDialog(note.name, note.example);
 
   const handleAccordionClick = useCallback((comp, subBackground = undefined, subText = undefined) => {
     if (isAddingMode && selectedText.text !== "") {
