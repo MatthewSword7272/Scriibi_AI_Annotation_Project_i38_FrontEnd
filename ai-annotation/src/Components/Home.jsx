@@ -1,16 +1,15 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   StyledBodyContainer,
   StyledSubBodyContainer1,
 } from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
 import { Toolbar } from "@syncfusion/ej2-react-richtexteditor";
-import TestText from "../testText.json";
 import { HtmlEditor, Inject } from '@syncfusion/ej2-react-richtexteditor';
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
-import { BLACK } from "Constraints/constants";
+import { GREEN } from "Constraints/constants";
 import getCriteriaForASkill from "api/getCriteriaForASkill";
 import getTextComponentsForSkill from "api/getTextComponentsforSkill";
 import getSkillsList from "api/getSkillsList";
@@ -19,12 +18,9 @@ const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 
 const Home = () => {
-  // Constants
-  const fetchedText = "";
 
   // States
   const [skillsList, setSkills] = useState([]);
-  const [originalText, setOriginalText] = useState("");
   const [firstTime, setFirstTime] = useState(false);
   const [highlightedWords, setHighlightedWords] = useState({ 0: [], 1: [], 2: [], 3: [], 4: [] });
   const [presentingTexts, setPresentingTexts] = useState({ 0: "", 1: "", 2: "", 3: "", 4: "" });
@@ -63,14 +59,15 @@ const Home = () => {
     getTextComponentsForSkill(API_URL, (selectedSkill + 1), API_KEY)
       .then((res) => res.data)
       .then((data) => {
-        setTextComponent(prev => data);
-        data.map(skill => {
-          return skill.map((comp, index = 1) => ({...comp, colorIndex: index}))
-        })
+        // Process the data
+        const processedData = data.map((comp, index) => ({...comp, colorIndex: index + 1}));
+        
+        setTextComponent(processedData);
+
         setComponents(prevComponents => {
           const currentTextComps = prevComponents.textComps[selectedSkill] || [];
-          let currentMissingComps = data.filter((txtComponent) => txtComponent.markup_id === 1);
-          let currentNotes = data.filter((txtComponent) => txtComponent.markup_id === 2);
+          let currentMissingComps = processedData.filter((txtComponent) => txtComponent.markup_id === 1);
+          let currentNotes = processedData.filter((txtComponent) => txtComponent.markup_id === 2);
 
           return {
             textComps: {
@@ -87,11 +84,13 @@ const Home = () => {
             }
           };
         });
+
+        console.log("Updated text components:", processedData);
       })
       .catch((error) => {
-        console.log(error);
-      })
-  }, [selectedSkill])
+        console.error("Error fetching text components:", error);
+      });
+  }, [selectedSkill]);
 
   // Get Skills
   useEffect(() => {
@@ -111,20 +110,21 @@ const Home = () => {
   };
 
   const countWords = useCallback((text) => {
-    if (typeof text !== 'string') {
-      console.warn('countWords received non-string input:', text);
+    if (typeof text !== 'string') return 0;
+    let number = text.replace(/<[^>]*>/g, '')  // Remove HTML tags
+               .replace(/[^\w\s]/g, '')  // Remove punctuation
+               .trim();                  // Remove leading/trailing whitespace
+    
+    // Check if the trimmed text is empty
+    if (number === '') {
       return 0;
     }
-    return text.replace(/<[^>]*>/g, '')
-      .replace(/[^a-zA-Z\s]/g, '')
-      .trim()
-      .split(/\s+/)
-      .filter(word => word !== '').length;
+    
+    return number.split(/\s+/).length;  // Split into words and count
   }, []);
 
-  const handleWordCount = (args) => {
+  const handleTextSaving = (args) => { //Save text for switching between skills
     if (!firstTime) {
-      setOriginalText(args.value);
       // Initialize all skill texts and presenting texts with the original text
       setSkillTexts({ 0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value });
       setPresentingTexts({ 0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value });
@@ -169,7 +169,7 @@ const Home = () => {
           return {
             textComps: {
               ...prevState.textComps,
-              [selectedSkill]: currentTextComps.filter(comp => comp.title !== component.title)
+              [selectedSkill]: currentTextComps.filter(comp => comp.name !== component.name)
             },
             missingComps: {
               ...prevState.missingComps,
@@ -290,21 +290,40 @@ const Home = () => {
 
       updateComponents('ADD_TO_TEXT', component);
     }
-    // Update flag counts
+
+
+    // TODO: Check if FlagCounts is updated properly
+
+
+    // setFlagCounts(prevCounts => {
+    //   // Update presenting text for the current skill
+    //   setPresentingTexts(prev => ({
+    //     ...prev,
+    //     [selectedSkill]: addHighlight({ [selectedSkill]: [...(prev[selectedSkill] || []), { text, component: component.name, index, subComponent: { subText, subBackground } }] }, skillTexts[selectedSkill])
+    //   }));
+    // })
+
     setFlagCounts(prevCounts => {
-      // Update presenting text for the current skill
-      setPresentingTexts(prev => ({
-        ...prev,
-        [selectedSkill]: addHighlight({ [selectedSkill]: [...(prev[selectedSkill] || []), { text, component: component.name, index, subComponent: { subText, subBackground } }] }, skillTexts[selectedSkill])
-      }));
-    })
-  }, [updateComponents, selectedSkill, addHighlight, skillTexts]);
+      const componentCounts = prevCounts[component.name] || { correct: 0, incorrect: 0 };
+      return {
+        ...prevCounts,
+        [component.name]: {
+          ...componentCounts,
+          [subBackground !== undefined &&
+            (subBackground === GREEN ? 'correct' : 'incorrect')]: 
+          componentCounts[subBackground !== undefined &&
+            (subBackground === GREEN ? 'correct' : 'incorrect')] + 1
+        }
+      };
+    });
+  }, [updateComponents, selectedSkill]);
 
   // useEffects
   useEffect(() => {
     // Update the presenting text when switching skills
     const updatedText = addHighlight(highlightedWords, skillTexts[selectedSkill]);
     setPresentingTexts(prev => ({ ...prev, [selectedSkill]: updatedText }));
+    console.log("highlightedWords:", highlightedWords);
   }, [selectedSkill, addHighlight, highlightedWords, skillTexts]);
 
   useEffect(() => {
@@ -351,7 +370,6 @@ const Home = () => {
   // New useEffect to handle text changes
   useEffect(() => {
     if (!firstTime && currentText) {
-      setOriginalText(currentText);
       setSkillTexts({ 0: currentText, 1: currentText, 2: currentText, 3: currentText, 4: currentText });
       setFirstTime(true);
     } else if (firstTime) {
@@ -400,7 +418,7 @@ const Home = () => {
           <StyledRichTextEditor
             id="rte-target"
             value={presentingTexts[selectedSkill]}
-            change={handleWordCount}
+            change={handleTextSaving}
             toolbarSettings={{ enable: false }}>
             <Inject services={[HtmlEditor, Toolbar]} />
           </StyledRichTextEditor>

@@ -57,7 +57,7 @@ const SidePanel = ({
     if (!target || !target.matches('.highlight, [data-highlight]')) return;
     const highlightText = target.textContent;
     const componentId = target.id;
-    const componentName = target.dataset.componentName
+    const componentName = target.dataset.componentName;
     const subBackground = target.style.getPropertyValue('--subcomponent-background');
 
     setPresentingText((prevText) => {
@@ -72,26 +72,18 @@ const SidePanel = ({
       return {
         ...prevHighlights,
         [selectedSkill]: currentSkillHighlights.filter(highlight => 
-          !(highlight.text === highlightText && highlight.component === componentName)
+          !(highlight && highlight.text === highlightText && highlight.component === componentName)
         )
       };
     });
 
     setFlagCounts(prevCounts => {
-      const componentCounts = prevCounts[componentName];
-      const flagType = subBackground === GREEN ? 'correct' : 'incorrect';
-      return {
-        ...prevCounts,
-        [componentName]: {
-          ...componentCounts,
-          [flagType]: Math.max(0, componentCounts[flagType] - 1)
-        }
-      };
-    });
+      const componentCounts = prevCounts[componentName] || {};
+      const flagType = subBackground && subBackground === GREEN ? 'correct' : 'incorrect';
 
-    setFlagCounts(prevCounts => {
-      const componentCounts = prevCounts[componentName];
-      const flagType = subBackground === GREEN ? 'correct' : 'incorrect';
+      if (componentCounts[flagType] === undefined) {
+        return prevCounts; // Return previous state without changes
+      }
       return {
         ...prevCounts,
         [componentName]: {
@@ -104,13 +96,13 @@ const SidePanel = ({
     setTimeout(() => {
       const remainingHighlights = document.querySelectorAll(`[data-component-name="${componentName}"]`);
       if (remainingHighlights.length === 0) {
-        updateComponents('REMOVE_FROM_TEXT', { title: componentName });
+        updateComponents('REMOVE_FROM_TEXT', { name: componentName });
       }
     }, 0);
   }, [selectedSkill, setFlagCounts, setHighlightedWords, setPresentingText, updateComponents]);
 
   // Event handlers
-  const handleDialogClick = () => showDialog("ASP.NET", "Actual content about ASP.NET");
+  const handleDialogClick = (note) => showDialog(note.name, note.example);
 
   const handleAccordionClick = useCallback((comp, subBackground = undefined, subText = undefined) => {
     if (isAddingMode && selectedText.text !== "") {
