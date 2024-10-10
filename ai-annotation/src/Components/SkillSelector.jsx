@@ -18,7 +18,7 @@ const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 const ANNOTATE_URL = process.env.REACT_APP_TEXTPROCESSING_URL
 const ANNOTATE_KEY = process.env.REACT_APP_TEXTPROCESSING_FUNCTION_KEY
 
-const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime, setPresentingTexts, setComponents}) => {
+const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, setHighlightedWords, firstTime, setFirstTime, setPresentingTexts, highlightedWords,setComponents}) => {
   const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
   const toastInstance = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +66,34 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
         console.log("Components list", data.components_list.present)
 
         if (highlightedText) {
-          setPresentingTexts(prev => ({...prev, [selectedSkill]: highlightedText}))
+          // Create a temporary div to parse the HTML
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = highlightedText;
+
+          // Find all <mark> elements
+          const marks = tempDiv.querySelectorAll('mark');
+
+          // Update highlightedWords state
+          setHighlightedWords(prev => {
+            const newHighlights = Array.from(marks).map(mark => ({
+              text: mark.innerText,
+              component: mark.dataset.componentName,
+              index: parseInt(mark.id, 10),
+              subComponent: mark.dataset.subcomponentText ? {
+                subText: mark.dataset.subcomponentText,
+                subBackground: mark.style.getPropertyValue('--subcomponent-background')
+              } : undefined
+            }));
+
+
+            return {
+              ...prev,
+              [selectedSkill]: newHighlights
+            };
+          });
+
+          // Update presentingTexts as well
+          setPresentingTexts(prev => ({...prev, [selectedSkill]: highlightedText}));
         }
 
         if (Object.keys(componentsList).length > 0) {
