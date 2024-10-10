@@ -62,11 +62,11 @@ const SkillCarousel = ({ skillData }) => {
         <StyledArrowButtonRight onClick={moveRight} />
       </StyledArrowContainer>
     <StyledCarouselInnerContainer>
-        <StyledCarouselRow >
-          {filteredData.map((detail, _) => (
-            <>
+        <StyledCarouselRow>
+          {filteredData.map((detail, index) => (
+            <React.Fragment key={index}>
               <StyledH4 key={(parseInt(detail.level_id) - 1)/2}>{(parseInt(detail.level_id) - 1)/2}</StyledH4>
-            </>
+            </React.Fragment>
           ))}
         </StyledCarouselRow>
         <StyledCarouselRow>
