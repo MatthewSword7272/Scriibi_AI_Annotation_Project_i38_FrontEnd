@@ -249,9 +249,9 @@ const Home = () => {
               mark.dataset.subcomponentText = highlight.subComponent.subText || '\u2003';
             }
             console.log('textCompoent', textComponent)
-            const componentID = textComponent.map(c => c.name).indexOf(highlight.component) + 1;
+            const colorIndex = textComponent.find(component => component.name === highlight.component).colorIndex;
             console.log(highlight);
-            mark.style.background = `var(--c${componentID + 1}-background)`;
+            mark.style.setProperty('--component-background', `var(--c${colorIndex}-background)`)
 
             if (highlight.subComponent) {
               mark.style.setProperty('--subcomponent-background', highlight.subComponent.subBackground);
@@ -435,6 +435,7 @@ const Home = () => {
         </div>
       </StyledSubBodyContainer1>
       <SidePanel
+        textComponent={textComponent}
         key={`${selectedSkill}-${JSON.stringify(components)}`}
         modeProps={modeProps}
         componentProps={componentProps}

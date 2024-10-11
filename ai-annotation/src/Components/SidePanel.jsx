@@ -16,7 +16,8 @@ const SidePanel = ({
   setPresentingText,
   selectedSkill,
   flagProps,
-  isAnnotated
+  isAnnotated, 
+  textComponent
 }) => {
   
   const { isDeleteMode, isAddingMode, setIsAddingMode, setIsDeleteMode } = modeProps;
@@ -184,7 +185,7 @@ const SidePanel = ({
     console.log('textComps:', components.textComps);
     console.log('missingComps:', components.missingComps);
     console.log('Notes:', components.notes);
-  }, [components]);
+  }, [components, textComponent]);
 
   return (
     <StyledSubBodyContainer2>
@@ -220,8 +221,8 @@ const SidePanel = ({
         position={DIALOG_BOX_POSITION}
       />
       <NotesSection handleDialogClick={handleDialogClick} notesList={components.notes} />
-      <AccordionSection title="Annotation" components={components.textComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts}/>
-      <AccordionSection title="Missing" components={components.missingComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts} isMissing={true} />
+      <AccordionSection title="Annotation" textComponent={textComponent} components={components.textComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts}/>
+      <AccordionSection title="Missing" textComponent={textComponent} components={components.missingComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts} isMissing={true} />
       {isAnnotated &&
         <EditSection 
           isAddingMode={isAddingMode}

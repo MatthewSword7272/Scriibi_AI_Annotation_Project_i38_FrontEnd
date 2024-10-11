@@ -13,16 +13,22 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   row-gap: 10px;
   border-radius: 20px !important;
 
-  ${props => props.components && props.components.map((comp, index = 0) => `
+  ${props => props.components && props.components.map((comp, index = 0) => { 
+    console.log(props.textComponent[props.textComponent])
+    console.log(comp)
+
+    let colorIndex = props.textComponent && props.textComponent.find((component) => component.text_component_id === comp.text_component_id).colorIndex
+
+    return `
     .e-acrdn-item:nth-child(${index + 1}), .e-acrdn-item.e-selected:nth-child(${index + 1}) {
       border-radius: 20px !important;
       border: none;
       color: ${BLACK} !important;
-      background-color: var(--c${(comp.text_component_id - (comp.skill_id - 1)*10)}-background) !important;
+      background-color: var(--c${colorIndex}-background) !important;
 
       .e-acrdn-header {
         border-radius: 20px !important;
-        background: var(--c${(comp.text_component_id - (comp.skill_id - 1)*10)}-background) !important;
+        background: var(--c${colorIndex}-background) !important;
 
         .e-acrdn-header-content {
           color: ${BLACK} !important;
@@ -34,12 +40,12 @@ const StyledAccordionComponent = styled(AccordionComponent)`
         background: ${WHITE};
 
 
-        border: 5px var(--c${(comp.text_component_id - (comp.skill_id - 1)*10)}-background) solid;
+        border: 5px var(--c${colorIndex}-background) solid;
 
         border-radius: 20px;
       }
     }
-  `)}
+  `;})}
 
   .e-acrdn-item.e-item-focus.e-expand-state.e-select, 
   .e-acrdn-item.e-item-focus.e-select.e-selected.e-expand-state,

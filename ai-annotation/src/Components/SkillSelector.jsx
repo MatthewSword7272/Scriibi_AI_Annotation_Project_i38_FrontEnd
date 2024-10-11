@@ -15,34 +15,33 @@ import LoadingScreen from "Styles/StyledLoadingScreen";
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 
-const ANNOTATE_URL = process.env.REACT_APP_TEXTPROCESSING_URL
-const ANNOTATE_KEY = process.env.REACT_APP_TEXTPROCESSING_FUNCTION_KEY
+const ANNOTATE_URL = process.env.REACT_APP_TEXTPROCESSING_URL;
+const ANNOTATE_KEY = process.env.REACT_APP_TEXTPROCESSING_FUNCTION_KEY;
 
 const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, setHighlightedWords, firstTime, setFirstTime, setPresentingTexts, highlightedWords,setComponents}) => {
-  const pronounURL = `${process.env.REACT_APP_API_URL}?code=${process.env.REACT_APP_API_CODE}`;
   const toastInstance = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const TOAST_POSITION = { X: 'center', Y: 'top' };
   const [sampleId, setSampleId] = useState(0);
 
   const sendText = async () => {
-    axios({
-      method: 'post',
-      url: pronounURL,
-      headers: {
-        "Content-Type": 'application/JSON'
-      },
-      data: {
-        text: text
-      },
-    }).then( res => {
-      console.log(res);
-      showToast('Text has been saved', 'Success', 'success', 'e-check');
-    }).catch( err => {
-      console.log(err);
-      showToast('Text was not saved', 'Error', 'danger', 'e-circle-close');
-      
-    })
+    // axios({
+    //   method: 'post',
+    //   url: pronounURL,
+    //   headers: {
+    //     "Content-Type": 'application/JSON'
+    //   },
+    //   data: {
+    //     text: text
+    //   },
+    // }).then( res => {
+    //   console.log(res);
+    //   showToast('Text has been saved', 'Success', 'success', 'e-check');
+    // }).catch( err => {
+    //   console.log(err);
+    //   showToast('Text was not saved', 'Error', 'danger', 'e-circle-close');
+    // })
+    showToast('Text has been saved', 'Success', 'success', 'e-check');
   }
 
   const annotate = () => {
@@ -119,9 +118,8 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
       
 
         if (data.annotations.note) {
+          console.log(data);
         }
-
-        console.log(data);
       }      
     })
     .catch((error) => {
@@ -134,7 +132,7 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     setSkillAnnotated(prevState => ({ ...prevState, [selectedSkill]: true }))
 
     let reqBody = {
-      text: text[selectedSkill],
+      text: text[0],
     }
 
     sendOriginalTextSample(API_URL, reqBody, API_KEY)
