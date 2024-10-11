@@ -97,28 +97,6 @@ const SkillCarousel = ({ skillData }) => {
             )
           ))}
         </StyledCarouselRow>
-        {/* Another approach
-        {skillData.map((detail, index) => (
-          <StyledCarouselInnerContainer>
-            <StyledCarouselRow gridCentre={gridCentre}>
-              <StyledH4 key={(parseInt(detail.level_id) - 1)/2}>{(parseInt(detail.level_id) - 1)/2}</StyledH4>
-            </StyledCarouselRow>
-            <StyledCarouselDot 
-                key={index}
-                isActive={((index - 1)/2) === selectedLevel}
-                onClick={() => chooseLevel((parseInt(detail.level_id) - 1)/2)}
-              />
-            <StyledCarouselDescription key={index/2}>
-                <ul>
-                  {
-                    detail.criteria.split('\n').map((criterion, index) =>
-                      (<li key={index}>{criterion}</li>)
-                    )
-                  }
-                </ul>
-            </StyledCarouselDescription>
-          </StyledCarouselInnerContainer>
-        ))} */}
     </StyledCarouselInnerContainer>
   </StyledCarouselContainer>
   );
