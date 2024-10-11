@@ -87,8 +87,6 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
             }
           }});
         }
-        
-      
 
         if (data.annotations.note) {
           console.log(data);

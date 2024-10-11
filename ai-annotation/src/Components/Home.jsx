@@ -15,7 +15,7 @@ import getTextComponentsForSkill from "api/getTextComponentsforSkill";
 import getSkillsList from "api/getSkillsList";
 
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
-const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
+const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL_LOCAL;
 
 const Home = () => {
 
