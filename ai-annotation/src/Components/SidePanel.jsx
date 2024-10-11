@@ -220,9 +220,6 @@ const SidePanel = ({
         beforeOpen={onDialogBeforeOpen}
         position={DIALOG_BOX_POSITION}
       />
-      <NotesSection handleDialogClick={handleDialogClick} notesList={components.notes} />
-      <AccordionSection title="Annotation" textComponent={textComponent} components={components.textComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts}/>
-      <AccordionSection title="Missing" textComponent={textComponent} components={components.missingComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts} isMissing={true} />
       {isAnnotated &&
         <EditSection 
           isAddingMode={isAddingMode}
@@ -231,6 +228,9 @@ const SidePanel = ({
           setIsDeleteMode={setIsDeleteMode}
         />
       }
+      <NotesSection handleDialogClick={handleDialogClick} notesList={components.notes} />
+      <AccordionSection title="Annotation" textComponent={textComponent} components={components.textComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts}/>
+      <AccordionSection title="Missing" textComponent={textComponent} components={components.missingComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts} isMissing={true} />
     </StyledSubBodyContainer2>
   );
 };
