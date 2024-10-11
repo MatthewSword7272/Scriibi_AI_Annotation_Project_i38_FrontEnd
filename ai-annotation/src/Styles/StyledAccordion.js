@@ -13,11 +13,11 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   row-gap: 10px;
   border-radius: 20px !important;
 
-  ${props => props.components && props.components.map((comp, index = 0) => { 
+  ${props => props.components && props.components.map((comp, index) => { 
+    let colorIndex = props.textComponent && props.textComponent.find((component) => component.textComponentId === comp.textComponentId)?.colorIndex || index + 1;
+
     console.log(props.textComponent[props.textComponent])
     console.log(comp)
-
-    let colorIndex = props.textComponent && props.textComponent.find((component) => component.text_component_id === comp.text_component_id).colorIndex
 
     return `
     .e-acrdn-item:nth-child(${index + 1}), .e-acrdn-item.e-selected:nth-child(${index + 1}) {
@@ -38,10 +38,7 @@ const StyledAccordionComponent = styled(AccordionComponent)`
 
       &.e-select .e-acrdn-panel .e-acrdn-content {
         background: ${WHITE};
-
-
         border: 5px var(--c${colorIndex}-background) solid;
-
         border-radius: 20px;
       }
     }

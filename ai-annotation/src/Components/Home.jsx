@@ -60,7 +60,11 @@ const Home = () => {
       .then((res) => res.data)
       .then((data) => {
         // Process the data
-        const processedData = data.map((comp, index) => ({...comp, colorIndex: index + 1}));
+        const processedData = data.map((comp, index) => ({
+          ...comp,
+          colorIndex: index + 1,
+          subComponent: comp.flag ? (comp.flag.flagId === 1 ? 1 : 2) : undefined
+        }));
         
         setTextComponent(processedData);
 

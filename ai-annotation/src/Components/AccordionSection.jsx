@@ -39,18 +39,19 @@ const AccordionSection = ({ title, textComponent, components, handleAccordionCli
               header={() => (
                 <div style={{ position: 'relative' }}>
                   {comp.name}
-                  {comp.subComponent === 2 && (
-                    <>
-                      {renderBadge(GREEN, 'translate(5px, -12px)', () => handleAccordionClick(comp, GREEN, ''), flagCounts[comp.name]?.correct || 0)}
-                      {renderBadge(RED, 'translate(40px, -12px)', () => handleAccordionClick(comp, RED, ''), flagCounts[comp.name]?.incorrect || 0)}
-                    </>
-                  )}
-                  {comp.subComponent === 1 && (
-                    <>
-                      {renderBadge(BLACK, 'translate(5px, -12px)', () => handleAccordionClick(comp, BLACK, 'C'), 'C')}
-                      {renderBadge(BLACK, 'translate(40px, -12px)', () => handleAccordionClick(comp, BLACK, 'E'), 'E')}
-                      {renderBadge(BLACK, 'translate(75px, -12px)', () => handleAccordionClick(comp, BLACK, 'EE'), 'EE')}
-                    </>
+                  {comp.flag && (
+                    comp.flag.flagId === 1 ? (
+                      <>
+                        {renderBadge(BLACK, 'translate(5px, -12px)', () => handleAccordionClick(comp, BLACK, 'C'), 'C')}
+                        {renderBadge(BLACK, 'translate(40px, -12px)', () => handleAccordionClick(comp, BLACK, 'E'), 'E')}
+                        {renderBadge(BLACK, 'translate(75px, -12px)', () => handleAccordionClick(comp, BLACK, 'EE'), 'EE')}
+                      </>
+                    ) : (
+                      <>
+                        {renderBadge(GREEN, 'translate(5px, -12px)', () => handleAccordionClick(comp, GREEN, ''), flagCounts[comp.name]?.correct || 0)}
+                        {renderBadge(RED, 'translate(40px, -12px)', () => handleAccordionClick(comp, RED, ''), flagCounts[comp.name]?.incorrect || 0)}
+                      </>
+                    )
                   )}
                 </div>
               )}
