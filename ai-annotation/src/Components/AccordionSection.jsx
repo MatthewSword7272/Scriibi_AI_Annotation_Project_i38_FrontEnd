@@ -18,7 +18,7 @@ const AccordionSection = ({ title, textComponent, components, handleAccordionCli
     if (e && e.item.properties) {
       const headerContent = e.item.properties.header();
       const comp = components.find(c => c && c.name === headerContent.props.children[0]);
-      if (comp && !comp.subComponent) handleAccordionClick(comp);
+      if (comp && !comp.flag) handleAccordionClick(comp);
     }
   }, [components, handleAccordionClick]);
 
@@ -39,17 +39,14 @@ const AccordionSection = ({ title, textComponent, components, handleAccordionCli
               header={() => (
                 <div style={{ position: 'relative' }}>
                   {comp.name}
-                  {comp.flag && (
-                    comp.flag.flagId === 1 ? (
-                      <>
-                        {renderBadge(BLACK, 'translate(5px, -12px)', () => handleAccordionClick(comp, BLACK, 'C'), 'C')}
-                        {renderBadge(BLACK, 'translate(40px, -12px)', () => handleAccordionClick(comp, BLACK, 'E'), 'E')}
-                        {renderBadge(BLACK, 'translate(75px, -12px)', () => handleAccordionClick(comp, BLACK, 'EE'), 'EE')}
-                      </>
-                    ) : (
+                  {comp.flag && (comp.flag.flagId === 10 || comp.flag.flagId === 11 ? (
                       <>
                         {renderBadge(GREEN, 'translate(5px, -12px)', () => handleAccordionClick(comp, GREEN, ''), flagCounts[comp.name]?.correct || 0)}
                         {renderBadge(RED, 'translate(40px, -12px)', () => handleAccordionClick(comp, RED, ''), flagCounts[comp.name]?.incorrect || 0)}
+                      </>
+                    ) : (
+                      <>
+                        {renderBadge(BLACK, 'translate(5px, -12px)', () => handleAccordionClick(comp, BLACK, comp.flag.characters), comp.flag.characters)}
                       </>
                     )
                   )}

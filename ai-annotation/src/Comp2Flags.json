@@ -1,0 +1,26 @@
+[
+    {
+    "textComponentId": 25,
+    "name": "Correct",
+    "example": "This ia a placeholder example for Word - Homonym",
+    "markupId": 1,
+    "flag": {
+    "flagId": 10,
+    "name": "Correct",
+    "colour": "green",
+    "characters": null
+    }
+    },
+    {
+    "textComponentId": 25,
+    "name": "Incorrect",
+    "example": "This ia a placeholder example for Word - Homonym",
+    "markupId": 1,
+    "flag": {
+    "flagId": 11,
+    "name": "Incorrect",
+    "colour": "red",
+    "characters": null
+    }
+    }
+]

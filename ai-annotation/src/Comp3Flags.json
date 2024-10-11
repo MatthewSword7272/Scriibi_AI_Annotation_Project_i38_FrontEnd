@@ -1,0 +1,110 @@
+[
+    {
+    "textComponentId": 29,
+    "name": "compare and contrast",
+    "example": "Connective Types:\nCompare & Contrast\nTime & Sequence\nElaborate\nConclusion\nCause & Effect\nIntroduce an Argument\nIllustrate\nConditional (eg. \"if, then\")\nConjunctions",
+    "markupId": 1,
+    "flag": {
+    "flagId": 1,
+    "name": "compare and contrast",
+    "colour": "black",
+    "characters": "CC"
+    }
+    },
+    {
+    "textComponentId": 29,
+    "name": "time and sequence",
+    "example": "Connective Types:\nCompare & Contrast\nTime & Sequence\nElaborate\nConclusion\nCause & Effect\nIntroduce an Argument\nIllustrate\nConditional (eg. \"if, then\")\nConjunctions",
+    "markupId": 1,
+    "flag": {
+    "flagId": 2,
+    "name": "time and sequence",
+    "colour": "black",
+    "characters": "TS"
+    }
+    },
+    {
+    "textComponentId": 29,
+    "name": "elaborate",
+    "example": "Connective Types:\nCompare & Contrast\nTime & Sequence\nElaborate\nConclusion\nCause & Effect\nIntroduce an Argument\nIllustrate\nConditional (eg. \"if, then\")\nConjunctions",
+    "markupId": 1,
+    "flag": {
+    "flagId": 3,
+    "name": "elaborate",
+    "colour": "black",
+    "characters": "E"
+    }
+    },
+    {
+    "textComponentId": 29,
+    "name": "conclusion",
+    "example": "Connective Types:\nCompare & Contrast\nTime & Sequence\nElaborate\nConclusion\nCause & Effect\nIntroduce an Argument\nIllustrate\nConditional (eg. \"if, then\")\nConjunctions",
+    "markupId": 1,
+    "flag": {
+    "flagId": 4,
+    "name": "conclusion",
+    "colour": "black",
+    "characters": "C"
+    }
+    },
+    {
+    "textComponentId": 29,
+    "name": "cause and effect",
+    "example": "Connective Types:\nCompare & Contrast\nTime & Sequence\nElaborate\nConclusion\nCause & Effect\nIntroduce an Argument\nIllustrate\nConditional (eg. \"if, then\")\nConjunctions",
+    "markupId": 1,
+    "flag": {
+    "flagId": 5,
+    "name": "cause and effect",
+    "colour": "black",
+    "characters": "CE"
+    }
+    },
+    {
+    "textComponentId": 29,
+    "name": "introduce an argument",
+    "example": "Connective Types:\nCompare & Contrast\nTime & Sequence\nElaborate\nConclusion\nCause & Effect\nIntroduce an Argument\nIllustrate\nConditional (eg. \"if, then\")\nConjunctions",
+    "markupId": 1,
+    "flag": {
+    "flagId": 6,
+    "name": "introduce an argument",
+    "colour": "black",
+    "characters": "IA"
+    }
+    },
+    {
+    "textComponentId": 29,
+    "name": "illustrate",
+    "example": "Connective Types:\nCompare & Contrast\nTime & Sequence\nElaborate\nConclusion\nCause & Effect\nIntroduce an Argument\nIllustrate\nConditional (eg. \"if, then\")\nConjunctions",
+    "markupId": 1,
+    "flag": {
+    "flagId": 7,
+    "name": "illustrate",
+    "colour": "black",
+    "characters": "I"
+    }
+    },
+    {
+    "textComponentId": 29,
+    "name": "conditional",
+    "example": "Connective Types:\nCompare & Contrast\nTime & Sequence\nElaborate\nConclusion\nCause & Effect\nIntroduce an Argument\nIllustrate\nConditional (eg. \"if, then\")\nConjunctions",
+    "markupId": 1,
+    "flag": {
+    "flagId": 8,
+    "name": "conditional",
+    "colour": "black",
+    "characters": "C"
+    }
+    },
+    {
+    "textComponentId": 29,
+    "name": "conjunctions",
+    "example": "Connective Types:\nCompare & Contrast\nTime & Sequence\nElaborate\nConclusion\nCause & Effect\nIntroduce an Argument\nIllustrate\nConditional (eg. \"if, then\")\nConjunctions",
+    "markupId": 1,
+    "flag": {
+    "flagId": 9,
+    "name": "conjunctions",
+    "colour": "black",
+    "characters": "CJ"
+    }
+    }
+    ]
