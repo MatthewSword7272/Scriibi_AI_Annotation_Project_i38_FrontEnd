@@ -5,7 +5,7 @@ import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Style
 import StyledFlag from 'Styles/StyledFlag';
 import { BLACK, GREEN, RED } from 'Constraints/constants';
 
-const AccordionSection = ({ title, components, handleAccordionClick, flagCounts, isMissing = false }) => {
+const AccordionSection = ({ title, textComponent, components, handleAccordionClick, flagCounts, isMissing = false }) => {
   const Container = isMissing ? StyledAccordionMissingContainer : StyledAccordionContainer;
 
   const renderBadge = (color, translate, onClick, text) => (
@@ -29,6 +29,7 @@ const AccordionSection = ({ title, components, handleAccordionClick, flagCounts,
         expandMode="Single"
         expanding={handleExpanding}
         components={components || []}
+        textComponent={textComponent}
       >
         <AccordionItemsDirective>
           {components && components.map((comp, index) => (
