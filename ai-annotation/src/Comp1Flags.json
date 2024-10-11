@@ -1,7 +1,7 @@
 [
     {
     "textComponentId": 1,
-    "name": "Correct",
+    "name": "capitalise proper noun",
     "example": "This ia a placeholder example for Capitalise Proper Noun",
     "markupId": 1,
     "flag": {
@@ -13,7 +13,7 @@
     },
     {
     "textComponentId": 1,
-    "name": "Incorrect",
+    "name": "capitalise proper noun",
     "example": "This ia a placeholder example for Capitalise Proper Noun",
     "markupId": 1,
     "flag": {
@@ -25,7 +25,7 @@
     },
     {
     "textComponentId": 2,
-    "name": "Correct",
+    "name": "capitalise key event",
     "example": "This ia a placeholder example for Capitalise Key Event",
     "markupId": 1,
     "flag": {
@@ -37,7 +37,7 @@
     },
     {
     "textComponentId": 2,
-    "name": "Incorrect",
+    "name": "capitalise key event",
     "example": "This ia a placeholder example for Capitalise Key Event",
     "markupId": 1,
     "flag": {
@@ -49,7 +49,7 @@
     },
     {
     "textComponentId": 3,
-    "name": "Correct",
+    "name": "possessive apostrophie",
     "example": "This ia a placeholder example for Possessive Apostrophe",
     "markupId": 1,
     "flag": {
@@ -61,7 +61,7 @@
     },
     {
     "textComponentId": 3,
-    "name": "Incorrect",
+    "name": "possessive apostrophie",
     "example": "This ia a placeholder example for Possessive Apostrophe",
     "markupId": 1,
     "flag": {
@@ -73,7 +73,7 @@
     },
     {
     "textComponentId": 4,
-    "name": "Correct",
+    "name": "sentence boundary punct.",
     "example": "This ia a placeholder example for Sentence Boundary Punctuation",
     "markupId": 1,
     "flag": {
@@ -85,7 +85,7 @@
     },
     {
     "textComponentId": 4,
-    "name": "Incorrect",
+    "name": "sentence boundary punct.",
     "example": "This ia a placeholder example for Sentence Boundary Punctuation",
     "markupId": 1,
     "flag": {
@@ -97,7 +97,7 @@
     },
     {
     "textComponentId": 5,
-    "name": "Correct",
+    "name": "commas - lists",
     "example": "This ia a placeholder example for Commas - lists",
     "markupId": 1,
     "flag": {
@@ -109,7 +109,7 @@
     },
     {
     "textComponentId": 5,
-    "name": "Incorrect",
+    "name": "commas - lists",
     "example": "This ia a placeholder example for Commas - lists",
     "markupId": 1,
     "flag": {
@@ -121,7 +121,7 @@
     },
     {
     "textComponentId": 6,
-    "name": "Correct",
+    "name": "commas - dates",
     "example": "This ia a placeholder example for Commas - dates",
     "markupId": 1,
     "flag": {
@@ -133,7 +133,7 @@
     },
     {
     "textComponentId": 6,
-    "name": "Incorrect",
+    "name": "commas - dates",
     "example": "This ia a placeholder example for Commas - dates",
     "markupId": 1,
     "flag": {
@@ -145,7 +145,7 @@
     },
     {
     "textComponentId": 7,
-    "name": "Correct",
+    "name": "commas - pauses",
     "example": "This ia a placeholder example for Commas - pauses",
     "markupId": 1,
     "flag": {
@@ -157,7 +157,7 @@
     },
     {
     "textComponentId": 7,
-    "name": "Incorrect",
+    "name": "commas - pauses",
     "example": "This ia a placeholder example for Commas - pauses",
     "markupId": 1,
     "flag": {
@@ -169,7 +169,7 @@
     },
     {
     "textComponentId": 8,
-    "name": "Correct",
+    "name": "commas - quotes",
     "example": "This ia a placeholder example for Commas - quotes",
     "markupId": 1,
     "flag": {
@@ -181,7 +181,7 @@
     },
     {
     "textComponentId": 8,
-    "name": "Incorrect",
+    "name": "commas - quotes",
     "example": "This ia a placeholder example for Commas - quotes",
     "markupId": 1,
     "flag": {
@@ -193,7 +193,7 @@
     },
     {
     "textComponentId": 9,
-    "name": "Correct",
+    "name": "quotes for dialogue",
     "example": "This ia a placeholder example for Quotes for Dialigue",
     "markupId": 1,
     "flag": {
@@ -205,7 +205,7 @@
     },
     {
     "textComponentId": 9,
-    "name": "Incorrect",
+    "name": "quotes for dialogue",
     "example": "This ia a placeholder example for Quotes for Dialigue",
     "markupId": 1,
     "flag": {
@@ -217,7 +217,7 @@
     },
     {
     "textComponentId": 10,
-    "name": "Correct",
+    "name": "commas - separate clauses",
     "example": "This ia a placeholder example for Commas - separate clauses",
     "markupId": 1,
     "flag": {
@@ -229,7 +229,7 @@
     },
     {
     "textComponentId": 10,
-    "name": "Incorrect",
+    "name": "commas - separate clauses",
     "example": "This ia a placeholder example for Commas - separate clauses",
     "markupId": 1,
     "flag": {
@@ -241,7 +241,7 @@
     },
     {
     "textComponentId": 13,
-    "name": "Correct",
+    "name": "simple punctuation",
     "example": "This ia a placeholder example for Simple Punctuation",
     "markupId": 1,
     "flag": {
@@ -253,7 +253,7 @@
     },
     {
     "textComponentId": 13,
-    "name": "Incorrect",
+    "name": "simple punctuation",
     "example": "This ia a placeholder example for Simple Punctuation",
     "markupId": 1,
     "flag": {
@@ -265,7 +265,7 @@
     },
     {
     "textComponentId": 14,
-    "name": "Correct",
+    "name": "complex punctuation",
     "example": "This ia a placeholder example for Complex Punctuation",
     "markupId": 1,
     "flag": {
@@ -277,7 +277,7 @@
     },
     {
     "textComponentId": 14,
-    "name": "Incorrect",
+    "name": "complex punctuation",
     "example": "This ia a placeholder example for Complex Punctuation",
     "markupId": 1,
     "flag": {
