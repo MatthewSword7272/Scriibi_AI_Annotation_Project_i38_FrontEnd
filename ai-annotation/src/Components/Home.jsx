@@ -63,13 +63,7 @@ const Home = () => {
         const processedData = data.map((comp, index) => ({
           ...comp,
           colorIndex: index + 1,
-          flag: comp.flag ? {
-            ...comp.flag,
-            flagId: comp.flag.flagId,
-            name: comp.flag.name,
-            colour: comp.flag.colour,
-            characters: comp.flag.characters
-          } : undefined
+          subComponent: comp.flag ? (comp.flag.flagId === 10 ? 1 : 2) : undefined
         }));
         
         setTextComponent(processedData);
