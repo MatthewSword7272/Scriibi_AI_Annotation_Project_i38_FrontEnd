@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyledArrowButtonLeft,
   StyledArrowButtonRight,
@@ -19,7 +19,6 @@ const SkillCarousel = ({ skillData }) => {
     leftLimit: 4,
     rightLimit: 6,
   });
-  const MOVE_LIMIT = 1;
 
   const [filteredData, setFilterData] = useState([]);
   const moveLeft = () => {

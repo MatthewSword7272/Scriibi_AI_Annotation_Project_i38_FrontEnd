@@ -14,7 +14,7 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   border-radius: 20px !important;
 
   ${props => props.components && props.components.map((comp, index) => { 
-    let colorIndex = props.textComponent && props.textComponent.find((component) => component.textComponentId === comp.textComponentId)?.colorIndex || index + 1;
+    let colorIndex = props.textComponent && props.textComponent.find((component) => component.textComponentId === comp.textComponentId)?.colorIndex;
 
     console.log(props.textComponent[props.textComponent])
     console.log(comp)

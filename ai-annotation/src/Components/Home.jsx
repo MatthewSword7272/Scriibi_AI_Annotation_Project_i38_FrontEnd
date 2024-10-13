@@ -13,6 +13,7 @@ import { GREEN } from "Constraints/constants";
 import getCriteriaForASkill from "api/getCriteriaForASkill";
 import getTextComponentsForSkill from "api/getTextComponentsforSkill";
 import getSkillsList from "api/getSkillsList";
+import { stripHtml } from "string-strip-html";
 
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
@@ -139,15 +140,18 @@ const Home = () => {
   }, []);
 
   const handleTextSaving = (args) => { //Save text for switching between skills
+
+    const plainText = stripHtml(args.value).result;
+
     if (!firstTime) {
       // Initialize all skill texts and presenting texts with the original text
-      setSkillTexts({ 0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value });
+      setSkillTexts({ 0: plainText, 1: plainText, 2: plainText, 3: plainText, 4: plainText });
       setPresentingTexts({ 0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value });
     } else {
       // Update the text for the current skill only
-      setSkillTexts(prev => ({ ...prev, [selectedSkill]: args.value }));
+      setSkillTexts(prev => ({ ...prev, [selectedSkill]: plainText }));
     }
-    setCurrentText(args.value);
+    setCurrentText(plainText);
   };
 
   // useCallbacks
@@ -287,19 +291,19 @@ const Home = () => {
           ? prevWords[selectedSkill]
           : [];
         return {
-          ...prevWords,
-          [selectedSkill]: [
-            ...currentSkillHighlights,
-            {
-              text: text,
-              component: component.name,
-              index: index,
-              subComponent: {
-                subText: subText !== undefined ? subText : "",
-                subBackground: subBackground
-              }
+        ...prevWords,
+        [selectedSkill]: [
+          ...currentSkillHighlights,
+          {
+            text: text,
+            component: component.name,
+            index: index,
+            subComponent: {
+              subText: subText !== undefined ? subText : "",
+              subBackground: subBackground
             }
-          ]
+          }
+        ]
         };
       });
 
@@ -426,7 +430,7 @@ const Home = () => {
   return (
     <StyledBodyContainer id="target">
       <StyledSubBodyContainer1>
-        <SkillSelector {...skillProps} setFirstTime={setFirstTime} firstTime={firstTime} setPresentingTexts={setPresentingTexts} setComponents={setComponents} />
+        <SkillSelector {...skillProps} setFirstTime={setFirstTime} setHighlightedWords={setHighlightedWords} firstTime={firstTime} setPresentingTexts={setPresentingTexts} setComponents={setComponents} />
         <SkillCarousel skillData={criteria}/>
         <div className="rte-container">
           <label className="floating-label" htmlFor="rte-target">Student Writing Text</label>
