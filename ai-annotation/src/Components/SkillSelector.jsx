@@ -20,9 +20,9 @@ const ANNOTATE_KEY = process.env.REACT_APP_TEXTPROCESSING_FUNCTION_KEY;
 
 const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime, setPresentingTexts, setComponents}) => {
   const toastInstance = useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
   const TOAST_POSITION = { X: 'center', Y: 'top' };
   const [sampleId, setSampleId] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const sendText = async () => {
     // axios({
@@ -142,7 +142,7 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     </StyledRadioButtonContainer>
     <StyledSkillButtonContainer>
       {isLoading ? (
-          <LoadingScreen />
+          <LoadingScreen text="Annotating..."/>
         ) : skillAnnotated[selectedSkill]
         ? <StyledButtonComponent onClick={sendText}>Save</StyledButtonComponent> 
         : <StyledButtonComponent onClick={annotate}>Annotate</StyledButtonComponent>

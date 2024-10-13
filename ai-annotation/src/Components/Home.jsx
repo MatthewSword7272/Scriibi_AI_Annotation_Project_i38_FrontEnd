@@ -14,6 +14,7 @@ import getCriteriaForASkill from "api/getCriteriaForASkill";
 import getTextComponentsForSkill from "api/getTextComponentsforSkill";
 import getSkillsList from "api/getSkillsList";
 import { stripHtml } from "string-strip-html";
+import LoadingScreen from "Styles/StyledLoadingScreen";
 
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
@@ -40,10 +41,12 @@ const Home = () => {
   const [skillTexts, setSkillTexts] = useState({ 0: "", 1: "", 2: "", 3: "", 4: "" });
   const [currentText, setCurrentText] = useState("");
   const [flagCounts, setFlagCounts] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   // Memoized values
   useEffect(() => {
     console.log('Running');
+    setIsLoading(true);
     getCriteriaForASkill(API_URL, (selectedSkill + 1), API_KEY)
       .then((res) => res.data)
       .then((data) => {
@@ -53,10 +56,12 @@ const Home = () => {
       .catch((error) => {
         console.log(error);
       })
+      .finally(() => setIsLoading(false));
   }, [selectedSkill])
 
   // Get text component
   useEffect(() => {
+    setIsLoading(true);
     getTextComponentsForSkill(API_URL, (selectedSkill + 1), API_KEY)
       .then((res) => res.data)
       .then((data) => {
@@ -100,16 +105,19 @@ const Home = () => {
       })
       .catch((error) => {
         console.error("Error fetching text components:", error);
-      });
+      })
+      .finally(() => setIsLoading(false));
   }, [selectedSkill]);
 
   // Get Skills
   useEffect(() => {
+    setIsLoading(true);
     getSkillsList(API_URL, API_KEY)
       .then((res) => res.data)
       .then((data) => {
         setSkills(data);
       })
+      .finally(() => setIsLoading(false));
   }, [])
 
   // For debugging
@@ -429,8 +437,9 @@ const Home = () => {
 
   return (
     <StyledBodyContainer id="target">
+      {isLoading && <LoadingScreen text="Loading..." />}
       <StyledSubBodyContainer1>
-        <SkillSelector {...skillProps} setFirstTime={setFirstTime} setHighlightedWords={setHighlightedWords} firstTime={firstTime} setPresentingTexts={setPresentingTexts} setComponents={setComponents} />
+        <SkillSelector {...skillProps} setFirstTime={setFirstTime} firstTime={firstTime} setPresentingTexts={setPresentingTexts} setComponents={setComponents} />
         <SkillCarousel skillData={criteria}/>
         <div className="rte-container">
           <label className="floating-label" htmlFor="rte-target">Student Writing Text</label>
