@@ -459,11 +459,8 @@ const Home = () => {
         modeProps={modeProps}
         componentProps={componentProps}
         updateHighlights={updateHighlights}
-        setHighlightedWords={(newHighlights) => setHighlightedWords(prev => ({
-          ...prev,
-          [selectedSkill]: newHighlights
-        }))}
-        setPresentingText={(newText) => setPresentingTexts(prev => ({ ...prev, [selectedSkill]: newText }))}
+        setHighlightedWords={setHighlightedWords}
+        setPresentingText={setPresentingTexts}
         selectedSkill={selectedSkill}
         isAnnotated={skillAnnotated[selectedSkill]}
         flagProps={flagProps}

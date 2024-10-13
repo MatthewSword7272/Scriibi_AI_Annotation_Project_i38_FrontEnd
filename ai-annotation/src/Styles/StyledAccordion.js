@@ -16,9 +16,6 @@ const StyledAccordionComponent = styled(AccordionComponent)`
   ${props => props.components && props.components.map((comp, index) => { 
     let colorIndex = props.textComponent && props.textComponent.find((component) => component.textComponentId === comp.textComponentId)?.colorIndex;
 
-    console.log(props.textComponent[props.textComponent])
-    console.log(comp)
-
     return `
     .e-acrdn-item:nth-child(${index + 1}), .e-acrdn-item.e-selected:nth-child(${index + 1}) {
       border-radius: 20px !important;
