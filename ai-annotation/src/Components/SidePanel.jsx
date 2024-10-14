@@ -17,11 +17,10 @@ const SidePanel = ({
   selectedSkill,
   flagProps,
   isAnnotated, 
-  textComponent
 }) => {
   
   const { isDeleteMode, isAddingMode, setIsAddingMode, setIsDeleteMode } = modeProps;
-  const { components, updateComponents } = componentProps;
+  const { components, updateComponents, textComponent } = componentProps;
   const { flagCounts, setFlagCounts } = flagProps;
 
   // States
@@ -195,6 +194,7 @@ const SidePanel = ({
     console.log('textComps:', components.textComps);
     console.log('missingComps:', components.missingComps);
     console.log('Notes:', components.notes);
+    console.log('textComponent:', textComponent);
   }, [components, textComponent]);
 
   return (

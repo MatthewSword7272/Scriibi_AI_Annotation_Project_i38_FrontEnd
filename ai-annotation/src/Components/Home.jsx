@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   StyledBodyContainer,
   StyledSubBodyContainer1,
@@ -42,6 +42,9 @@ const Home = () => {
   const [currentText, setCurrentText] = useState("");
   const [flagCounts, setFlagCounts] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [allTextComponents, setAllTextComponents] = useState({});
+
+  const textComponentRef = useRef(textComponent);
 
   // Memoized values
   useEffect(() => {
@@ -59,55 +62,76 @@ const Home = () => {
       .finally(() => setIsLoading(false));
   }, [selectedSkill])
 
+  useEffect(() => {
+    textComponentRef.current = textComponent;
+  }, [textComponent]);
+
+  // Fetch all text components for all skills when the component mounts
+  useEffect(() => {
+    const fetchAllTextComponents = async () => {
+      setIsLoading(true);
+      try {
+        const promises = [1, 2, 3, 4, 5].map(skillId => 
+          getTextComponentsForSkill(API_URL, skillId, API_KEY)
+        );
+        const results = await Promise.all(promises);
+        const processedData = results.reduce((acc, res, index) => {
+          acc[index] = res.data.map((comp, compIndex) => ({
+            ...comp,
+            colorIndex: compIndex + 1,
+            flag: comp.flag ? {
+              ...comp.flag,
+              flagId: comp.flag.flagId,
+              name: comp.flag.name,
+              colour: comp.flag.colour,
+              characters: comp.flag.characters
+            } : undefined
+          }));
+          return acc;
+        }, {});
+        setAllTextComponents(processedData);
+      } catch (error) {
+        console.error("Error fetching text components:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAllTextComponents();
+  }, []); // Empty dependency array means this effect runs once on mount
+
   // Get text component
   useEffect(() => {
-    setIsLoading(true);
-    getTextComponentsForSkill(API_URL, (selectedSkill + 1), API_KEY)
-      .then((res) => res.data)
-      .then((data) => {
-        // Process the data
-        const processedData = data.map((comp, index) => ({
-          ...comp,
-          colorIndex: index + 1,
-          flag: comp.flag ? {
-            ...comp.flag,
-            flagId: comp.flag.flagId,
-            name: comp.flag.name,
-            colour: comp.flag.colour,
-            characters: comp.flag.characters
-          } : undefined
-        }));
-        
-        setTextComponent(processedData);
+    if (allTextComponents[selectedSkill]) {
+      const newTextComponent = allTextComponents[selectedSkill];
+      setTextComponent(newTextComponent);
+      textComponentRef.current = newTextComponent;
+      
+      setComponents(prevComponents => {
+        const currentTextComps = prevComponents.textComps[selectedSkill] || [];
+        const currentMissingComps = allTextComponents[selectedSkill].filter(comp => 
+          !currentTextComps.some(textComp => textComp.name === comp.name) && comp.markup_id === 1
+        );
+        const currentNotes = allTextComponents[selectedSkill].filter(comp => comp.markup_id === 2);
 
-        setComponents(prevComponents => {
-          const currentTextComps = prevComponents.textComps[selectedSkill] || [];
-          let currentMissingComps = processedData.filter((txtComponent) => txtComponent.markup_id === 1);
-          let currentNotes = processedData.filter((txtComponent) => txtComponent.markup_id === 2);
+        return {
+          textComps: {
+            ...prevComponents.textComps,
+            [selectedSkill]: currentTextComps.length > 0 ? currentTextComps : allTextComponents[selectedSkill].filter(comp => comp.markup_id === 1)
+          },
+          missingComps: {
+            ...prevComponents.missingComps,
+            [selectedSkill]: currentMissingComps
+          },
+          notes: {
+            ...prevComponents.notes,
+            [selectedSkill]: currentNotes
+          }
+        };
+      });
+    }
+  }, [selectedSkill, allTextComponents]);
 
-          return {
-            textComps: {
-              ...prevComponents.textComps,
-              [selectedSkill]: currentTextComps
-            },
-            missingComps: {
-              ...prevComponents.missingComps,
-              [selectedSkill]: currentMissingComps
-            },
-            notes: {
-              ...prevComponents.notes,
-              [selectedSkill]: currentNotes
-            }
-          };
-        });
-
-        console.log("Updated text components:", processedData);
-      })
-      .catch((error) => {
-        console.error("Error fetching text components:", error);
-      })
-      .finally(() => setIsLoading(false));
-  }, [selectedSkill]);
 
   // Get Skills
   useEffect(() => {
@@ -167,7 +191,6 @@ const Home = () => {
     setComponents(prevState => {
       const currentTextComps = prevState.textComps[selectedSkill] || [];
       const currentMissingComps = prevState.missingComps[selectedSkill] || [];
-      const currentNotes = prevState.notes[selectedSkill] || [];
 
       switch (action) {
         case 'ADD_TO_TEXT':
@@ -183,9 +206,7 @@ const Home = () => {
               ...prevState.missingComps,
               [selectedSkill]: currentMissingComps.filter(comp => comp.name !== component.name)
             },
-            notes: {
-              ...prevState.notes
-            }
+            notes: prevState.notes
           };
 
         case 'REMOVE_FROM_TEXT':
@@ -202,10 +223,7 @@ const Home = () => {
               ...prevState.missingComps,
               [selectedSkill]: [...currentMissingComps, compToMove]
             },
-            notes: {
-              ...prevState.notes,
-              [selectedSkill]: [...currentNotes]
-            }
+            notes: prevState.notes
           };
 
         default:
@@ -245,7 +263,7 @@ const Home = () => {
         const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_TEXT, null);
         let currentOffset = 0, node;
         // Find the color for the current component
-        const compMap = textComponent.map((e) => e.name)
+        const compMap = textComponentRef.current.map((e) => e.name)
         console.log(compMap, highlight);
 
         // eslint-disable-next-line no-cond-assign
@@ -266,8 +284,8 @@ const Home = () => {
             if (highlight.subComponent) {
               mark.dataset.subcomponentText = highlight.subComponent.subText || '\u2003';
             }
-            console.log('textCompoent', textComponent)
-            const colorIndex = textComponent.find(component => component.name === highlight.component).colorIndex;
+            console.log('textCompoent', textComponentRef.current)
+            const colorIndex = textComponentRef.current.find(component => component.name === highlight.component).colorIndex;
             console.log(highlight);
             mark.style.setProperty('--component-background', `var(--c${colorIndex}-background)`)
 
@@ -290,7 +308,7 @@ const Home = () => {
 
     return tempDiv.innerHTML;
 
-  }, [selectedSkill, textComponent]);
+  }, [selectedSkill]);
 
   const updateHighlights = useCallback((component, text, index, subBackground, subText) => {
     if (text) {
@@ -427,7 +445,8 @@ const Home = () => {
       missingComps: components.missingComps[selectedSkill] || [],
       notes: components.notes[selectedSkill] || []
     },
-    updateComponents
+    updateComponents,
+    textComponent
   };
 
   const flagProps = {
@@ -454,7 +473,6 @@ const Home = () => {
         </div>
       </StyledSubBodyContainer1>
       <SidePanel
-        textComponent={textComponent}
         key={`${selectedSkill}-${JSON.stringify(components)}`}
         modeProps={modeProps}
         componentProps={componentProps}
