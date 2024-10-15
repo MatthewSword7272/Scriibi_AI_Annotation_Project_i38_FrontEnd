@@ -42,6 +42,7 @@ const Home = () => {
   const [currentText, setCurrentText] = useState("");
   const [flagCounts, setFlagCounts] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [allTextComponents, setAllTextComponents] = useState({});
 
   // Memoized values
   useEffect(() => {
@@ -59,55 +60,69 @@ const Home = () => {
       .finally(() => setIsLoading(false));
   }, [selectedSkill])
 
-  // Get text component
+  // Fetch all text components for all skills when the component mounts
   useEffect(() => {
     setIsLoading(true);
-    getTextComponentsForSkill(API_URL, (selectedSkill + 1), API_KEY)
-      .then((res) => res.data)
-      .then((data) => {
-        // Process the data
-        const processedData = data.map((comp, index) => ({
-          ...comp,
-          colorIndex: index + 1,
-          flag: comp.flag ? {
-            ...comp.flag,
-            flagId: comp.flag.flagId,
-            name: comp.flag.name,
-            colour: comp.flag.colour,
-            characters: comp.flag.characters
-          } : undefined
-        }));
-        
-        setTextComponent(processedData);
+    Promise.all(
+      [1, 2, 3, 4, 5].map(skillId =>
+        getTextComponentsForSkill(API_URL, skillId, API_KEY)
+          .then(res => res.data)
+          .then(data => ({
+            skillId: skillId - 1,
+            data: data.map((comp, index) => ({
+              ...comp,
+              colorIndex: index + 1,
+              flag: comp.flag ? {
+                ...comp.flag,
+                flagId: comp.flag.flagId,
+                name: comp.flag.name,
+                colour: comp.flag.colour,
+                characters: comp.flag.characters
+              } : undefined
+            }))
+          }))
+      )
+    ).then(results => {
+      const textComponentsMap = results.reduce((acc, { skillId, data }) => {
+        acc[skillId] = data;
+        return acc;
+      }, {});
+      setAllTextComponents(textComponentsMap);
+    }).catch(error => {
+      console.error("Error fetching text components:", error);
+    }).finally(() => setIsLoading(false));
+  }, []);
 
-        setComponents(prevComponents => {
-          const currentTextComps = prevComponents.textComps[selectedSkill] || [];
-          let currentMissingComps = processedData.filter((txtComponent) => txtComponent.markup_id === 1);
-          let currentNotes = processedData.filter((txtComponent) => txtComponent.markup_id === 2);
+  // Update components when skill changes or allTextComponents updates
+  useEffect(() => {
+    if (allTextComponents[selectedSkill]) {
+      const processedData = allTextComponents[selectedSkill];
+      setTextComponent(processedData);
 
-          return {
-            textComps: {
-              ...prevComponents.textComps,
-              [selectedSkill]: currentTextComps
-            },
-            missingComps: {
-              ...prevComponents.missingComps,
-              [selectedSkill]: currentMissingComps
-            },
-            notes: {
-              ...prevComponents.notes,
-              [selectedSkill]: currentNotes
-            }
-          };
-        });
+      setComponents(prevComponents => {
+        const currentTextComps = prevComponents.textComps[selectedSkill] || [];
+        let currentMissingComps = processedData.filter((txtComponent) => txtComponent.markup_id === 1);
+        let currentNotes = processedData.filter((txtComponent) => txtComponent.markup_id === 2);
 
-        console.log("Updated text components:", processedData);
-      })
-      .catch((error) => {
-        console.error("Error fetching text components:", error);
-      })
-      .finally(() => setIsLoading(false));
-  }, [selectedSkill]);
+        return {
+          textComps: {
+            ...prevComponents.textComps,
+            [selectedSkill]: currentTextComps
+          },
+          missingComps: {
+            ...prevComponents.missingComps,
+            [selectedSkill]: currentMissingComps
+          },
+          notes: {
+            ...prevComponents.notes,
+            [selectedSkill]: currentNotes
+          }
+        };
+      });
+
+      console.log("Updated text components:", processedData);
+    }
+  }, [selectedSkill, allTextComponents]);
 
   // Get Skills
   useEffect(() => {
@@ -129,8 +144,8 @@ const Home = () => {
   const handleSkillChange = (event) => {
     const newSkill = parseInt(event.target.value, 10);
     setSelectedSkill(newSkill);
-    // Load the text for the new skill
     setCurrentText(skillTexts[newSkill]);
+    setIsLoading(true)
   };
 
   const countWords = useCallback((text) => {
@@ -217,6 +232,7 @@ const Home = () => {
   // Function to add highlights to the text
   const addHighlight = useCallback((highlightedWords, text) => {
     // Create a temporary div to manipulate the HTML
+    if (isLoading) return;
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = text;
 
@@ -290,7 +306,7 @@ const Home = () => {
 
     return tempDiv.innerHTML;
 
-  }, [selectedSkill, textComponent]);
+  }, [isLoading, selectedSkill, textComponent]);
 
   const updateHighlights = useCallback((component, text, index, subBackground, subText) => {
     if (text) {
