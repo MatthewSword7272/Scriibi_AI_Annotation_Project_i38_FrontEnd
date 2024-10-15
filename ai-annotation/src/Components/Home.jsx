@@ -1,26 +1,21 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  StyledBodyContainer,
-  StyledSubBodyContainer1,
-} from "../Styles/StyledBody";
+import { StyledBodyContainer, StyledSubBodyContainer1 } from "../Styles/StyledBody";
 import { StyledRichTextEditor } from "../Styles/StyledTextArea";
-import { Toolbar } from "@syncfusion/ej2-react-richtexteditor";
-import { HtmlEditor, Inject } from '@syncfusion/ej2-react-richtexteditor';
+import { Toolbar, HtmlEditor, Inject } from '@syncfusion/ej2-react-richtexteditor';
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
 import { GREEN } from "Constraints/constants";
+import { stripHtml } from "string-strip-html";
+import LoadingScreen from "Styles/StyledLoadingScreen";
 import getCriteriaForASkill from "api/getCriteriaForASkill";
 import getTextComponentsForSkill from "api/getTextComponentsforSkill";
 import getSkillsList from "api/getSkillsList";
-import { stripHtml } from "string-strip-html";
-import LoadingScreen from "Styles/StyledLoadingScreen";
 
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 
 const Home = () => {
-
   // States
   const [skillsList, setSkills] = useState([]);
   const [firstTime, setFirstTime] = useState(false);
@@ -44,7 +39,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [allTextComponents, setAllTextComponents] = useState({});
 
-  // Memoized values
+  // Fetch criteria for selected skill
   useEffect(() => {
     console.log('Running');
     setIsLoading(true);
@@ -58,9 +53,9 @@ const Home = () => {
         console.log(error);
       })
       .finally(() => setIsLoading(false));
-  }, [selectedSkill])
+  }, [selectedSkill]);
 
-  // Fetch all text components for all skills when the component mounts
+  // Fetch all text components for all skills
   useEffect(() => {
     setIsLoading(true);
     Promise.all(
@@ -133,19 +128,14 @@ const Home = () => {
         setSkills(data);
       })
       .finally(() => setIsLoading(false));
-  }, [])
-
-  // For debugging
-  useEffect(() => {
-    console.log(components);
-  }, [components])
+  }, []);
 
   // Functions
   const handleSkillChange = (event) => {
     const newSkill = parseInt(event.target.value, 10);
     setSelectedSkill(newSkill);
     setCurrentText(skillTexts[newSkill]);
-    setIsLoading(true)
+    setIsLoading(true);
   };
 
   const countWords = useCallback((text) => {
@@ -162,22 +152,17 @@ const Home = () => {
     return number.split(/\s+/).length;  // Split into words and count
   }, []);
 
-  const handleTextSaving = (args) => { //Save text for switching between skills
-
+  const handleTextSaving = useCallback((args) => {
     const plainText = stripHtml(args.value).result;
-
     if (!firstTime) {
-      // Initialize all skill texts and presenting texts with the original text
       setSkillTexts({ 0: plainText, 1: plainText, 2: plainText, 3: plainText, 4: plainText });
       setPresentingTexts({ 0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value });
     } else {
-      // Update the text for the current skill only
       setSkillTexts(prev => ({ ...prev, [selectedSkill]: plainText }));
     }
     setCurrentText(plainText);
-  };
+  }, [firstTime, selectedSkill]);
 
-  // useCallbacks
   const updateComponents = useCallback((action, component) => {
     setComponents(prevState => {
       const currentTextComps = prevState.textComps[selectedSkill] || [];
@@ -229,7 +214,6 @@ const Home = () => {
     });
   }, [selectedSkill]);
 
-  // Function to add highlights to the text
   const addHighlight = useCallback((highlightedWords, text) => {
     // Create a temporary div to manipulate the HTML
     if (isLoading) return;
@@ -420,7 +404,7 @@ const Home = () => {
     }
   }, [currentText, firstTime, selectedSkill]);
 
-  //Props
+  // Props
   const skillProps = {
     handleSkillChange,
     selectedSkill,
@@ -449,7 +433,7 @@ const Home = () => {
   const flagProps = {
     flagCounts,
     setFlagCounts
-  }
+  };
 
   return (
     <StyledBodyContainer id="target">
