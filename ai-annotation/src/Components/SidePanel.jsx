@@ -61,20 +61,30 @@ const SidePanel = ({
     const componentName = target.dataset.componentName;
     const subBackground = target.style.getPropertyValue('--subcomponent-background');
 
-    setPresentingText((prevText) => {
-      const regex = new RegExp(`<mark[^>]*id="${componentId}"[^>]*>?.*</mark>`, 'g');
-      return prevText.replace(regex, highlightText);
-    });
-
-    setHighlightedWords((prevHighlights) => {
+    setHighlightedWords(prevHighlights => {
       const currentSkillHighlights = Array.isArray(prevHighlights[selectedSkill]) 
         ? prevHighlights[selectedSkill] 
         : [];
+      const updatedHighlights = currentSkillHighlights.filter(highlight => 
+        !(highlight.text === highlightText && highlight.component === componentName)
+      );
       return {
         ...prevHighlights,
-        [selectedSkill]: currentSkillHighlights.filter(highlight => 
-          !(highlight && highlight.text === highlightText && highlight.component === componentName)
-        )
+        [selectedSkill]: updatedHighlights
+      };
+    });
+
+    setPresentingText(prevTexts => {
+      const prevText = prevTexts[selectedSkill];
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = prevText;
+      const highlightToRemove = tempDiv.querySelector(`[id="${componentId}"]`);
+      if (highlightToRemove) {
+        highlightToRemove.outerHTML = highlightToRemove.textContent;
+      }
+      return {
+        ...prevTexts,
+        [selectedSkill]: tempDiv.innerHTML
       };
     });
 

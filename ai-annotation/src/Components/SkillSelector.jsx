@@ -18,11 +18,11 @@ const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 const ANNOTATE_URL = process.env.REACT_APP_TEXTPROCESSING_URL;
 const ANNOTATE_KEY = process.env.REACT_APP_TEXTPROCESSING_FUNCTION_KEY;
 
-const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime, setPresentingTexts, setComponents}) => {
+const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime, setPresentingTexts, setComponents}) => {
   const toastInstance = useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
   const TOAST_POSITION = { X: 'center', Y: 'top' };
   const [sampleId, setSampleId] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const sendText = async () => {
     // axios({
@@ -66,6 +66,11 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
 
         if (highlightedText) {
           setPresentingTexts(prev => ({...prev, [selectedSkill]: highlightedText}))
+
+          setHighlightedWords(prev => ({
+            ...prev,
+            [selectedSkill]: parseHighlightedText(highlightedText)
+          }));
         }
 
         if (Object.keys(componentsList).length > 0) {
@@ -119,6 +124,34 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     })
   }
 
+  const parseHighlightedText = (text) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+    const highlights = [];
+    let currentIndex = 0;
+
+    doc.body.childNodes.forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        currentIndex += node.textContent.length;
+
+      } else if (node.nodeName === 'MARK') {
+      
+        highlights.push({
+          text: node.textContent,
+          component: node.dataset.componentName,
+          index: currentIndex,
+          subComponent: {
+            subText: node.dataset.subcomponentText || "",
+            subBackground: node.style.getPropertyValue('--subcomponent-background') || ""
+          }
+        });
+        currentIndex += node.textContent.length;
+      }
+    });
+  
+    return highlights;
+  };
+
   const showToast = (message, title, toastClass, icon) => {
     if (toastInstance.current) {
       toastInstance.current.show({ title: title, content: message, cssClass: `e-toast-${toastClass}`, icon: `e-icons ${icon}` });
@@ -142,7 +175,7 @@ const SkillSelector = ({ handleSkillChange, selectedSkill, skillData, text, skil
     </StyledRadioButtonContainer>
     <StyledSkillButtonContainer>
       {isLoading ? (
-          <LoadingScreen />
+          <LoadingScreen text="Annotating..."/>
         ) : skillAnnotated[selectedSkill]
         ? <StyledButtonComponent onClick={sendText}>Save</StyledButtonComponent> 
         : <StyledButtonComponent onClick={annotate}>Annotate</StyledButtonComponent>

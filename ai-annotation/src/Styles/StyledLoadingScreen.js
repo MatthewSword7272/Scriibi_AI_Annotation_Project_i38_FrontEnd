@@ -36,11 +36,11 @@ const LoadingText = styled.p`
   margin-top: 20px;
 `;
 
-const LoadingScreen = () => (
+const LoadingScreen = (props) => (
   <LoadingOverlay>
 
       <SpinnerContainer />
-      <LoadingText>Annotating...</LoadingText>
+      <LoadingText>{props.text}</LoadingText>
 
   </LoadingOverlay>
 );
