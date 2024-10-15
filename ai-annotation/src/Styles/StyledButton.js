@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
-import {BLACK, GREEN, WHITE} from '../Constraints/constants';
+import {BLACK, GREEN, WHITE} from '../Constraints/colours';
 
 const StyledButtonComponent = styled(ButtonComponent)`
     background-color: ${GREEN};

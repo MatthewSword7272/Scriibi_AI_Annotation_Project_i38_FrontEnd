@@ -1,5 +1,5 @@
 import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
-import { GREEN, ORANGE } from "Constraints/constants";
+import { GREEN, ORANGE } from "Constraints/colours";
 import styled from "styled-components";
 
 const StyledEditContainer = styled.div`

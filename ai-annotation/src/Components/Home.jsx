@@ -5,7 +5,7 @@ import { Toolbar, HtmlEditor, Inject } from '@syncfusion/ej2-react-richtextedito
 import SkillCarousel from "./SkillCarousel";
 import SkillSelector from "./SkillSelector";
 import SidePanel from "./SidePanel";
-import { GREEN } from "Constraints/constants";
+import { GREEN } from "Constraints/colours";
 import { stripHtml } from "string-strip-html";
 import LoadingScreen from "Styles/StyledLoadingScreen";
 import getCriteriaForASkill from "api/getCriteriaForASkill";

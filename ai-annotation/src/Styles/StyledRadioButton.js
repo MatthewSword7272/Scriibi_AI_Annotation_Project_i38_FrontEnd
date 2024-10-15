@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { RadioButtonComponent } from "@syncfusion/ej2-react-buttons";
-import { GREEN } from "Constraints/constants";
+import { GREEN } from "Constraints/colours";
 
 const StyledSkillContainer = styled.div`
     display: flex;

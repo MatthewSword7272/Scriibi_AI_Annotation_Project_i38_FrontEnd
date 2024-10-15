@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import {WHITE} from "../Constraints/constants";
+import {WHITE} from "../Constraints/colours";
 
 const StyledHeader = styled.header`
     text-align: center;

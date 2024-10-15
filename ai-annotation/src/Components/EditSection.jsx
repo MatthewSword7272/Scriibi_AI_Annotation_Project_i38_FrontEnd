@@ -6,7 +6,7 @@ import {
   StyledAddButton, 
   StyledDeleteButton 
 } from 'Styles/StyledEditButtons';
-import { GREEN, ORANGE } from 'Constraints/constants';
+import { GREEN, ORANGE } from 'Constraints/colours';
 
 const EditSection = ({ isAddingMode, isDeleteMode, setIsAddingMode, setIsDeleteMode }) => {
   return (

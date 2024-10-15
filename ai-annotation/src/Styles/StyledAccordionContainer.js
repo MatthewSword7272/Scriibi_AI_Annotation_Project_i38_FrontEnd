@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {ORANGE, WHITE} from "../Constraints/constants";
+import {ORANGE, WHITE} from "../Constraints/colours";
 
 const StyledAccordionContainer = styled.div`
     background-color: ${WHITE};

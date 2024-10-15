@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {ReactComponent as Arrow_Left} from '../Assets/Arrow_Left.svg';
 import {ReactComponent as Arrow_Right} from '../Assets/Arrow_Right.svg';
-import { GREEN, GREY } from "Constraints/constants";
+import { GREEN, GREY } from "Constraints/colours";
 
 const StyledCarouselContainer = styled.div`
   display: flex;

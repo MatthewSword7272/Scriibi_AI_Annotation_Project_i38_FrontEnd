@@ -3,7 +3,7 @@ import { AccordionItemDirective, AccordionItemsDirective } from "@syncfusion/ej2
 import { StyledAccordionComponent } from 'Styles/StyledAccordion';
 import { StyledAccordionContainer, StyledAccordionMissingContainer } from 'Styles/StyledAccordionContainer';
 import StyledFlag from 'Styles/StyledFlag';
-import { BLACK, GREEN, RED } from 'Constraints/constants';
+import { BLACK, GREEN, RED } from 'Constraints/colours';
 
 const AccordionSection = ({ title, textComponent, components, handleAccordionClick, flagCounts, isMissing = false }) => {
   const Container = isMissing ? StyledAccordionMissingContainer : StyledAccordionContainer;

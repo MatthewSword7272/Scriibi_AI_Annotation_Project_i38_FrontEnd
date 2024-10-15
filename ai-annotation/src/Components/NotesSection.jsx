@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyledAccordionContainer } from 'Styles/StyledAccordionContainer';
 import { StyledNotesButton } from 'Styles/StyledButton';
-import { CAM } from 'Constraints/constants';
+import { CAM } from 'Constraints/colours';
 
 const NotesSection = ({ handleDialogClick, notesList }) => {
   return (

@@ -3,7 +3,7 @@ import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
 import { StyledToast } from 'Styles/StyledToast';
 import { StyledSubBodyContainer2 } from 'Styles/StyledBody';
 import { StyledDialogBox } from 'Styles/StyledDialogBox';
-import { GREEN, ORANGE } from 'Constraints/constants';
+import { GREEN, ORANGE } from 'Constraints/colours';
 import NotesSection from './NotesSection';
 import EditSection from './EditSection';
 import AccordionSection from './AccordionSection';
