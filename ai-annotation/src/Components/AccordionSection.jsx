@@ -29,7 +29,7 @@ const AccordionSection = ({ title, textComponent, components, handleAccordionCli
         expandMode="Single"
         expanding={handleExpanding}
         components={components || []}
-        textComponent={textComponent}
+        textcomponent={textComponent}
       >
         <AccordionItemsDirective>
           {components && components.map((comp, index) => (

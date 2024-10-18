@@ -71,7 +71,7 @@ const SkillCarousel = ({ skillData }) => {
         <StyledCarouselRow>
           <StyledDotContainer>
             <StyledDotInnerContainer>
-            {filteredData.map((detail, index) => (
+            {filteredData.map((_, index) => (
               <StyledCarouselDot 
                 key={index}
                 isActive={index === selectedLevel}

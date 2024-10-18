@@ -7,9 +7,9 @@ const NotesSection = ({ handleDialogClick, notesList }) => {
   return (
     <StyledAccordionContainer>
       <h2>Notes</h2>
-      {notesList.length > 0 ? notesList.map((aNote) => {
+      {notesList.length > 0 ? notesList.map((aNote, index) => {
         return (
-          <StyledNotesButton color={CAM} onClick={() => handleDialogClick(aNote)}>
+          <StyledNotesButton key={index} color={CAM} onClick={() => handleDialogClick(aNote)}>
             {aNote.name}
           </StyledNotesButton>
         );
