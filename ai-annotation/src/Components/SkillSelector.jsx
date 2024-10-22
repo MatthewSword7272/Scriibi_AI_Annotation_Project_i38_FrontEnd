@@ -71,13 +71,13 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
         sendOriginalTextSample(CONTENT_API_URL, reqBody, CONTENT_API_KEY)
         .then((res) => res.data)
         .then((data) => {
-          console.log('Inserted ID: ', data);
+          console.info('Inserted ID: ', data);
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
         })
       })
-      .catch((err) => { console.log(err); })
+      .catch((err) => { console.error(err); })
       .finally(() => {
         showToast(`Orginal Text saved successfully, sample ID: ${textSampleId}`, 'Success', 'success', 'e-check');
       })
@@ -96,7 +96,6 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
         const componentsList = data['components_list'];
 
         // Debugging
-        console.log(data)
         console.log("Components list", data.components_list.present)
 
         if (highlightedText) {
@@ -128,7 +127,6 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
         }
 
         if (data.annotations.notes) {
-          console.log("Note: ", data.annotations.notes);
           setDialogText(prev => ({
             ...prev,
             [selectedSkill]: data.annotations.notes
@@ -149,11 +147,11 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
         .then((data) => {
           showToast(`Machine annotation save successfully, ID: ${data}`, 'Success', 'success', 'e-check');
         })
-        .catch(err => { console.log(err) })
+        .catch(err => { console.error(err) })
       }      
     })
     .catch((error) => {
-      console.log(error);
+      console.error(error);
     }).finally(() => {
       setIsLoading(false);
       showToast(`Machine annotated successfully`, 'Success', 'success', 'e-check');

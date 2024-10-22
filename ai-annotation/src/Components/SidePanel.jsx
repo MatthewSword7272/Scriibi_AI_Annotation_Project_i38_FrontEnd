@@ -190,12 +190,10 @@ const SidePanel = ({
     return () => document.removeEventListener("click", handleDeleteHighlight);
   }, [deleteHighlight, isDeleteMode]);
 
-  useEffect(() => {
-    console.log('SidePanel received new components:', components);
-    console.log('textComps:', components.textComps);
-    console.log('missingComps:', components.missingComps);
-    console.log('Notes:', components.notes);
-  }, [components]);
+  // Debug: Text Component
+  // useEffect(() => {
+  //   console.log('SidePanel received new components:', components);
+  // }, [components]);
 
   return (
     <StyledSubBodyContainer2>

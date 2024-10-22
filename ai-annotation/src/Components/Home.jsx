@@ -45,16 +45,14 @@ const Home = () => {
 
   // Fetch criteria for selected skill
   useEffect(() => {
-    console.log('Running');
     setIsLoading(true);
     getCriteriaForASkill(API_URL, (selectedSkill + 1), API_KEY)
       .then((res) => res.data)
       .then((data) => {
         setCriteria(data);
-        console.log(data);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       })
       .finally(() => setIsLoading(false));
   }, [selectedSkill]);
@@ -126,8 +124,6 @@ const Home = () => {
           }
         };
       });
-
-      console.log("Updated text components:", processedData);
     }
   }, [selectedSkill, allTextComponents]);
 
@@ -167,7 +163,7 @@ const Home = () => {
   const handleTextSaving = useCallback((args) => {
     let alternativePlainText = args.value.replace('</p>', '</p>\n');
     const plainText = stripHtml(alternativePlainText).result;
-    console.log(plainText)
+    // console.log(plainText) // Debugging plain text bug
     if (!firstTime) {
       setSkillTexts({ 0: plainText, 1: plainText, 2: plainText, 3: plainText, 4: plainText });
       setPresentingTexts({ 0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value });
@@ -360,7 +356,7 @@ const Home = () => {
     // Update the presenting text when switching skills
     const updatedText = addHighlight(highlightedWords, skillTexts[selectedSkill]);
     setPresentingTexts(prev => ({ ...prev, [selectedSkill]: updatedText }));
-    console.log("highlightedWords:", highlightedWords);
+    // console.log("highlightedWords:", highlightedWords); // Debug 
   }, [selectedSkill, addHighlight, highlightedWords, skillTexts]);
 
   useEffect(() => {
