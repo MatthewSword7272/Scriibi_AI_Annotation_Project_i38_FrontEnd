@@ -7,6 +7,7 @@ import { GREEN, ORANGE } from 'Constraints/colours';
 import NotesSection from './NotesSection';
 import EditSection from './EditSection';
 import AccordionSection from './AccordionSection';
+import convertStringtoHTML from 'function/convertStringToHTML';
 
 const SidePanel = ({
   modeProps,
@@ -17,7 +18,8 @@ const SidePanel = ({
   selectedSkill,
   flagProps,
   isAnnotated, 
-  textComponent
+  textComponent,
+  dialogText
 }) => {
   
   const { isDeleteMode, isAddingMode, setIsAddingMode, setIsDeleteMode } = modeProps;
@@ -27,7 +29,6 @@ const SidePanel = ({
   // States
   const [dialogVisibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
-  const [dialogText, setDialogText] = useState("");
   const [selectedText, setSelectedText] = useState({ text: "", index: -1 });
 
   // Refs
@@ -42,9 +43,8 @@ const SidePanel = ({
   ];
 
   // Helper functions
-  const showDialog = (title, text) => {
+  const showDialog = (title) => {
     setDialogTitle(title);
-    setDialogText(text);
     setDialogVisibility(true);
   };
 
@@ -113,7 +113,7 @@ const SidePanel = ({
   }, [selectedSkill, setFlagCounts, setHighlightedWords, setPresentingText, updateComponents]);
 
   // Event handlers
-  const handleDialogClick = (note) => showDialog(note.name, note.example);
+  const handleDialogClick = (note) => showDialog(note.name);
 
   const handleAccordionClick = useCallback((comp, subBackground = undefined, subText = undefined) => {
     if (isAddingMode && selectedText.text !== "") {
@@ -195,7 +195,7 @@ const SidePanel = ({
     console.log('textComps:', components.textComps);
     console.log('missingComps:', components.missingComps);
     console.log('Notes:', components.notes);
-  }, [components, textComponent]);
+  }, [components]);
 
   return (
     <StyledSubBodyContainer2>
@@ -217,7 +217,7 @@ const SidePanel = ({
 
       <StyledDialogBox
         header={dialogTitle}
-        content={dialogText}
+        content={dialogText instanceof Array? convertStringtoHTML(dialogText[0]): convertStringtoHTML(dialogText)} // Temporary solution to handle inconsistent dialog type
         showCloseIcon={true}
         visible={dialogVisibility}
         width="25vw"
@@ -229,6 +229,11 @@ const SidePanel = ({
         close={dialogClose}
         beforeOpen={onDialogBeforeOpen}
         position={DIALOG_BOX_POSITION}
+        animationSettings ={{
+          effect: 'Zoom',
+          duration: 400,
+          delay: 0
+        }}
       />
       {isAnnotated &&
         <EditSection 

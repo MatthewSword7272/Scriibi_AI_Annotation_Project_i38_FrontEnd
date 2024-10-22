@@ -1,6 +1,5 @@
 import sendOriginalTextSample from "api/sendOriginalTextSample";
 import { ToastComponent } from "@syncfusion/ej2-react-notifications";
-import axios from "axios";
 import React, { useRef, useState } from "react";
 import { StyledButtonComponent } from "Styles/StyledButton";
 import {
@@ -11,57 +10,93 @@ import {
 } from "Styles/StyledRadioButton";
 import processText from "api/processText";
 import LoadingScreen from "Styles/StyledLoadingScreen";
+import sendHumanAnnotatedSample from "api/sendHumanAnnotation";
+import sendTextSample from "api/sendTextSample";
+import sendMachineAnnotation from "api/sendMachineAnnotation";
+import makeText from "function/makeText";
 
-const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
-const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
+const CONTENT_API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
+const CONTENT_API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
 
 const ANNOTATE_URL = process.env.REACT_APP_TEXTPROCESSING_URL;
 const ANNOTATE_KEY = process.env.REACT_APP_TEXTPROCESSING_FUNCTION_KEY;
+// let sampleId = 0; // Sample ID.
 
-const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime, setPresentingTexts, setComponents}) => {
+const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime, setPresentingTexts, setComponents, skillLevel, setDialogText}) => {
   const toastInstance = useRef(null);
   const TOAST_POSITION = { X: 'center', Y: 'top' };
-  const [sampleId, setSampleId] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [sampleId, setSampleId] = useState(0); // Sample ID.
 
   const sendText = async () => {
-    // axios({
-    //   method: 'post',
-    //   url: pronounURL,
-    //   headers: {
-    //     "Content-Type": 'application/JSON'
-    //   },
-    //   data: {
-    //     text: text
-    //   },
-    // }).then( res => {
-    //   console.log(res);
-    //   showToast('Text has been saved', 'Success', 'success', 'e-check');
-    // }).catch( err => {
-    //   console.log(err);
-    //   showToast('Text was not saved', 'Error', 'danger', 'e-circle-close');
-    // })
-    showToast('Text has been saved', 'Success', 'success', 'e-check');
+    let reqBody = {
+      sampleId: sampleId,
+      // text: makeText(text[selectedSkill]), // Temporary wait for back-end to included embedded data attr in <mark>
+      text: text[selectedSkill],
+      skillLevelId: skillLevel,
+    }
+
+    if(skillLevel) {
+      await sendHumanAnnotatedSample(CONTENT_API_URL, reqBody, CONTENT_API_KEY)
+      .then((res) => res.data)
+      .then((data) => {
+        showToast(`Text has been saved ${data}`, 'Success', 'success', 'e-check');
+      })
+    }
+    else showToast('Please select a grade', 'Warning', 'warning', 'e-warning')
   }
 
-  const annotate = () => {
-    
+  const annotate = async () => {
+    let textSampleId = sampleId; // A local variable store the latest state of sampleId
+
     setIsLoading(true);
 
     if (!firstTime) {
       setFirstTime(true);
     }
 
-    processText(ANNOTATE_URL, {
+    // send text sample and send original text sample (run only once at the start)
+    if(sampleId === 0) {
+      await sendTextSample(CONTENT_API_URL, "", CONTENT_API_KEY)
+      .then((res) => res.data)
+      .then((data) => {
+        setSampleId((prev) => data); // Set state
+        textSampleId = data; // Get the latest value of sampleId
+
+        let reqBody = {
+          text: text[0],
+          sampleId: data,
+        }
+    
+        sendOriginalTextSample(CONTENT_API_URL, reqBody, CONTENT_API_KEY)
+        .then((res) => res.data)
+        .then((data) => {
+          console.log('Inserted ID: ', data);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+      })
+      .catch((err) => { console.log(err); })
+      .finally(() => {
+        showToast(`Text has been saved, text sample ID is ${textSampleId}`, 'Success', 'success', 'e-check');
+      })
+    }
+
+    await processText(ANNOTATE_URL, {
       skillID: selectedSkill + 1,
-      text: text[selectedSkill]
+      text: text[selectedSkill],
     }, ANNOTATE_KEY)
     .then((res) => res.data)
     .then((data) => {
-      if (Object.keys(data).length > 0) {
-        const highlightedText = data.annotations?.highlighted_text
-        const componentsList = data['components_list']
 
+      // Handle response from back-end to highlight the writing piece
+      if (Object.keys(data).length > 0) {
+        const highlightedText = data.annotations?.highlighted_text;
+        const componentsList = data['components_list'];
+
+        // Debugging
+        console.log(data)
         console.log("Components list", data.components_list.present)
 
         if (highlightedText) {
@@ -75,7 +110,6 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
 
         if (Object.keys(componentsList).length > 0) {
           console.log(data.missing);
-          // console.log(componentsList.present.map(component => console.log("component", component)))
           setComponents(prev => {
             return {
             ...prev, 
@@ -92,12 +126,30 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
             }
           }});
         }
-        
-      
 
-        if (data.annotations.note) {
-          console.log(data);
+        if (data.annotations.notes) {
+          console.log("Note: ", data.annotations.notes);
+          setDialogText(prev => ({
+            ...prev,
+            [selectedSkill]: data.annotations.notes
+          })); // Send note to dialogs
         }
+        else {
+          setDialogText("No notes"); // Handle empty notes
+        }
+
+        // Send data to DB
+        const reqBody = {
+          text: highlightedText,
+          // text: makeText(highlightedText), // Temporary wait for back-end to included embedded data attr in <mark>
+          sampleId: textSampleId,
+        }
+        sendMachineAnnotation(CONTENT_API_URL, reqBody, CONTENT_API_KEY)
+        .then((res) => res.data)
+        .then((data) => {
+          showToast(`Text has been saved, text sample ID is ${data}`, 'Success', 'success', 'e-check');
+        })
+        .catch(err => { console.log(err) })
       }      
     })
     .catch((error) => {
@@ -108,20 +160,6 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
     
     
     setSkillAnnotated(prevState => ({ ...prevState, [selectedSkill]: true }))
-
-    let reqBody = {
-      text: text[0],
-    }
-
-    sendOriginalTextSample(API_URL, reqBody, API_KEY)
-    .then((res) => res.data)
-    .then((data) => {
-      console.log('Inserted ID: ', data);
-      setSampleId(data);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
   }
 
   const parseHighlightedText = (text) => {
@@ -138,10 +176,13 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
       
         highlights.push({
           text: node.textContent,
+          // @ts-ignore
           component: node.dataset.componentName,
           index: currentIndex,
           subComponent: {
+            // @ts-ignore
             subText: node.dataset.subcomponentText || "",
+            // @ts-ignore
             subBackground: node.style.getPropertyValue('--subcomponent-background') || ""
           }
         });

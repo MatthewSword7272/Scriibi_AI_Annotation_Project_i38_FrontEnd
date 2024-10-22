@@ -78,9 +78,14 @@ const StyledCarouselDescription = styled.div`
 
   ul {
     font-family: 'Segoe UI', sans-serif;
-    min-height: 300px;
     overflow-y: auto;
     padding-left: 20px;
+  }
+
+  mark {
+    padding: 0 3px;
+    border-radius: 8px;
+    line-height: 1.25;
   }
 `;
 

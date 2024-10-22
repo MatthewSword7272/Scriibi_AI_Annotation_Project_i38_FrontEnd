@@ -11,6 +11,7 @@ import LoadingScreen from "Styles/StyledLoadingScreen";
 import getCriteriaForASkill from "api/getCriteriaForASkill";
 import getTextComponentsForSkill from "api/getTextComponentsforSkill";
 import getSkillsList from "api/getSkillsList";
+import getFlags from "api/getFlags";
 
 const API_KEY = process.env.REACT_APP_CONTENT_FUNCTION_KEY;
 const API_URL = process.env.REACT_APP_CONTENT_FUNCTION_URL;
@@ -26,6 +27,7 @@ const Home = () => {
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
+  const [skillLevelId, setSKillLevelId] = useState(0);
   const [components, setComponents] = useState({
     textComps: [],
     missingComps: [],
@@ -38,6 +40,8 @@ const Home = () => {
   const [flagCounts, setFlagCounts] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [allTextComponents, setAllTextComponents] = useState({});
+  const [dialogTexts, setDialogText] = useState({ 0: "", 1: "", 2: "", 3: "", 4: "" });
+  const [flags, setFlags] = useState([]);
 
   // Fetch criteria for selected skill
   useEffect(() => {
@@ -54,6 +58,14 @@ const Home = () => {
       })
       .finally(() => setIsLoading(false));
   }, [selectedSkill]);
+
+  useEffect(() => {
+    getFlags(API_URL, API_KEY)
+    .then(res => res.data)
+    .then((data) => {
+      setFlags(data);
+    });
+  }, [])
 
   // Fetch all text components for all skills
   useEffect(() => {
@@ -153,7 +165,9 @@ const Home = () => {
   }, []);
 
   const handleTextSaving = useCallback((args) => {
-    const plainText = stripHtml(args.value).result;
+    let alternativePlainText = args.value.replace('</p>', '</p>\n');
+    const plainText = stripHtml(alternativePlainText).result;
+    console.log(plainText)
     if (!firstTime) {
       setSkillTexts({ 0: plainText, 1: plainText, 2: plainText, 3: plainText, 4: plainText });
       setPresentingTexts({ 0: args.value, 1: args.value, 2: args.value, 3: args.value, 4: args.value });
@@ -245,8 +259,6 @@ const Home = () => {
         const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_TEXT, null);
         let currentOffset = 0, node;
         // Find the color for the current component
-        const compMap = textComponent.map((e) => e.name)
-        console.log(compMap, highlight);
 
         // eslint-disable-next-line no-cond-assign
         while (node = walker.nextNode()) {
@@ -266,9 +278,7 @@ const Home = () => {
             if (highlight.subComponent) {
               mark.dataset.subcomponentText = highlight.subComponent.subText || '\u2003';
             }
-            console.log('textCompoent', textComponent)
             const colorIndex = textComponent.find(component => component.name === highlight.component).colorIndex;
-            console.log(highlight);
             mark.style.setProperty('--component-background', `var(--c${colorIndex}-background)`)
 
             if (highlight.subComponent) {
@@ -439,14 +449,17 @@ const Home = () => {
     <StyledBodyContainer id="target">
       {isLoading && <LoadingScreen text="Loading..." />}
       <StyledSubBodyContainer1>
-        <SkillSelector {...skillProps} setHighlightedWords={setHighlightedWords} setFirstTime={setFirstTime} firstTime={firstTime} setPresentingTexts={setPresentingTexts} setComponents={setComponents} />
-        <SkillCarousel skillData={criteria}/>
+        <SkillSelector {...skillProps} setHighlightedWords={setHighlightedWords} setFirstTime={setFirstTime} firstTime={firstTime} setPresentingTexts={setPresentingTexts} setComponents={setComponents} skillLevel={skillLevelId} setDialogText={setDialogText}/>
+        <SkillCarousel skillData={criteria} textComponent={textComponent} setGrade={setSKillLevelId} flags={flags}/>
         <div className="rte-container">
           <label className="floating-label" htmlFor="rte-target">Student Writing Text</label>
           <StyledRichTextEditor
             id="rte-target"
             value={presentingTexts[selectedSkill]}
             change={handleTextSaving}
+            pasteCleanupSettings= {{
+              plainText: true,
+            }}
             toolbarSettings={{ enable: false }}>
             <Inject services={[HtmlEditor, Toolbar]} />
           </StyledRichTextEditor>
@@ -464,6 +477,7 @@ const Home = () => {
         selectedSkill={selectedSkill}
         isAnnotated={skillAnnotated[selectedSkill]}
         flagProps={flagProps}
+        dialogText={dialogTexts[selectedSkill]}
       />
     </StyledBodyContainer>
   );

@@ -12,8 +12,9 @@ import {
   StyledDotInnerContainer,
   StyledH4,
 } from "../Styles/StyledCarousel";
+import colorMapping from "function/setColorForCriteria";
 
-const SkillCarousel = ({ skillData }) => {
+const SkillCarousel = ({ skillData, textComponent, setGrade, flags}) => {
   const [selectedLevel, setSelectedLevel] = useState(null); 
   const [carouselLimit, setCarouselLimit] = useState({
     leftLimit: 4,
@@ -24,8 +25,8 @@ const SkillCarousel = ({ skillData }) => {
   const moveLeft = () => {
     setCarouselLimit((prev) => {
       return {
-        leftLimit: prev.leftLimit--,
-        rightLimit: prev.rightLimit--,
+        leftLimit: prev.leftLimit > 0? prev.leftLimit-- : prev.leftLimit,
+        rightLimit: prev.rightLimit > 0? prev.rightLimit-- : prev.rightLimit,
       }
     });
   };
@@ -33,8 +34,8 @@ const SkillCarousel = ({ skillData }) => {
   const moveRight = () => {
     setCarouselLimit((prev) => {
       return {
-        leftLimit: prev.leftLimit++,
-        rightLimit: prev.rightLimit++,
+        leftLimit: prev.leftLimit < 10? prev.leftLimit++ : prev.leftLimit,
+        rightLimit: prev.rightLimit < 10? prev.rightLimit++ : prev.rightLimit,
       }
     });
   };
@@ -52,6 +53,7 @@ const SkillCarousel = ({ skillData }) => {
 
   const chooseLevel = (index) => {
     setSelectedLevel(index);
+    setGrade(index);
   }
 
   return (
@@ -71,30 +73,24 @@ const SkillCarousel = ({ skillData }) => {
         <StyledCarouselRow>
           <StyledDotContainer>
             <StyledDotInnerContainer>
-            {filteredData.map((_, index) => (
+            {filteredData.map((criterion, index) => (
               <StyledCarouselDot 
                 key={index}
-                isActive={index === selectedLevel}
-                onClick={() => chooseLevel(index)}
+                // @ts-ignore
+                isActive={criterion.skill_level_id === selectedLevel}
+                onClick={() => chooseLevel(criterion.skill_level_id)}
               />
             ))}
             </StyledDotInnerContainer>
           </StyledDotContainer>
         </StyledCarouselRow>
         <StyledCarouselRow>
-          {filteredData.map((detail, index) => (
+          {textComponent.length? filteredData.map((detail, index) => (
             index % 2 === 0 && (
-              <StyledCarouselDescription key={index/2}>
-                <ul>
-                  {
-                    detail.criteria.split('\n').filter(criterion => criterion !== "").map((criterion, index) =>
-                      (<li key={index}>{criterion}</li>)
-                    )
-                  }
-                </ul>
+              <StyledCarouselDescription key={index/2} dangerouslySetInnerHTML={{__html: colorMapping(detail.criteria, textComponent)}}>
               </StyledCarouselDescription>
             )
-          ))}
+          )) : ""}
         </StyledCarouselRow>
     </StyledCarouselInnerContainer>
   </StyledCarouselContainer>
