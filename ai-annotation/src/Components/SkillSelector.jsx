@@ -79,7 +79,7 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
       })
       .catch((err) => { console.log(err); })
       .finally(() => {
-        showToast(`Text has been saved, text sample ID is ${textSampleId}`, 'Success', 'success', 'e-check');
+        showToast(`Orginal Text saved successfully, sample ID: ${textSampleId}`, 'Success', 'success', 'e-check');
       })
     }
 
@@ -147,7 +147,7 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
         sendMachineAnnotation(CONTENT_API_URL, reqBody, CONTENT_API_KEY)
         .then((res) => res.data)
         .then((data) => {
-          showToast(`Text has been saved, text sample ID is ${data}`, 'Success', 'success', 'e-check');
+          showToast(`Machine annotation save successfully, ID: ${data}`, 'Success', 'success', 'e-check');
         })
         .catch(err => { console.log(err) })
       }      
@@ -156,6 +156,7 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
       console.log(error);
     }).finally(() => {
       setIsLoading(false);
+      showToast(`Machine annotated successfully`, 'Success', 'success', 'e-check');
     });
     
     

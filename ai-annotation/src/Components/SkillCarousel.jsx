@@ -87,7 +87,7 @@ const SkillCarousel = ({ skillData, textComponent, setGrade, flags}) => {
         <StyledCarouselRow>
           {textComponent.length? filteredData.map((detail, index) => (
             index % 2 === 0 && (
-              <StyledCarouselDescription key={index/2} dangerouslySetInnerHTML={{__html: colorMapping(detail.criteria, textComponent)}}>
+              <StyledCarouselDescription key={index/2} dangerouslySetInnerHTML={{__html: colorMapping(detail.criteria, textComponent, flags)}}>
               </StyledCarouselDescription>
             )
           )) : ""}
