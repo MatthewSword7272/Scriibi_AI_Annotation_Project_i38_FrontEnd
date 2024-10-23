@@ -42,6 +42,9 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
       .then((data) => {
         showToast(`Text has been saved ${data}`, 'Success', 'success', 'e-check');
       })
+      .catch(err => {
+        showToast('Fail to save text, please contact your admin', 'danger', 'danger', 'e-circle-remove-2');
+      })
     }
     else showToast('Please select a grade', 'Warning', 'warning', 'e-warning')
   }
@@ -75,9 +78,13 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
         })
         .catch((err) => {
           console.error(err);
+          showToast('Fail to save text, please contact your admin', 'danger', 'danger', 'e-circle-remove-2');
         })
       })
-      .catch((err) => { console.error(err); })
+      .catch((err) => {
+        console.error(err);
+        showToast('Fail to save text, please contact your admin', 'danger', 'danger', 'e-circle-remove-2');
+      })
       .finally(() => {
         showToast(`Orginal Text saved successfully, sample ID: ${textSampleId}`, 'Success', 'success', 'e-check');
       })

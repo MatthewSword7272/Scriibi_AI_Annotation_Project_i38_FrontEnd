@@ -83,9 +83,9 @@ const StyledCarouselDescription = styled.div`
   }
 
   mark {
-    padding: 0 3px;
+    padding: 1px 4px;
     border-radius: 8px;
-    line-height: 1.25;
+    line-height: 1.85;
   }
 `;
 
