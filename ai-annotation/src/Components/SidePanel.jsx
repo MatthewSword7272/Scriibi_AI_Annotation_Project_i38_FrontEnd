@@ -19,6 +19,7 @@ const SidePanel = ({
   flagProps,
   isAnnotated, 
   textComponent,
+  dialogText
 }) => {
   
   const { isDeleteMode, isAddingMode, setIsAddingMode, setIsDeleteMode } = modeProps;
@@ -28,7 +29,6 @@ const SidePanel = ({
   // States
   const [dialogVisibility, setDialogVisibility] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
-  const [dialogContent, setDialogContent] = useState("");
   const [selectedText, setSelectedText] = useState({ text: "", index: -1 });
 
   // Refs
@@ -43,9 +43,8 @@ const SidePanel = ({
   ];
 
   // Helper functions
-  const showDialog = (note) => {
-    setDialogTitle(note.name);
-    setDialogContent(note.example);
+  const showDialog = (title) => {
+    setDialogTitle(title);
     setDialogVisibility(true);
   };
 
@@ -114,7 +113,7 @@ const SidePanel = ({
   }, [selectedSkill, setFlagCounts, setHighlightedWords, setPresentingText, updateComponents]);
 
   // Event handlers
-  const handleDialogClick = (note) => showDialog(note);
+  const handleDialogClick = (note) => showDialog(note.name);
 
   const handleAccordionClick = useCallback((comp, subBackground = undefined, subText = undefined) => {
     if (isAddingMode && selectedText.text !== "") {
@@ -216,7 +215,7 @@ const SidePanel = ({
 
       <StyledDialogBox
         header={dialogTitle}
-        content={dialogContent} // Temporary solution to handle inconsistent dialog type
+        content={dialogText instanceof Array? convertStringtoHTML(dialogText[0]): convertStringtoHTML(dialogText)} // Temporary solution to handle inconsistent dialog type
         showCloseIcon={true}
         visible={dialogVisibility}
         width="25vw"
