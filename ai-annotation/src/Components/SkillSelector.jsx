@@ -22,7 +22,7 @@ const ANNOTATE_URL = process.env.REACT_APP_TEXTPROCESSING_URL;
 const ANNOTATE_KEY = process.env.REACT_APP_TEXTPROCESSING_FUNCTION_KEY;
 // let sampleId = 0; // Sample ID.
 
-const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime, setPresentingTexts, setComponents, skillLevel, setDialogText}) => {
+const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, skillData, text, skillAnnotated, setSkillAnnotated, firstTime, setFirstTime, setPresentingTexts, setComponents, skillLevel}) => {
   const toastInstance = useRef(null);
   const TOAST_POSITION = { X: 'center', Y: 'top' };
   const [isLoading, setIsLoading] = useState(false);
@@ -128,16 +128,6 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
               ...prev.notes,
             }
           }});
-        }
-
-        if (data.annotations.notes) {
-          setDialogText(prev => ({
-            ...prev,
-            [selectedSkill]: data.annotations.notes
-          })); // Send note to dialogs
-        }
-        else {
-          setDialogText("No notes"); // Handle empty notes
         }
         
         // Send data to DB
