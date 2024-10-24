@@ -160,8 +160,10 @@ const Home = () => {
     return number.split(/\s+/).length;  // Split into words and count
   }, []);
 
+  // Stripping Html, not working as expected
   const handleTextSaving = useCallback((args) => {
     let alternativePlainText = args.value.replace('</p>', '</p>\n');
+    console.log(alternativePlainText); //Debugging
     const plainText = stripHtml(alternativePlainText).result;
     // console.log(plainText) // Debugging plain text bug
     if (!firstTime) {
@@ -271,6 +273,7 @@ const Home = () => {
             mark.id = highlight.index;
             mark.dataset.highlightContent = highlight.text;
             mark.dataset.componentName = highlight.component;
+            mark.setAttribute('data', highlight.data? highlight.data : "");
             if (highlight.subComponent) {
               mark.dataset.subcomponentText = highlight.subComponent.subText || '\u2003';
             }

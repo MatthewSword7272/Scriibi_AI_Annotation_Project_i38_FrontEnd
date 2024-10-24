@@ -31,8 +31,7 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
   const sendText = async () => {
     let reqBody = {
       sampleId: sampleId,
-      // text: makeText(text[selectedSkill]), // Temporary wait for back-end to included embedded data attr in <mark>
-      text: text[selectedSkill],
+      text: makeText(text[selectedSkill]),
       skillLevelId: skillLevel,
     }
 
@@ -96,14 +95,12 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
     }, ANNOTATE_KEY)
     .then((res) => res.data)
     .then((data) => {
+      console.log(data)
 
       // Handle response from back-end to highlight the writing piece
       if (Object.keys(data).length > 0) {
         const highlightedText = data.annotations?.highlighted_text;
         const componentsList = data['components_list'];
-
-        // Debugging
-        console.log("Components list", data.components_list.present)
 
         if (highlightedText) {
           setPresentingTexts(prev => ({...prev, [selectedSkill]: highlightedText}))
@@ -142,11 +139,10 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
         else {
           setDialogText("No notes"); // Handle empty notes
         }
-
+        
         // Send data to DB
         const reqBody = {
-          text: highlightedText,
-          // text: makeText(highlightedText), // Temporary wait for back-end to included embedded data attr in <mark>
+          text: makeText(highlightedText), 
           sampleId: textSampleId,
         }
         sendMachineAnnotation(CONTENT_API_URL, reqBody, CONTENT_API_KEY)
@@ -190,7 +186,9 @@ const SkillSelector = ({ handleSkillChange, setHighlightedWords, selectedSkill, 
             subText: node.dataset.subcomponentText || "",
             // @ts-ignore
             subBackground: node.style.getPropertyValue('--subcomponent-background') || ""
-          }
+          },
+          // @ts-ignore
+          data: node.getAttribute('data') || "",
         });
         currentIndex += node.textContent.length;
       }
