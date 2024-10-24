@@ -14,6 +14,7 @@ const StyledDialogBox = styled(DialogComponent)`
 
     .e-dlg-header-content {
         border-radius: 15px 15px 0 0; // Matching top corners
+        text-transform: capitalize;
     }
 
    .e-dialog-border-resize .e-south {
