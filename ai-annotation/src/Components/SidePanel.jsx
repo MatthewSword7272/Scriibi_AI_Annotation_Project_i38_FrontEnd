@@ -234,14 +234,16 @@ const SidePanel = ({
         }}
       />
       {isAnnotated &&
+      <>
         <EditSection 
           isAddingMode={isAddingMode}
           isDeleteMode={isDeleteMode}
           setIsAddingMode={setIsAddingMode}
           setIsDeleteMode={setIsDeleteMode}
         />
+          <NotesSection handleDialogClick={handleDialogClick} notesList={components.notes} />
+      </>
       }
-      <NotesSection handleDialogClick={handleDialogClick} notesList={components.notes} />
       <AccordionSection title="Annotation" textComponent={textComponent} components={components.textComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts}/>
       <AccordionSection title="Missing" textComponent={textComponent} components={components.missingComps} handleAccordionClick={handleAccordionClick} flagCounts={flagCounts} isMissing={true} />
     </StyledSubBodyContainer2>
