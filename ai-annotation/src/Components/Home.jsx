@@ -40,7 +40,6 @@ const Home = () => {
   const [flagCounts, setFlagCounts] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [allTextComponents, setAllTextComponents] = useState({});
-  const [dialogTexts, setDialogText] = useState({ 0: "", 1: "", 2: "", 3: "", 4: "" });
   const [flags, setFlags] = useState([]);
 
   // Fetch criteria for selected skill
@@ -448,7 +447,7 @@ const Home = () => {
     <StyledBodyContainer id="target">
       {isLoading && <LoadingScreen text="Loading..." />}
       <StyledSubBodyContainer1>
-        <SkillSelector {...skillProps} setHighlightedWords={setHighlightedWords} setFirstTime={setFirstTime} firstTime={firstTime} setPresentingTexts={setPresentingTexts} setComponents={setComponents} skillLevel={skillLevelId} setDialogText={setDialogText}/>
+        <SkillSelector {...skillProps} setHighlightedWords={setHighlightedWords} setFirstTime={setFirstTime} firstTime={firstTime} setPresentingTexts={setPresentingTexts} setComponents={setComponents} skillLevel={skillLevelId}/>
         <SkillCarousel skillData={criteria} textComponent={textComponent} setGrade={setSKillLevelId} flags={flags}/>
         <div className="rte-container">
           <label className="floating-label" htmlFor="rte-target">Student Writing Text</label>
@@ -476,7 +475,6 @@ const Home = () => {
         selectedSkill={selectedSkill}
         isAnnotated={skillAnnotated[selectedSkill]}
         flagProps={flagProps}
-        dialogText={dialogTexts[selectedSkill]}
       />
     </StyledBodyContainer>
   );
